@@ -1,18 +1,17 @@
-import React, { useState, RefObject } from 'react';
-import Menu from './Menu';
+import React from 'react';
 import TableData from '../TableData';
 import ListData from '../ListData';
 import Alert from '../Alert';
 import './Box.css';
 
 interface BoxProp {
+    id: number,
     title: string,
-    menuVisible?: boolean,
-    className?: string,
     tableData?: TableData,
     listData?: ListData,
     alerts?: Alert[],
-    dismissAlert?: (id: number) => void
+    dismissAlert?: (id: number) => void,
+    removeBox: (id: number) => void
 }
 
 export interface BoxComponent {
@@ -62,10 +61,10 @@ const Box: BoxComponent = (prop: BoxProp) => {
             </div>
         } else {
             content = <div className="scroll-area mt-2">
-                {prop.alerts.map(notification => 
-                    <div key={notification.id} className="row p-2 pl-2 mx-3 mb-2 no-gutters alert shadow-sm position-relative">
-                        {notification.text}
-                        <i className="fas fa-times position-absolute" onClick={() => prop.dismissAlert!(notification.id)}></i>
+                {prop.alerts.map(alert => 
+                    <div key={alert.id} className="row p-2 pl-2 mx-3 mb-2 no-gutters alert shadow-sm position-relative">
+                        {alert.text}
+                        <i className="fas fa-times position-absolute" onClick={() => prop.dismissAlert!(alert.id)}></i>
                     </div>
                 )}
             </div>
@@ -75,7 +74,7 @@ const Box: BoxComponent = (prop: BoxProp) => {
         <div className="box col mr-3 shadow pb-1">
             <div className="row no-gutters header p-2 pl-3 align-items-center">
                 {prop.title}
-                <i className="fas fa-times px-2 py-1 ml-auto rounded" onClick={() => {}}></i>
+                <i className="fas fa-times px-2 py-1 ml-auto rounded" onClick={() => {prop.removeBox(prop.id)}}></i>
             </div>
             {content}
         </div>

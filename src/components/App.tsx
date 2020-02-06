@@ -1,10 +1,8 @@
 import React from 'react';
-import './App.css';
 import SidePanel from './SidePanel';
 import Main from './Main';
 import Search from './Search';
 import IndicesList  from './IndicesList';
-import WatchList  from './WatchList';
 import StatusBar from './StatusBar';
 import IndexDetails from './IndexDetails';
 import Selectors from './Selectors';
@@ -12,8 +10,7 @@ import ButtonGroup from './ButtonGroup';
 import Selector, { Option } from './Selector';
 import Chart, { ChartType } from './Chart';
 import Reports from './Reports';
-import Box from './Box';
-import { State } from '../redux/store';
+import { State, ReportData } from '../redux/store';
 import { connect } from 'react-redux';
 import IndexData from '../IndexData';
 import { Action } from '../redux/actions';
@@ -22,6 +19,7 @@ import ChartDataEntry from '../ChartDataEntry';
 import TableData from '../TableData';
 import ListData from '../ListData';
 import Alert from '../Alert';
+import BoxData from '../BoxData';
 
 interface AppProp {
   selectedIndex: IndexData | null,
@@ -35,10 +33,8 @@ interface AppProp {
   resolutionOptions: Option[],
   chartResolution: string,
   indexHistory: ChartDataEntry[],
-  orderHistory: TableData,
-  activities: ListData,
-  headlines: ListData,
-  notifications: Alert[],
+  reportData: ReportData,
+  boxes: BoxData[],
   dispatch: (action: Action) => void
 }
 
@@ -79,12 +75,7 @@ const App = (prop: AppProp) => {
           <ButtonGroup options={prop.resolutionOptions} active={prop.chartResolution} handleSelect={(resolution) => prop.dispatch(actions.setChartResolution(resolution))} />
         </Selectors>
         <Chart type={prop.chartType} data={prop.indexHistory} activeIndex={prop.selectedIndex} />
-        <Reports>
-          <Box title={'Order History'} tableData={prop.orderHistory} />
-          <Box title={'Recent Activity'} listData={prop.activities} />
-          <Box title={'Latest Headlines'} listData={prop.headlines} />
-          <Box title={'Notifications'} alerts={prop.notifications} dismissAlert={(id) => prop.dispatch(actions.dismissAlert(id))} />
-        </Reports>
+        <Reports boxes={prop.boxes} removeBox={(id) => prop.dispatch(actions.removeBox(id))} dismissAlert={(id) => prop.dispatch(actions.dismissAlert(id))} reportData={prop.reportData} />
       </Main>
     </>
   );
@@ -103,10 +94,8 @@ function mapStateToProps(state: State) {
     resolutionOptions: state.resolutionOptions,
     chartResolution: state.chartResolution,
     indexHistory: state.indexHistory,
-    orderHistory: state.orderHistory,
-    activities: state.activities,
-    headlines: state.headlines,
-    notifications: state.alerts
+    reportData: state.reportData,
+    boxes: state.boxes
   };
 }
 

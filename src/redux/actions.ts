@@ -1,4 +1,5 @@
 import IndexData from '../IndexData';
+import { BoxComponent } from '../components/Box';
 
 export const SELECT_INDEX = 'SELECT_INDEX';
 export const SEARCH_FOR_INDEX = 'SEARCH_FOR_INDEX';
@@ -59,9 +60,9 @@ export const addBox = (box: JSX.Element) => ({
     arg: box
 });
 
-export const removeBox = (box: JSX.Element) => ({
+export const removeBox = (id: number) => ({
     type: REMOVE_BOX,
-    arg: box
+    arg: id
 });
 
 export const dismissAlert = (id: number) => ({

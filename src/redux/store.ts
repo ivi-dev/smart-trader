@@ -8,6 +8,14 @@ import ChartDataEntry from '../ChartDataEntry';
 import TableData from '../TableData';
 import ListData from '../ListData';
 import Alert from '../Alert';
+import BoxData, { BoxType } from '../BoxData';
+
+export type ReportData = {
+    orderHistory: TableData,
+    activities: ListData,
+    headlines: ListData,
+    alerts: Alert[]
+}
 
 export interface State {
     selectedIndex: IndexData | null,
@@ -24,10 +32,8 @@ export interface State {
     chartResolution: string,
     indexHistory: ChartDataEntry[],
 
-    orderHistory: TableData,
-    activities: ListData,
-    headlines: ListData,
-    alerts: Alert[]
+    reportData: ReportData,
+    boxes: BoxData[]
 }
 
 const randomIndices = random.indices(100);
@@ -58,10 +64,20 @@ export const state: State = {
     resolutionOptions: resolutionOptions,
     chartResolution: '1d',
     indexHistory: randomIndexHistory1,
-    orderHistory: randomOrders,
-    activities: randomActivities,
-    headlines: randomHeadlines,
-    alerts: randomAlerts,
+
+    reportData: {
+        orderHistory: randomOrders,
+        activities: randomActivities,
+        headlines: randomHeadlines,
+        alerts: randomAlerts
+    },
+
+    boxes: [
+        new BoxData(0, 'Order History', BoxType.ORDER_HISTORY),
+        new BoxData(1, 'Recent Activity', BoxType.RECENT_ACTIVIY),
+        new BoxData(2, 'Latest Headlines', BoxType.HEADLINES),
+        new BoxData(3, 'Notifications', BoxType.ALERTS)
+    ]
 }
 
 export const store = createStore(main);

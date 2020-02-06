@@ -64,9 +64,9 @@ export const main = (state = initialState, action: Action) => {
         case actions.ADD_BOX:
             return Object.assign({}, state);    
         case actions.REMOVE_BOX:
-            return Object.assign({}, state);    
+            return Object.assign({}, state, {boxes: state.boxes.filter(box => box.id !== action.arg as number)});    
         case actions.DISMISS_ALERT:
-            return Object.assign({}, state, {alerts: state.alerts.filter(alert => alert.id !== action.arg as number)})
+            return Object.assign({}, state, {reportData: {alerts: state.reportData.alerts.filter(alert => alert.id !== action.arg as number)}})
         default:
             return state;
     }
