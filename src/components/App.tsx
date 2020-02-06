@@ -16,9 +16,7 @@ import IndexData from '../IndexData';
 import { Action } from '../redux/actions';
 import * as actions from '../redux/actions';
 import ChartDataEntry from '../ChartDataEntry';
-import TableData from '../TableData';
-import ListData from '../ListData';
-import Alert from '../Alert';
+import Button from './Button';
 import BoxData from '../BoxData';
 
 interface AppProp {
@@ -69,6 +67,7 @@ const App = (prop: AppProp) => {
           <IndexDetails data={prop.selectedIndex} />
           <Selector title={'Chart type:'} options={prop.chartTypes} selected={prop.chartType} 
             classes={'ml-4'} handleSelect={(type) => {prop.dispatch(actions.setChartType(type))}} />
+            <Button onClick={() => {}} title={'+ Report Box'} classes={'ml-auto'} />
         </StatusBar>
         <Selectors>
           <Selector title={'Chart type:'} options={prop.chartDataSources} selected={prop.chartDataSource} handleSelect={(source) => {prop.dispatch(actions.setChartDataSource(source))}} />
