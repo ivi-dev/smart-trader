@@ -1,0 +1,85 @@
+import React, { useState, RefObject } from 'react';
+import Menu from './Menu';
+import TableData from '../TableData';
+import ListData from '../ListData';
+import Alert from '../Alert';
+import './Box.css';
+
+interface BoxProp {
+    title: string,
+    menuVisible?: boolean,
+    className?: string,
+    tableData?: TableData,
+    listData?: ListData,
+    alerts?: Alert[],
+    dismissAlert?: (id: number) => void
+}
+
+export interface BoxComponent {
+    (prop: BoxProp): JSX.Element;
+}
+
+const Box: BoxComponent = (prop: BoxProp) => {
+    let content = null;
+    if (prop.tableData) {
+        content = <div className="row no-gutters content">
+                     <div className="col-12 table-headers row no-gutters position-absolute">
+                        {prop.tableData.headers.map((header, index) => 
+                        <div key={index} className="col text-center">
+                            {header.content}
+                        </div>)}
+                     </div>
+                     <div className="scroll-area col-12">
+                        <table id="order-history-table" className="col-12 mt-4 table table-borderless table-hover">
+                           <tbody>
+                               {prop.tableData.rows.map((row, index) => 
+                                <tr key={index}>
+                                    {row.cells.map((cell, index) => 
+                                    <td key={index} className={`text-center ${cell.classes}`}>
+                                        {cell.content}
+                                    </td>)}
+                                </tr>)}
+                           </tbody>
+                        </table>
+                     </div>
+                  </div>;
+    } else if (prop.listData) {
+        content = <div className="scroll-area mt-2">
+            {prop.listData.items.map((item, index) => 
+            <div key={index} className="row data-row no-gutters px-3 py-1 border-bottom">
+                <div className="row no-gutters col-12">
+                    {item.main}
+                </div>
+                <div className="row secondary no-gutters col-12">
+                    {item.secondary && item.secondary}
+                </div>
+            </div>)}
+        </div>;
+    } else if (prop.alerts) {
+        if (prop.alerts.length === 0) {
+            content = <div className="scroll-area mt-2">
+                <div className="pt-4 empty-label text-center col-12 text-muted">All Clear</div>
+            </div>
+        } else {
+            content = <div className="scroll-area mt-2">
+                {prop.alerts.map(notification => 
+                    <div key={notification.id} className="row p-2 pl-2 mx-3 mb-2 no-gutters alert shadow-sm position-relative">
+                        {notification.text}
+                        <i className="fas fa-times position-absolute" onClick={() => prop.dismissAlert!(notification.id)}></i>
+                    </div>
+                )}
+            </div>
+        }
+    }
+    return (
+        <div className="box col mr-3 shadow pb-1">
+            <div className="row no-gutters header p-2 pl-3 align-items-center">
+                {prop.title}
+                <i className="fas fa-times px-2 py-1 ml-auto rounded" onClick={() => {}}></i>
+            </div>
+            {content}
+        </div>
+    );
+}
+
+export default Box;

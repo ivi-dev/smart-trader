@@ -1,0 +1,131 @@
+.box {
+    background-color: rgb(32, 39, 58);
+    height: 95%;
+    overflow: hidden;
+}
+
+.box .header {
+    background-color: rgb(43, 53, 80);
+    font-size: 80%;
+}
+
+.box .header i {
+    color: rgba(255, 255, 255, 0.8) !important;
+    cursor: pointer;
+    transition: 250ms;
+}
+
+.box .header i:hover {
+    background-color: rgba(0, 0, 0, 0.2) !important;
+}
+
+.box .table-headers {
+    background-color: rgb(52, 63, 88);
+    z-index: 9999;
+}
+
+.box .table-headers div {
+    padding: 5px 0;
+    font-size: 75%;
+    font-weight: normal;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.box .content {
+    height: 90%;
+}
+
+.box .scroll-area {
+    max-height: 85%;
+    overflow: auto;
+}
+
+.box .content .scroll-area {
+    max-height: 98%;
+}
+
+.box table {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.box table tbody {
+    font-size: 70%;
+}
+
+.box table tbody tr {
+    cursor: pointer;
+    transition: 250ms;
+}
+
+.box table tbody tr:nth-child(odd) {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.box table tbody tr:first-child td {
+    padding-top: 15px;
+}
+
+.box table tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 1);
+}
+
+.box table tbody tr td {
+    padding: 5px 0;
+}
+
+.box table tbody tr td .type {
+    color: rgba(0, 0, 0, 0.8);
+    font-size: 80%;
+}
+
+.box table tbody tr td.buy {
+    color: rgb(236, 132, 72);
+}
+
+.box table tbody tr td.sell {
+    color: rgb(83, 238, 179);
+}
+
+.box .data-row {
+    font-size: 95%;
+    color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    transition: 250ms;
+}
+
+.box .data-row:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.box .data-row .secondary {
+    font-size: 80%;
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.box .alert {
+    font-size: 90%;
+    margin-bottom: 5px;
+    cursor: pointer;
+    background-color: rgb(52, 63, 88);
+    color: rgba(255, 255, 255, 0.8);
+    border-color: transparent;
+    opacity: 0.8;
+    transition: 250ms;
+}
+
+.box .alert:hover {
+    opacity: 1;
+}
+
+.box .alert .fas.fa-times {
+    right: 15px;
+    top: 35%;
+    transition: 250ms;
+}
+
+.box .alert .fas.fa-times:hover {
+    color: rgb(255, 255, 255);
+}

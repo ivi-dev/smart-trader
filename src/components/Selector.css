@@ -1,0 +1,33 @@
+.selector .title {
+    font-size: 90%;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.selector select {
+    display: block;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.8);
+    padding: 0 !important;
+    max-width: 100%;
+    border: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: transparent;
+    font-weight: normal;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.selector select:focus {
+    outline: none;
+}
+
+.selector .icon {
+    padding: 0 !important;
+}
+
+.selector i {
+    font-size: 80%;
+    position: relative;
+}

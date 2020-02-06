@@ -1,0 +1,10 @@
+.resolution-options .btn {
+    font-size: 80% !important;
+    background-color: rgb(54, 66, 99) !important;
+    border-color: rgb(54, 66, 99) !important;
+}
+
+.resolution-options .btn.active {
+    background-color: rgb(26, 27, 34) !important;
+    border-color: rgb(26, 27, 34) !important;
+}

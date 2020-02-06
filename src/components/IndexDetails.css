@@ -1,0 +1,23 @@
+.index-details {
+    border-color: rgba(255, 255, 255, 0.2) !important
+}
+
+.index-details.border-right {
+    border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.index-details .name {
+    font-size: 160%;
+}
+
+.index-details .open, 
+.index-details .high, 
+.index-details .low, 
+.index-details ._close {
+    font-size: 70%;
+}
+
+.index-details .title {
+    color: rgba(225, 255, 255, 0.4);
+    font-size: 80%;
+}

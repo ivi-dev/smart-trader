@@ -1,0 +1,15 @@
+.menu {
+    top: 20px;
+    right: 25px;
+    background-color: rgb(52, 63, 88);
+    z-index: 10000;
+}
+
+a {
+    font-size: 95%;
+    transition: 250ms;
+}
+
+.menu a:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+}
