@@ -67,6 +67,19 @@ export const indexHistory = (year = (new Date().getFullYear() - 1)) => {
     return history;
 }
 
+export const indexHistories = (upTo: number = 1970) => {
+    let histories: {year: number, data: ChartDataEntry[]}[] = [],
+    years: {name: number, selected?: boolean}[] = [];
+    for (let index = (new Date()).getFullYear() - 1; index > upTo; index--) {
+        histories.push({year: index, data: indexHistory(index)});
+    }
+    for (let index = 0; index < histories.length; index++) {
+        const entry = index === 0 ? {name: histories[index].year, selected: true} : {name: histories[index].year};
+        years.push(entry);
+    }
+    return {years: years, archive: histories};
+}
+
 export const orders = (num = 50) => {
     const tableData = new TableData([
         new TableCell('Time'), 

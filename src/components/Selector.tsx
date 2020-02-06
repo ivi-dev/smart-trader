@@ -11,6 +11,7 @@ interface SelectorProp {
     title: string,
     options: Option[],
     selected: string | number,
+    sortOrder?: 'asc' | 'desc',
     classes?: string,
     handleSelect: (value: string) => void
 }
@@ -20,13 +21,13 @@ export interface SelectorComponent {
 }
 
 const Selector: SelectorComponent = (prop: SelectorProp) => {
-    const sortOptions = () => {
+    const sortOptions = (sortOrder = 'asc') => {
         let options = prop.options.slice();
         return options.sort((item1, item2) => {
             if (item1.name < item2.name) {
-                return -1
+                return sortOrder === 'asc' ? -1 : 1;
             } else if (item1.name > item2.name) {
-                return 1
+                return sortOrder === 'asc' ? 1 : -1;
             } else {
                 return 0
             }
@@ -38,7 +39,7 @@ const Selector: SelectorComponent = (prop: SelectorProp) => {
             {prop.title}
         </div>
         <select className="col-auto ml-2" onChange={(e) => {prop.handleSelect((e.target as HTMLSelectElement).value)}} value={prop.selected}>
-            {sortOptions().sort().map((option, index) => <option key={index} value={option.name}>
+            {sortOptions(prop.sortOrder).sort().map((option, index) => <option key={index} value={option.name}>
                 {capitalize(option.name.toString())}
             </option>)}
         </select>

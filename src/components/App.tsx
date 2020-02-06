@@ -70,7 +70,7 @@ const App = (prop: AppProp) => {
             <ButtonGroup options={[{name: '+ History'}, {name: '+ Activity'}, {name: '+ Headlines'}, {name: '+ Notification'}]} handleSelect={(type) => prop.dispatch(actions.addBox(getBoxType(type)))} classes={'ml-auto'} />
         </StatusBar>
         <Selectors>
-          <Selector title={'Data Source:'} options={prop.chartDataSources} selected={prop.chartDataSource} handleSelect={(source) => {prop.dispatch(actions.setChartDataSource(source))}} />
+          <Selector title={'Data Source:'} options={prop.chartDataSources} sortOrder={'desc'} selected={prop.chartDataSource} handleSelect={(source) => {prop.dispatch(actions.setChartDataSource(source))}} />
           <ButtonGroup options={prop.resolutionOptions} active={prop.chartResolution} handleSelect={(resolution) => prop.dispatch(actions.setChartResolution(resolution))} />
         </Selectors>
         <Chart type={prop.chartType} data={prop.indexHistory} activeIndex={prop.selectedIndex} />

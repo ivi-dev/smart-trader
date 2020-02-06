@@ -37,15 +37,11 @@ export interface State {
 }
 
 const randomIndices = random.indices(100);
-const randomIndexHistory1 = random.indexHistory();
-const randomIndexHistory2 = random.indexHistory();
+const history = random.indexHistories();
 const chartTypes = [{name: 'line', selected: true}, {name: 'candlestick'}, {name: 'bar'}];
 const year = (new Date()).getFullYear() - 1;
-const dataSources = [{name: year, selected: true}, {name: 2018}];
-const archive = [{year: year, data: randomIndexHistory1}, 
-                 {year: 2018, data: randomIndexHistory2}];
 const resolutionOptions = [{name: '1d', selected: true}, {name: '1w'}, 
-                 {name: '1m'}, {name: '1q'}];
+                           {name: '1m'}, {name: '1q'}];
 const randomOrders = random.orders(50);
 const randomActivities = random.activities(50);
 const randomHeadlines = random.headlines(50);
@@ -59,11 +55,11 @@ export const state: State = {
     chartType: 'line',
     chartTypes: chartTypes,
     chartDataSource: year,
-    chartDataSources: dataSources,
-    chartDataSourceArchive: archive,
+    chartDataSources: history.years,
+    chartDataSourceArchive: history.archive,
     resolutionOptions: resolutionOptions,
     chartResolution: '1d',
-    indexHistory: randomIndexHistory1,
+    indexHistory: history.archive[0].data,
 
     reportData: {
         orderHistory: randomOrders,
