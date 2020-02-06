@@ -1,6 +1,7 @@
 .box {
     background-color: rgb(32, 39, 58);
     height: 95%;
+    max-width: 25% !important;
     overflow: hidden;
 }
 

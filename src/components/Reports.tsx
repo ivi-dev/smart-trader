@@ -28,10 +28,10 @@ const Reports: ReportsComponent = (prop: ReportsProp) => {
                         listData={prop.reportData.activities} removeBox={(id) => prop.removeBox(id)} />
                 case BoxType.HEADLINES:
                     return <Box key={box.id} id={box.id} title={box.title} 
-                        listData={prop.reportData.headlines} removeBox={(id) => prop.removeBox(id)} />
+                        listData={prop.reportData.headlines} removeBox={(id) => prop.removeBox(id)}  />
                 default:
                     return <Box key={box.id} id={box.id} title={box.title} 
-                        alerts={prop.reportData.alerts} removeBox={(id) => prop.removeBox(id)} />
+                        alerts={prop.reportData.alerts} removeBox={(id) => prop.removeBox(id)} dismissAlert={(id) => prop.dismissAlert(id)} />
             }
         })}
     </section>

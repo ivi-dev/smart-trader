@@ -5,11 +5,12 @@
 }
 
 .btn:hover {
-    background-color: rgba(255, 255, 255, 0.15) !important;
-    color: rgba(255, 255, 255, 1) !important;
+    background-color: rgba(83, 189, 231, 0.171) !important;
+    color: rgb(70, 159, 233) !important;
+    border-color: rgb(70, 159, 233) !important;
 }
 
 .btn:active {
-    background-color: rgb(211, 196, 62) !important;
-    color: rgb(0, 0, 0) !important;
+    background-color: rgb(70, 159, 233) !important;
+    color: rgb(255, 255, 255) !important;
 }

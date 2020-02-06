@@ -1,5 +1,6 @@
 import IndexData from '../IndexData';
 import { BoxComponent } from '../components/Box';
+import { BoxType } from '../BoxData';
 
 export const SELECT_INDEX = 'SELECT_INDEX';
 export const SEARCH_FOR_INDEX = 'SEARCH_FOR_INDEX';
@@ -55,9 +56,9 @@ export const setChartResolution = (resolution: string) => ({
     arg: resolution
 });
 
-export const addBox = (box: JSX.Element) => ({
+export const addBox = (type: BoxType) => ({
     type: ADD_BOX,
-    arg: box
+    arg: type
 });
 
 export const removeBox = (id: number) => ({
