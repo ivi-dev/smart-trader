@@ -58,7 +58,8 @@ const App = (prop: AppProp) => {
     <>
       <SidePanel>
         <Search placeholder="Search for indices" />
-        <IndicesList data={prop.searchResultsList.length === 0 ? prop.indicesList : prop.searchResultsList} handleClick={(e, data) => {handleIndicesListClick(e, data)}} />
+        <IndicesList data={prop.searchResultsList.length === 0 ? prop.indicesList : prop.searchResultsList} 
+        handleClick={(e, data) => {handleIndicesListClick(e, data)}} />
         <IndicesList title={'Watchlist'} data={prop.watchList} handleClick={(e, data) => {handleWatchlistClick(e, data)}} />
       </SidePanel>
       <Main>
@@ -69,7 +70,7 @@ const App = (prop: AppProp) => {
             <ButtonGroup options={[{name: '+ History'}, {name: '+ Activity'}, {name: '+ Headlines'}, {name: '+ Notification'}]} handleSelect={(type) => prop.dispatch(actions.addBox(getBoxType(type)))} classes={'ml-auto'} />
         </StatusBar>
         <Selectors>
-          <Selector title={'Chart type:'} options={prop.chartDataSources} selected={prop.chartDataSource} handleSelect={(source) => {prop.dispatch(actions.setChartDataSource(source))}} />
+          <Selector title={'Data Source:'} options={prop.chartDataSources} selected={prop.chartDataSource} handleSelect={(source) => {prop.dispatch(actions.setChartDataSource(source))}} />
           <ButtonGroup options={prop.resolutionOptions} active={prop.chartResolution} handleSelect={(resolution) => prop.dispatch(actions.setChartResolution(resolution))} />
         </Selectors>
         <Chart type={prop.chartType} data={prop.indexHistory} activeIndex={prop.selectedIndex} />
