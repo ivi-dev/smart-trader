@@ -54,7 +54,7 @@ export const main = (state = initialState, action: Action) => {
         case actions.SEARCH_FOR_INDEX:
             return Object.assign({}, state, {searchResultsList: state.indicesList.filter(index => index.name.toLowerCase().includes(action.arg.toLowerCase() as string))});    
         case actions.ADD_TO_WATCHLIST:
-            return Object.assign({}, state, {watchList: state.watchList.concat([action.arg as IndexData])});    
+            return !state.watchList.find(item => item.name === (action.arg as IndexData).name) ? Object.assign({}, state, {watchList: state.watchList.concat([action.arg as IndexData])}) : state;    
         case actions.REMOVE_FROM_WATCHLIST:
             return Object.assign({}, state, {watchList: state.watchList.filter(index => index !== (action.arg as IndexData))});    
         case actions.SET_CHART_TYPE:
