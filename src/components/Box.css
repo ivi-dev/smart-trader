@@ -130,3 +130,9 @@
 .box .alert .fas.fa-times:hover {
     color: rgb(255, 255, 255);
 }
+
+@media screen and (min-width: 1720px) {
+    .box {
+        max-width: 19% !important;
+    }
+}

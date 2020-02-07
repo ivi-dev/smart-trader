@@ -1,8 +1,8 @@
 export enum BoxType {
-    ORDER_HISTORY,
-    RECENT_ACTIVIY,
-    HEADLINES,
-    ALERTS
+    ORDER_HISTORY = 'Order History',
+    RECENT_ACTIVIY = 'Recent Activity',
+    HEADLINES = 'Headlines',
+    ALERTS = 'Notifications'
 }
 
 export default class BoxData {
@@ -26,13 +26,13 @@ export default class BoxData {
     static getTitle(type: BoxType) {
         switch (type as BoxType) {
             case BoxType.ORDER_HISTORY:
-                return 'Order History';
-                case BoxType.RECENT_ACTIVIY:
-                return 'Recent Activity';
-                case BoxType.HEADLINES:
-                return 'Headlines';
+                return BoxType.ORDER_HISTORY;
+            case BoxType.RECENT_ACTIVIY:
+                return BoxType.RECENT_ACTIVIY;
+            case BoxType.HEADLINES:
+                return BoxType.HEADLINES;
             default:
-                return 'Notifications';
+                return BoxType.ALERTS;
         }
     }
 }

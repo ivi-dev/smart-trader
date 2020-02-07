@@ -67,7 +67,7 @@ const App = (prop: AppProp) => {
           <IndexDetails data={prop.selectedIndex} />
           <Selector title={'Chart type:'} options={prop.chartTypes} selected={prop.chartType} 
             classes={'ml-4'} handleSelect={(type) => {prop.dispatch(actions.setChartType(type))}} />
-            <ButtonGroup options={[{name: '+ History'}, {name: '+ Activity'}, {name: '+ Headlines'}, {name: '+ Notification'}]} handleSelect={(type) => prop.dispatch(actions.addBox(BoxData.getBoxType(type)))} classes={'ml-auto'} />
+            <ButtonGroup options={[{name: '', graphic: 'fas fa-history'}, {name: '+ Activity', graphic: 'fas fa-chart-line'}, {name: '+ Headlines', graphic: 'far fa-newspaper'}, {name: '+ Notification', graphic: 'far fa-bell'}]} handleSelect={(type) => prop.dispatch(actions.addBox(BoxData.getBoxType(type)))} classes={'ml-auto'} />
         </StatusBar>
         <Selectors>
           <Selector title={'Data Source:'} options={prop.chartDataSources} sortOrder={'desc'} selected={prop.chartDataSource} handleSelect={(source) => {prop.dispatch(actions.setChartDataSource(source))}} />

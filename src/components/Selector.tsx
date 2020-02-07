@@ -4,6 +4,7 @@ import './Selector.css';
 
 export type Option = {
     name: string | number,
+    graphic?: string,
     selected?: boolean
 }
 

@@ -52,6 +52,7 @@ export const state: State = {
     indicesList: randomIndices,
     searchResultsList: [],
     watchList: [],
+
     chartType: 'line',
     chartTypes: chartTypes,
     chartDataSource: year,
@@ -67,7 +68,6 @@ export const state: State = {
         headlines: randomHeadlines,
         alerts: randomAlerts
     },
-
     boxes: [
         new BoxData(0, 'Order History', BoxType.ORDER_HISTORY),
         new BoxData(1, 'Recent Activity', BoxType.RECENT_ACTIVIY),

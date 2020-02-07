@@ -17,7 +17,7 @@ const ButtonGroup = (prop: ButtonGroupProp) => {
             {prop.options.map(option => 
                 <button key={i++} type="button" 
                     className={`btn btn-secondary ${option.name === prop.active ? 'active' : null}`} onClick={(e) => {prop.handleSelect((e.target as HTMLButtonElement).innerHTML)}}>
-                    {option.name}
+                    {option.graphic ? <i className={option.graphic}></i> : option.name}
                 </button>)}
         </div>
     );
