@@ -17,6 +17,7 @@ import * as actions from '../redux/actions';
 import BoxData from '../BoxData';
 import ChartData from '../ChartData';
 import Row from './Row';
+import Text from './Text';
 
 interface AppProp {
   selectedIndex: IndexData | null,
@@ -69,8 +70,9 @@ const App = (prop: AppProp) => {
       </SidePanel>
       <Main>
         <StatusBar>
-          <IndexDetails data={prop.selectedIndex} />
-            <ButtonGroup options={prop.reportButtons} handleSelect={(type) => prop.dispatch(actions.addBox(BoxData.getBoxType(type)))} classes={'ml-auto'} />
+          <Text content={'Smart Trader'} classes={'h5 font-weight-light mt-1'} />
+          <Text content={'v0.1'} classes={'ml-2 h6 position-relative small'} style={{'top': '1px'}} />
+          <ButtonGroup options={prop.reportButtons} handleSelect={(type) => prop.dispatch(actions.addBox(BoxData.getBoxType(type)))} classes={'ml-auto my-3'} />
         </StatusBar>
         <Row classes={'chart overflow-auto'} style={{'height': '52vh'}}>
           {prop.charts.length !== 0 ? prop.charts.map(chart => <Chart key={chart.id} id={chart.id} type={chart.type} width={prop.charts.length === 1 ? 12 : 6} options={prop.chartOptions} data={chart.data} activeIndex={chart.activeIndex} dataSources={prop.dataSources} year={chart.year} dispatch={prop.dispatch} resolutionOptions={prop.resolutionOptions} chartResolution={chart.resolution} chartTypes={prop.chartTypes} chartType={prop.chartType} />) : <div className="row empty-label col-12 justify-content-center mt-5 text-muted">No charts yet. Add some with the button on the top left.</div>}
