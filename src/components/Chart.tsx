@@ -10,6 +10,7 @@ import ButtonGroup from './ButtonGroup';
 import { Action } from '../redux/actions';
 import * as actions from '../redux/actions';
 import Button from './Button';
+import IndexDetails from './IndexDetails';
 
 interface ChartProp {
     id: number,
@@ -53,7 +54,8 @@ const Chart: ChartComponent = (prop: ChartProp) => {
                 <div className="row justify-content-between align-items-center no-gutters col-12">
                     <Selector title={'Data Source:'} options={prop.dataSources} sortOrder={'desc'} selected={prop.year} handleSelect={(year) => prop.dispatch(actions.setChartYear(year, prop.id))} />
                     <Button graphic={'fas fa-plus'} classes={'ml-3'} onClick={() => prop.dispatch(actions.addChart(prop.id))} />
-                    <Button graphic={'fas fa-trash'} classes={'ml-2 danger'} onClick={() => prop.dispatch(actions.removeChart(prop.id))} />
+                    <Button graphic={'fas fa-trash'} classes={'ml-2 mr-4 danger'} onClick={() => prop.dispatch(actions.removeChart(prop.id))} />
+                    <IndexDetails data={prop.activeIndex} />
                     <Selector title={'Chart type:'} options={prop.chartTypes} selected={prop.type} classes={'ml-auto'} handleSelect={(type) => prop.dispatch(actions.setChartType(type, prop.id))} />
                     <ButtonGroup options={prop.resolutionOptions} active={prop.chartResolution} handleSelect={(resolution) => prop.dispatch(actions.setChartResolution(resolution, prop.id, prop.year))} classes={'ml-2'} />
                 </div>

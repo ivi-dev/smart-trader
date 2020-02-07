@@ -7,14 +7,14 @@
 }
 
 .index-details .name {
-    font-size: 160%;
+    font-size: 150%;
 }
 
 .index-details .open, 
 .index-details .high, 
 .index-details .low, 
 .index-details ._close {
-    font-size: 70%;
+    font-size: 60%;
 }
 
 .index-details .negative {
@@ -27,5 +27,5 @@
 
 .index-details .title {
     color: rgba(225, 255, 255, 0.4);
-    font-size: 80%;
+    font-size: 90%;
 }

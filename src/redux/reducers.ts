@@ -110,7 +110,7 @@ export const main = (state = initialState, action: Action) => {
             return Object.assign({}, state, {charts: state.charts.concat([copy])});    
         case actions.REMOVE_CHART:
             const removeChartArg = action.arg as {chartId: number};
-            return Object.assign({}, state, {charts: state.charts.filter(chart => chart.id !== removeChartArg.chartId)});    
+            return state.charts.length !== 1 ? Object.assign({}, state, {charts: state.charts.filter(chart => chart.id !== removeChartArg.chartId)}) : state;    
         case actions.ADD_BOX:
             let boxTitle = BoxData.getTitle(action.arg as BoxType);
             return Object.assign({}, state, {boxes: state.boxes.concat([new BoxData(getLatestBoxId(state.boxes) + 1, boxTitle, action.arg as BoxType)])});    
