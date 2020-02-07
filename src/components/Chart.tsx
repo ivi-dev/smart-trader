@@ -27,7 +27,9 @@ const Chart: ChartComponent = (prop: ChartProp) => {
     useEffect(() => {
         const chartBoxElement = chartBox.current as HTMLElement;
         cleanUp(chartBoxElement);
-        const chart = createChart(chartBoxElement, prop.options);
+        const chart = createChart(chartBoxElement, Object.assign({
+            width: chartBoxElement.clientWidth * 0.96, 
+            height: chartBoxElement.clientHeight}, prop.options));
         window.onresize = () => chart.applyOptions({
             width: chartBoxElement.clientWidth * 0.96, 
             height: chartBoxElement.clientHeight})

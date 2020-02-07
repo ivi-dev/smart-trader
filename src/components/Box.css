@@ -82,11 +82,11 @@
 }
 
 .box table tbody tr td.buy {
-    color: rgb(236, 132, 72);
+    color: rgb(240, 116, 102);
 }
 
 .box table tbody tr td.sell {
-    color: rgb(83, 238, 179);
+    color: rgb(66, 207, 113);
 }
 
 .box .data-row {

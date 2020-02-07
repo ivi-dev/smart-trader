@@ -23,7 +23,7 @@ const IndexDetails = (prop: IndexDetailsProp) =>
         </div>
         <div className="_close pr-3 pt-1 my-2 text-center">
             <div className="title">CLOSE</div>
-            <div className={`value ${(prop.data?.close || 0) < (prop.data?.open || 0) ? 'text-danger' : 'text-success'}`}>{prop.data?.close || 'xxx'}</div>
+            <div className={`value ${(prop.data?.close || 0) < (prop.data?.open || 0) ? 'negative' : 'positive'}`}>{prop.data?.close || 'xxx'}</div>
         </div>
     </div>
 

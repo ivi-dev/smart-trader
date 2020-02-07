@@ -19,9 +19,17 @@
 }
 
 .index .current {
-    font-size: 118%;
+    font-size: 125%;
 }
 
 .index .trend {
-    font-size: 90%;
+    font-size: 110%;
+}
+
+.index .trend.negative {
+    color: rgb(240, 116, 102);
+}
+
+.index .trend.positive {
+    color: rgb(66, 207, 113);
 }

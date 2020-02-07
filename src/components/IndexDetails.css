@@ -17,6 +17,14 @@
     font-size: 70%;
 }
 
+.index-details .negative {
+    color: rgb(240, 116, 102);
+}
+
+.index-details .positive {
+    color: rgb(66, 207, 113);
+}
+
 .index-details .title {
     color: rgba(225, 255, 255, 0.4);
     font-size: 80%;

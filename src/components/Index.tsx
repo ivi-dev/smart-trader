@@ -13,7 +13,7 @@ const Index = (prop: IndexProp) => {
     onClick={(e) => {prop.handleClick(e, prop.data);}}>
         <div className="col name font-weight-bold">{prop.data.name}</div>
         <div className="col current">{prop.data.current}</div>
-        <div className={`col-5 trend text-right ${prop.data.trend > 0 ? 'text-danger' : 'text-success'}`}>
+        <div className={`col-5 trend text-right ${prop.data.trend > 0 ? 'negative' : 'positive'}`}>
             {prop.data.trend > 0 && '-'}{Math.abs(prop.data.trend)} 
             &nbsp;({Math.abs(Number((prop.data.trend / prop.data.open * 100).toFixed(2)))}%)
         </div>
