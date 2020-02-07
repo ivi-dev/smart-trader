@@ -3,12 +3,18 @@ import { main } from './reducers';
 import IndexData from '../IndexData';
 import * as random from '../randomizer';
 import { ChartType } from '../components/Chart';
-import { Option } from '../components/Selector';
-import ChartData, { ChartDataEntry } from '../ChartData';
+import ChartData from '../ChartData';
 import TableData from '../TableData';
 import ListData from '../ListData';
 import Alert from '../Alert';
 import BoxData, { BoxType } from '../BoxData';
+
+export type Option = {
+    name: string | number,
+    graphic?: string,
+    title?: string,
+    selected?: boolean
+}
 
 export type ReportData = {
     orderHistory: TableData,
@@ -34,6 +40,7 @@ export interface State {
     chartResolution: string,
     indexHistory: ChartData,
 
+    reportButtons: Option[],
     reportData: ReportData,
     boxes: BoxData[]
 }
@@ -77,6 +84,9 @@ export const state: State = {
     chartResolution: '1d',
     indexHistory: history.archive[0].data,
 
+    reportButtons: [{name: '', graphic: 'fas fa-history', title: 'Add an Order History Report'},                   {name: '', graphic: 'fas fa-chart-line', title: 'Add an Activities Report'}, 
+                    {name: '', graphic: 'far fa-newspaper', title: 'Add a Headlines Report'}, 
+                    {name: '', graphic: 'far fa-bell', title: 'Add a Notifications Report'}],
     reportData: {
         orderHistory: randomOrders,
         activities: randomActivities,

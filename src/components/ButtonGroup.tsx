@@ -1,5 +1,5 @@
 import React from 'react';
-import { Option } from './Selector';
+import { Option } from '../redux/store';
 import './ButtonGroup.css';
 
 interface ButtonGroupProp {

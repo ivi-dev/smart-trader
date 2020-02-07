@@ -7,7 +7,8 @@ import StatusBar from './StatusBar';
 import IndexDetails from './IndexDetails';
 import Selectors from './Selectors';
 import ButtonGroup from './ButtonGroup';
-import Selector, { Option } from './Selector';
+import Selector from './Selector';
+import { Option } from '../redux/store';
 import Chart, { ChartType } from './Chart';
 import Reports from './Reports';
 import { State, ReportData } from '../redux/store';
@@ -31,6 +32,7 @@ interface AppProp {
   resolutionOptions: Option[],
   chartResolution: string,
   indexHistory: ChartData,
+  reportButtons: Option[],
   reportData: ReportData,
   boxes: BoxData[],
   dispatch: (action: Action) => void
@@ -68,7 +70,7 @@ const App = (prop: AppProp) => {
           <IndexDetails data={prop.selectedIndex} />
           <Selector title={'Chart type:'} options={prop.chartTypes} selected={prop.chartType} 
             classes={'ml-4'} handleSelect={(type) => {prop.dispatch(actions.setChartType(type))}} />
-            <ButtonGroup options={[{name: '', graphic: 'fas fa-history'}, {name: '+ Activity', graphic: 'fas fa-chart-line'}, {name: '+ Headlines', graphic: 'far fa-newspaper'}, {name: '+ Notification', graphic: 'far fa-bell'}]} handleSelect={(type) => prop.dispatch(actions.addBox(BoxData.getBoxType(type)))} classes={'ml-auto'} />
+            <ButtonGroup options={prop.reportButtons} handleSelect={(type) => prop.dispatch(actions.addBox(BoxData.getBoxType(type)))} classes={'ml-auto'} />
         </StatusBar>
         <Selectors>
           <Selector title={'Data Source:'} options={prop.chartDataSources} sortOrder={'desc'} selected={prop.chartDataSource} handleSelect={(source) => {prop.dispatch(actions.setChartDataSource(source))}} />
@@ -95,6 +97,7 @@ function mapStateToProps(state: State) {
     resolutionOptions: state.resolutionOptions,
     chartResolution: state.chartResolution,
     indexHistory: state.indexHistory,
+    reportButtons: state.reportButtons,
     reportData: state.reportData,
     boxes: state.boxes
   };

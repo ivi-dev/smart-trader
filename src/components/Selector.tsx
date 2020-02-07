@@ -1,12 +1,7 @@
 import React from 'react';
 import { capitalize } from '../utility';
+import { Option } from '../redux/store';
 import './Selector.css';
-
-export type Option = {
-    name: string | number,
-    graphic?: string,
-    selected?: boolean
-}
 
 interface SelectorProp {
     title: string,
