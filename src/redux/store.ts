@@ -14,6 +14,7 @@ export type Option = {
     name: string | number,
     graphic?: string,
     title?: string,
+    data?: string,
     selected?: boolean
 }
 
@@ -102,9 +103,10 @@ export const state: State = {
         }
     ],
 
-    reportButtons: [{name: '', graphic: 'fas fa-history', title: 'Add an Order History Report'},                   {name: '', graphic: 'fas fa-chart-line', title: 'Add an Activities Report'}, 
-                    {name: '', graphic: 'far fa-newspaper', title: 'Add a Headlines Report'}, 
-                    {name: '', graphic: 'far fa-bell', title: 'Add a Notifications Report'}],
+    reportButtons: [{name: '', graphic: 'fas fa-history', title: 'Add a History Report', data: 'history'},
+                    {name: '', graphic: 'fas fa-flag', title: 'Add an Activity Report', data: 'activity'},
+                    {name: '', graphic: 'far fa-newspaper', title: 'Add a Headlines Report', data: 'headlines'}, 
+                    {name: '', graphic: 'far fa-bell', title: 'Add a Notifications Report', data: 'alerts'}],
     reportData: {
         orderHistory: randomOrders,
         activities: randomActivities,

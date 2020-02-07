@@ -10,6 +10,12 @@
     border-color: rgb(70, 159, 233) !important;
 }
 
+.btn.single.danger:hover {
+    background-color: rgba(224, 58, 58, 0.212) !important;
+    color: rgb(231, 75, 75) !important;
+    border-color: rgb(231, 75, 75) !important;
+}
+
 .btn.single:active {
     background-color: rgb(70, 159, 233) !important;
     color: rgb(255, 255, 255) !important;

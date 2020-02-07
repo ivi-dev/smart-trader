@@ -73,7 +73,7 @@ const App = (prop: AppProp) => {
             <ButtonGroup options={prop.reportButtons} handleSelect={(type) => prop.dispatch(actions.addBox(BoxData.getBoxType(type)))} classes={'ml-auto'} />
         </StatusBar>
         <Row classes={'chart overflow-auto'} style={{'height': '52vh'}}>
-          {prop.charts.map(chart => <Chart key={chart.id} id={chart.id} type={chart.type} width={prop.charts.length === 1 ? 12 : 6} options={prop.chartOptions} data={chart.data} activeIndex={chart.activeIndex} dataSources={prop.dataSources} year={chart.year} dispatch={prop.dispatch} resolutionOptions={prop.resolutionOptions} chartResolution={chart.resolution} chartTypes={prop.chartTypes} chartType={prop.chartType} />)}
+          {prop.charts.length !== 0 ? prop.charts.map(chart => <Chart key={chart.id} id={chart.id} type={chart.type} width={prop.charts.length === 1 ? 12 : 6} options={prop.chartOptions} data={chart.data} activeIndex={chart.activeIndex} dataSources={prop.dataSources} year={chart.year} dispatch={prop.dispatch} resolutionOptions={prop.resolutionOptions} chartResolution={chart.resolution} chartTypes={prop.chartTypes} chartType={prop.chartType} />) : <div className="row empty-label col-12 justify-content-center mt-5 text-muted">No charts yet. Add some with the button on the top left.</div>}
         </Row>
         <Reports boxes={prop.boxes} removeBox={(id) => prop.dispatch(actions.removeBox(id))} dismissAlert={(id) => prop.dispatch(actions.dismissAlert(id))} reportData={prop.reportData} />
       </Main>
