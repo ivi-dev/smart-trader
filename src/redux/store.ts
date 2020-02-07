@@ -99,14 +99,6 @@ export const state: State = {
             resolution: '1d',
             activeIndex: randomIndices[0],
             data: history.archive.find(entry => entry.year === 2019)!.data
-        },
-        {
-            id: 1,
-            type: 'bar',
-            year: 2018,
-            resolution: '1w',
-            activeIndex: randomIndices[1],
-            data: history.archive.find(entry => entry.year === 2018)!.data
         }
     ],
 

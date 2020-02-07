@@ -72,11 +72,8 @@ const App = (prop: AppProp) => {
           <IndexDetails data={prop.selectedIndex} />
             <ButtonGroup options={prop.reportButtons} handleSelect={(type) => prop.dispatch(actions.addBox(BoxData.getBoxType(type)))} classes={'ml-auto'} />
         </StatusBar>
-        <Row classes={'chart overflow-auto'}>
-          {prop.charts.map(chart => <Chart key={chart.id} id={chart.id} type={chart.type} options={prop.chartOptions} data={chart.data} activeIndex={chart.activeIndex} dataSources={prop.dataSources} year={chart.year} dispatch={prop.dispatch} resolutionOptions={prop.resolutionOptions} chartResolution={chart.resolution} chartTypes={prop.chartTypes} chartType={prop.chartType} />)}
-
-          {/* <Chart type={prop.chartType} options={prop.chartOptions} data={prop.indexHistory} activeIndex={prop.selectedIndex} chartDataSources={prop.chartDataSources} chartDataSource={prop.chartDataSource} handleDataSourceSelect={(source) => {prop.dispatch(actions.setChartDataSource(source))}} resolutionOptions={prop.resolutionOptions} chartResolution={prop.chartResolution} handleResolutionSelect={(resolution) => prop.dispatch(actions.setChartResolution(resolution))} />
-          <Chart type={prop.chartType} options={prop.chartOptions} data={prop.indexHistory} activeIndex={prop.selectedIndex} chartDataSources={prop.chartDataSources} chartDataSource={prop.chartDataSource} handleDataSourceSelect={(source) => {prop.dispatch(actions.setChartDataSource(source))}} resolutionOptions={prop.resolutionOptions} chartResolution={prop.chartResolution} handleResolutionSelect={(resolution) => prop.dispatch(actions.setChartResolution(resolution))} /> */}
+        <Row classes={'chart overflow-auto'} style={{'height': '52vh'}}>
+          {prop.charts.map(chart => <Chart key={chart.id} id={chart.id} type={chart.type} width={prop.charts.length === 1 ? 12 : 6} options={prop.chartOptions} data={chart.data} activeIndex={chart.activeIndex} dataSources={prop.dataSources} year={chart.year} dispatch={prop.dispatch} resolutionOptions={prop.resolutionOptions} chartResolution={chart.resolution} chartTypes={prop.chartTypes} chartType={prop.chartType} />)}
         </Row>
         <Reports boxes={prop.boxes} removeBox={(id) => prop.dispatch(actions.removeBox(id))} dismissAlert={(id) => prop.dispatch(actions.dismissAlert(id))} reportData={prop.reportData} />
       </Main>

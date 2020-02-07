@@ -14,6 +14,7 @@ import Button from './Button';
 interface ChartProp {
     id: number,
     type: ChartType,
+    width: number,
     options: any,
     data: ChartData,
     dataSources: Option[],
@@ -48,7 +49,7 @@ const Chart: ChartComponent = (prop: ChartProp) => {
             height: chartBoxElement.clientHeight})
         ChartData.addSeries(chart, prop.data.entries, prop.type, prop.activeIndex?.name);
     });
-    return <section className="row col-6 no-gutters px-4 pt-3 chart align-items-start">
+    return <section className={`row col-${prop.width} no-gutters px-4 pt-3 chart align-items-start`}>
                 <div className="row justify-content-between align-items-center no-gutters col-12">
                     <Selector title={'Data Source:'} options={prop.dataSources} sortOrder={'desc'} selected={prop.year} handleSelect={(year) => prop.dispatch(actions.setChartYear(year, prop.id))} />
                     <Button graphic={'fas fa-plus'} classes={'ml-3'} onClick={() => prop.dispatch(actions.addChart(prop.id))} />

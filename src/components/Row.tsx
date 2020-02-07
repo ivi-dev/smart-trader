@@ -2,12 +2,13 @@ import React from 'react';
 import './Row.css';
 
 type RowProp = {
-    children: {},
+    children?: {},
+    style?: {},
     classes?: string
 }
 
 const Row = (prop: RowProp) =>
-    <div className={`row px-3 ${prop.classes}`} style={{'height': '52vh'}}>
+    <div className={`row no-gutters ${prop.classes}`} style={prop.style}>
         {prop.children}
     </div>
 
