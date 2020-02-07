@@ -67,21 +67,7 @@ export const main = (state = initialState, action: Action) => {
             const formatted = formatIndexHistory(state.chartDataSourceArchive.find(entry => entry.year === state.chartDataSource)!.data, resolution);
             return Object.assign({}, state, {chartResolution: resolution}, {indexHistory: formatted});    
         case actions.ADD_BOX:
-            let boxTitle: string = '';
-            switch (action.arg as BoxType) {
-                case BoxType.ORDER_HISTORY:
-                    boxTitle = 'Order History';
-                    break;
-                    case BoxType.RECENT_ACTIVIY:
-                    boxTitle = 'Recent Activity';
-                    break;
-                    case BoxType.HEADLINES:
-                    boxTitle = 'Headlines';
-                    break;
-                default:
-                    boxTitle = 'Notifications';
-                    break;
-            }
+            let boxTitle = BoxData.getTitle(action.arg as BoxType);
             return state.boxes.length < 4 ? Object.assign({}, state, {boxes: state.boxes.concat([new BoxData(getLatestBoxId(state.boxes) + 1, boxTitle, action.arg as BoxType)])}) : state;    
         case actions.REMOVE_BOX:
             return Object.assign({}, state, {boxes: state.boxes.filter(box => box.id !== action.arg as number)});    
