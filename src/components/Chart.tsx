@@ -22,9 +22,10 @@ interface ChartProp {
     year: number,
     resolutionOptions: Option[],
     chartResolution: string,
-    activeIndex: IndexData | null,
+    activeIndex: IndexData,
     chartTypes: Option[],
     chartType: string,
+    selected: boolean,
     dispatch: (action: Action) => void
 }
 
@@ -52,14 +53,14 @@ const Chart: ChartComponent = (prop: ChartProp) => {
     });
     return <section className={`row col-${prop.width} no-gutters px-4 pt-3 chart align-items-start`}>
                 <div className="row justify-content-between align-items-center no-gutters col-12">
-                    <Selector title={'Data Source:'} options={prop.dataSources} sortOrder={'desc'} selected={prop.year} handleSelect={(year) => prop.dispatch(actions.setChartYear(year, prop.id))} />
+                    <Selector title={'Source:'} options={prop.dataSources} sortOrder={'desc'} selected={prop.year} handleSelect={(year) => prop.dispatch(actions.setChartYear(year, prop.id))} />
                     <Button graphic={'fas fa-plus'} classes={'ml-3'} onClick={() => prop.dispatch(actions.addChart(prop.id))} />
                     <Button graphic={'fas fa-trash'} classes={'ml-2 mr-4 danger'} onClick={() => prop.dispatch(actions.removeChart(prop.id))} />
                     <IndexDetails data={prop.activeIndex} />
-                    <Selector title={'Chart type:'} options={prop.chartTypes} selected={prop.type} classes={'ml-auto'} handleSelect={(type) => prop.dispatch(actions.setChartType(type, prop.id))} />
+                    <Selector title={'Type:'} options={prop.chartTypes} selected={prop.type} classes={'ml-auto'} handleSelect={(type) => prop.dispatch(actions.setChartType(type, prop.id))} />
                     <ButtonGroup options={prop.resolutionOptions} active={prop.chartResolution} handleSelect={(resolution) => prop.dispatch(actions.setChartResolution(resolution, prop.id, prop.year))} classes={'ml-2'} />
                 </div>
-                <div ref={chartBox} className="row no-gutters col-12 graph mt-2"></div>
+                <div ref={chartBox} className={`row no-gutters col-12 graph mt-2 ${prop.selected ? 'border' : null} rounded`} onClick={() => prop.dispatch(actions.selectChart(prop.id))}></div>
             </section>
 };
 

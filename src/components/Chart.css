@@ -1,9 +1,11 @@
 .chart {
-    height: 52vh;
+    height: 50vh;
 }
 
 .chart .graph {
     height: 90%;
+    border-color: rgb(70, 159, 233) !important;
+    border-width: 3px !important;
 }
 
 @media screen and (min-height: 1024px) {

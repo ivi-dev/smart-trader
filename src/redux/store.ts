@@ -51,6 +51,7 @@ export interface State {
     chartResolution: string,
     indexHistory: ChartData,
     charts: ChartDescriptor[],
+    selectedChart: number | null,
 
     reportButtons: Option[],
     reportData: ReportData,
@@ -102,6 +103,7 @@ export const state: State = {
             data: history.archive.find(entry => entry.year === 2019)!.data
         }
     ],
+    selectedChart: null,
 
     reportButtons: [{name: '', graphic: 'fas fa-history', title: 'Add a History Report', data: 'history'},
                     {name: '', graphic: 'fas fa-flag', title: 'Add an Activity Report', data: 'activity'},

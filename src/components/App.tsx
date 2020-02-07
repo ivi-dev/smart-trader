@@ -4,7 +4,6 @@ import Main from './Main';
 import Search from './Search';
 import IndicesList  from './IndicesList';
 import StatusBar from './StatusBar';
-import IndexDetails from './IndexDetails';
 import ButtonGroup from './ButtonGroup';
 import { Option, ChartDescriptor } from '../redux/store';
 import Chart from './Chart';
@@ -34,6 +33,7 @@ interface AppProp {
   chartResolution: string,
   indexHistory: ChartData,
   charts: ChartDescriptor[],
+  selectedChart: number | null,
 
   reportButtons: Option[],
   reportData: ReportData,
@@ -75,7 +75,7 @@ const App = (prop: AppProp) => {
           <ButtonGroup options={prop.reportButtons} handleSelect={(type) => prop.dispatch(actions.addBox(BoxData.getBoxType(type)))} classes={'ml-auto my-3'} />
         </StatusBar>
         <Row classes={'chart overflow-auto'} style={{'height': '52vh'}}>
-          {prop.charts.length !== 0 ? prop.charts.map(chart => <Chart key={chart.id} id={chart.id} type={chart.type} width={prop.charts.length === 1 ? 12 : 6} options={prop.chartOptions} data={chart.data} activeIndex={chart.activeIndex} dataSources={prop.dataSources} year={chart.year} dispatch={prop.dispatch} resolutionOptions={prop.resolutionOptions} chartResolution={chart.resolution} chartTypes={prop.chartTypes} chartType={prop.chartType} />) : <div className="row empty-label col-12 justify-content-center mt-5 text-muted">No charts yet. Add some with the button on the top left.</div>}
+          {prop.charts.length !== 0 ? prop.charts.map(chart => <Chart key={chart.id} id={chart.id} type={chart.type} width={prop.charts.length === 1 ? 12 : 6} options={prop.chartOptions} data={chart.data} activeIndex={chart.activeIndex} dataSources={prop.dataSources} year={chart.year} dispatch={prop.dispatch} resolutionOptions={prop.resolutionOptions} chartResolution={chart.resolution} chartTypes={prop.chartTypes} chartType={prop.chartType} selected={prop.selectedChart === chart.id ? true : false} />) : <div className="row empty-label col-12 justify-content-center mt-5 text-muted">No charts yet. Add some with the button on the top left.</div>}
         </Row>
         <Reports boxes={prop.boxes} removeBox={(id) => prop.dispatch(actions.removeBox(id))} dismissAlert={(id) => prop.dispatch(actions.dismissAlert(id))} reportData={prop.reportData} />
       </Main>
@@ -99,6 +99,7 @@ function mapStateToProps(state: State) {
     chartResolution: state.chartResolution,
     indexHistory: state.indexHistory,
     charts: state.charts,
+    selectedChart: state.selectedChart,
 
     reportButtons: state.reportButtons,
     reportData: state.reportData,

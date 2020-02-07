@@ -54,7 +54,14 @@ const getLatestChartId = (chartList: ChartDescriptor[]) => {
 export const main = (state = initialState, action: Action) => {
     switch (action.type) {
         case actions.SELECT_INDEX:
-            return Object.assign({}, state, {selectedIndex: action.arg as IndexData});
+            const charts5 = state.charts.slice();
+            for (const chart of charts5) {
+                if (chart.id === state.selectedChart) {
+                    chart.activeIndex = action.arg as IndexData;
+                    break;
+                }
+            }
+            return Object.assign({}, state, {charts: charts5});
         case actions.SEARCH_FOR_INDEX:
             return Object.assign({}, state, {searchResultsList: state.indicesList.filter(index => index.name.toLowerCase().includes(action.arg.toLowerCase() as string))});    
         case actions.ADD_TO_WATCHLIST:
@@ -110,7 +117,10 @@ export const main = (state = initialState, action: Action) => {
             return Object.assign({}, state, {charts: state.charts.concat([copy])});    
         case actions.REMOVE_CHART:
             const removeChartArg = action.arg as {chartId: number};
-            return state.charts.length !== 1 ? Object.assign({}, state, {charts: state.charts.filter(chart => chart.id !== removeChartArg.chartId)}) : state;    
+            return state.charts.length !== 1 ? Object.assign({}, state, {charts: state.charts.filter(chart => chart.id !== removeChartArg.chartId)}) : state; 
+        case actions.SELECT_CHART:
+            const id = action.arg as number;
+            return Object.assign({}, state, {selectedChart: state.selectedChart === id ? null : id});   
         case actions.ADD_BOX:
             let boxTitle = BoxData.getTitle(action.arg as BoxType);
             return Object.assign({}, state, {boxes: state.boxes.concat([new BoxData(getLatestBoxId(state.boxes) + 1, boxTitle, action.arg as BoxType)])});    

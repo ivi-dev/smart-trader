@@ -12,6 +12,7 @@ export const SET_CHART_RESOLUTION = 'SET_CHART_RESOLUTION';
 
 export const ADD_CHART = 'ADD_CHART';
 export const REMOVE_CHART = 'REMOVE_CHART';
+export const SELECT_CHART = 'SELECT_CHART';
 export const ADD_BOX = 'ADD_BOX';
 export const REMOVE_BOX = 'REMOVE_BOX';
 
@@ -60,6 +61,11 @@ export const setChartResolution = (resolution: string, chartId: number, year: nu
 export const addChart = (chartId: number) => ({
     type: ADD_CHART,
     arg: { chartId: chartId }
+});
+
+export const selectChart = (id: number) => ({
+    type: SELECT_CHART,
+    arg: id
 });
 
 export const removeChart = (chartId: number) => ({

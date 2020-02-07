@@ -3,7 +3,7 @@ import './IndexDetails.css';
 import IndexData from '../IndexData';
 
 interface IndexDetailsProp {
-    data: IndexData | null
+    data: IndexData
 }
 
 const IndexDetails = (prop: IndexDetailsProp) =>
@@ -14,12 +14,8 @@ const IndexDetails = (prop: IndexDetailsProp) =>
             <div className="value">{prop.data?.open ||'xxx'}</div>
         </div>
         <div className="high pr-3 text-center">
-            <div className="title">HIGH</div>
-            <div className="value">{prop.data?.high ||'xxx'}</div>
-        </div>
-        <div className="low pr-3 text-center">
-            <div className="title">LOW</div>
-            <div className="value">{prop.data?.low || 'xxx'}</div>
+            <div className="title">CURRENT</div>
+            <div className={`value ${prop.data?.current < prop.data?.open ? 'negative' : 'positive'}`}>{prop.data?.current}</div>
         </div>
     </div>
 
