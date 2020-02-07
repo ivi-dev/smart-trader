@@ -4,7 +4,7 @@ import IndexData from '../IndexData';
 import * as random from '../randomizer';
 import { ChartType } from '../components/Chart';
 import { Option } from '../components/Selector';
-import ChartDataEntry from '../ChartDataEntry';
+import ChartData, { ChartDataEntry } from '../ChartData';
 import TableData from '../TableData';
 import ListData from '../ListData';
 import Alert from '../Alert';
@@ -24,13 +24,15 @@ export interface State {
     watchList: IndexData[],
 
     chartType: ChartType,
+    chartOptions: any,
     chartTypes: Option[],
     chartDataSource: number,
     chartDataSources: Option[],
-    chartDataSourceArchive: {year: number, data: ChartDataEntry[]}[],
+    chartDataSourceArchive: {year: number, 
+                             data: ChartData}[],
     resolutionOptions: Option[],
     chartResolution: string,
-    indexHistory: ChartDataEntry[],
+    indexHistory: ChartData,
 
     reportData: ReportData,
     boxes: BoxData[]
@@ -54,6 +56,19 @@ export const state: State = {
     watchList: [],
 
     chartType: 'line',
+    chartOptions: {
+        priceScale: {borderVisible: false},
+        layout: {
+            backgroundColor: 'transparent',
+            textColor: 'rgba(255, 255, 255, 0.2)',
+            fontSize: 14
+        },
+        grid: {
+            vertLines: {color: 'rgba(255, 255, 255, 0.2)'},
+            horzLines: {color: 'rgba(255, 255, 255, 0.2)'}
+        },
+        timeScale: {fixLeftEdge: true}
+    },
     chartTypes: chartTypes,
     chartDataSource: year,
     chartDataSources: history.years,

@@ -2,13 +2,13 @@ import * as actions from './actions';
 import { state as initialState } from './store';
 import IndexData from '../IndexData';
 import { Action } from './actions';
-import ChartDataEntry from '../ChartDataEntry';
+import ChartData, { ChartDataEntry } from '../ChartData';
 import BoxData, { BoxType } from '../BoxData';
 
-const formatIndexHistory = (history: ChartDataEntry[], format: string) => {
-    const formatter = (history: ChartDataEntry[], chunk: number) => {
-        let formattedData: ChartDataEntry[] = [];
-        const slices = history.length / chunk;
+const formatIndexHistory = (history: ChartData, format: string) => {
+    const formatter = (history: ChartData, chunk: number) => {
+        let formattedData: ChartData = new ChartData([]);
+        const slices = history.entries.length / chunk;
         const runs = slices % chunk !== 0 ? Math.floor(slices + 1) : slices;
         for (let index = 0; index < runs; index++) {
             let open = 0, close = 0, high = 0, low = 0;
@@ -16,15 +16,15 @@ const formatIndexHistory = (history: ChartDataEntry[], format: string) => {
             endIndex = index !== 0 ? index * chunk + chunk : chunk;
             let entries = 0;
             for (let index2 = startIndex; index2 < endIndex; index2++) {
-                if (!history[index2]) {
+                if (!history.entries[index2]) {
                     break;
                 }
-                open += history[index2].open;
-                close += history[index2].close;
-                high += history[index2].high;
-                low += history[index2].low;
+                open += history.entries[index2].open;
+                close += history.entries[index2].close;
+                high += history.entries[index2].high;
+                low += history.entries[index2].low;
                 if (index2 === endIndex - 1) {
-                    formattedData.push(new ChartDataEntry(history[index2].time, Number((open / entries).toFixed(2)), Number((close / entries).toFixed(2)), Number((high / entries).toFixed(2)), Number((low / entries).toFixed(2))));
+                    formattedData.entries.push(new ChartDataEntry(history.entries[index2].time, Number((open / entries).toFixed(2)), Number((close / entries).toFixed(2)), Number((high / entries).toFixed(2)), Number((low / entries).toFixed(2))));
                 }
                 entries++;
             }

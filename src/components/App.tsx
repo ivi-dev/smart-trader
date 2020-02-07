@@ -15,8 +15,8 @@ import { connect } from 'react-redux';
 import IndexData from '../IndexData';
 import { Action } from '../redux/actions';
 import * as actions from '../redux/actions';
-import ChartDataEntry from '../ChartDataEntry';
 import BoxData from '../BoxData';
+import ChartData from '../ChartData';
 
 interface AppProp {
   selectedIndex: IndexData | null,
@@ -24,12 +24,13 @@ interface AppProp {
   searchResultsList: IndexData[],
   watchList: IndexData[],
   chartType: ChartType,
+  chartOptions: any,
   chartTypes: Option[],
   chartDataSources: Option[],
   chartDataSource: number,
   resolutionOptions: Option[],
   chartResolution: string,
-  indexHistory: ChartDataEntry[],
+  indexHistory: ChartData,
   reportData: ReportData,
   boxes: BoxData[],
   dispatch: (action: Action) => void
@@ -73,7 +74,7 @@ const App = (prop: AppProp) => {
           <Selector title={'Data Source:'} options={prop.chartDataSources} sortOrder={'desc'} selected={prop.chartDataSource} handleSelect={(source) => {prop.dispatch(actions.setChartDataSource(source))}} />
           <ButtonGroup options={prop.resolutionOptions} active={prop.chartResolution} handleSelect={(resolution) => prop.dispatch(actions.setChartResolution(resolution))} />
         </Selectors>
-        <Chart type={prop.chartType} data={prop.indexHistory} activeIndex={prop.selectedIndex} />
+        <Chart type={prop.chartType} options={prop.chartOptions} data={prop.indexHistory} activeIndex={prop.selectedIndex} />
         <Reports boxes={prop.boxes} removeBox={(id) => prop.dispatch(actions.removeBox(id))} dismissAlert={(id) => prop.dispatch(actions.dismissAlert(id))} reportData={prop.reportData} />
       </Main>
     </>
@@ -87,6 +88,7 @@ function mapStateToProps(state: State) {
     searchResultsList: state.searchResultsList,
     watchList: state.watchList,
     chartType: state.chartType,
+    chartOptions: state.chartOptions,
     chartTypes: state.chartTypes,
     chartDataSources: state.chartDataSources,
     chartDataSource: state.chartDataSource,

@@ -1,5 +1,5 @@
 import IndexData from './IndexData';
-import ChartDataEntry from './ChartDataEntry';
+import ChartData, { ChartDataEntry } from './ChartData';
 import TableData, { TableRow, TableCell } from './TableData';
 import ListData, { ListDataRow } from './ListData';
 import { formatDate } from './utility';
@@ -53,7 +53,7 @@ export const indices = (num: number, list?: IndexData[] | undefined) => {
 }
 
 export const indexHistory = (year = (new Date().getFullYear() - 1)) => {
-    let history: ChartDataEntry[] = [];
+    let history: ChartData = new ChartData([]);
     const months = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
     for (let index = 1; index < months.length + 1; index++) {
         for (let index2 = 1; index2 < months[index - 1] + 1; index2++) {
@@ -61,14 +61,14 @@ export const indexHistory = (year = (new Date().getFullYear() - 1)) => {
             highest = number(10, 150), lowest = Math.round(highest - highest * 0.2), 
             close = number(0, (highest - lowest)) + lowest;
             const month = index < 10 ? `0${index}` : index, date = index2 < 10 ? `0${index2}` : index2;
-            history.push(new ChartDataEntry(`${year}-${month}-${date}`, Number(`${open}.${number(0, 99)}`), Number(`${close}.${number(0, 99)}`), Number(`${highest}.${number(0, 99)}`), Number(`${lowest}.${number(0, 99)}`)));
+            history.entries.push(new ChartDataEntry(`${year}-${month}-${date}`, Number(`${open}.${number(0, 99)}`), Number(`${close}.${number(0, 99)}`), Number(`${highest}.${number(0, 99)}`), Number(`${lowest}.${number(0, 99)}`)));
         }
     }
     return history;
 }
 
 export const indexHistories = (upTo: number = 1970) => {
-    let histories: {year: number, data: ChartDataEntry[]}[] = [],
+    let histories: {year: number, data: ChartData}[] = [],
     years: {name: number, selected?: boolean}[] = [];
     for (let index = (new Date()).getFullYear() - 1; index > upTo; index--) {
         histories.push({year: index, data: indexHistory(index)});

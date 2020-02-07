@@ -6,9 +6,7 @@ export enum BoxType {
 }
 
 export default class BoxData {
-    constructor(public id: number, public title: string, public type: BoxType) {
-
-    }
+    constructor(public id: number, public title: string, public type: BoxType) {}
 
     static getBoxType = (type: string) => {
         if (type.match(/history/i)) {
