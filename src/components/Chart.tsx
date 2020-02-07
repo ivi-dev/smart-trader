@@ -7,6 +7,9 @@ import { ChartType } from '../redux/store';
 import './Chart.css';
 import Selector from './Selector';
 import ButtonGroup from './ButtonGroup';
+import { Action } from '../redux/actions';
+import * as actions from '../redux/actions';
+import Button from './Button';
 
 interface ChartProp {
     id: number,
@@ -15,17 +18,12 @@ interface ChartProp {
     data: ChartData,
     dataSources: Option[],
     year: number,
-    handleYearSelect: (year: string, 
-        chartId: number) => void,
     resolutionOptions: Option[],
     chartResolution: string,
-    handleResolutionSelect: (resolution: string, 
-        chartId: number, year: number) => void,
     activeIndex: IndexData | null,
     chartTypes: Option[],
     chartType: string,
-    handleChartTypeSelect: (type: string, 
-        chartId: number) => void
+    dispatch: (action: Action) => void
 }
 
 interface ChartComponent {
@@ -52,9 +50,10 @@ const Chart: ChartComponent = (prop: ChartProp) => {
     });
     return <section className="row col-6 no-gutters px-4 pt-3 chart align-items-start">
                 <div className="row justify-content-between align-items-center no-gutters col-12">
-                    <Selector title={'Data Source:'} options={prop.dataSources} sortOrder={'desc'} selected={prop.year} handleSelect={(year) => prop.handleYearSelect(year, prop.id)} />
-                    <Selector title={'Chart type:'} options={prop.chartTypes} selected={prop.type} classes={'ml-auto'} handleSelect={(type) => {prop.handleChartTypeSelect(type, prop.id)}} />
-                    <ButtonGroup options={prop.resolutionOptions} active={prop.chartResolution} handleSelect={(resolution) => prop.handleResolutionSelect(resolution, prop.id, prop.year)} classes={'ml-2'} />
+                    <Selector title={'Data Source:'} options={prop.dataSources} sortOrder={'desc'} selected={prop.year} handleSelect={(year) => prop.dispatch(actions.setChartYear(year, prop.id))} />
+                    <Button graphic={'fas fa-plus'} classes={'ml-3'} onClick={() => prop.dispatch(actions.addChart(prop.id))} />
+                    <Selector title={'Chart type:'} options={prop.chartTypes} selected={prop.type} classes={'ml-auto'} handleSelect={(type) => prop.dispatch(actions.setChartType(type, prop.id))} />
+                    <ButtonGroup options={prop.resolutionOptions} active={prop.chartResolution} handleSelect={(resolution) => prop.dispatch(actions.setChartResolution(resolution, prop.id, prop.year))} classes={'ml-2'} />
                 </div>
                 <div ref={chartBox} className="row no-gutters col-12 graph mt-2"></div>
             </section>

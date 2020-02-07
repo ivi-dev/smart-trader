@@ -1,5 +1,5 @@
 import * as actions from './actions';
-import { state as initialState, ChartType } from './store';
+import { state as initialState, ChartType, ChartDescriptor } from './store';
 import IndexData from '../IndexData';
 import { Action } from './actions';
 import ChartData, { ChartDataEntry } from '../ChartData';
@@ -47,6 +47,10 @@ const getLatestBoxId = (boxList: BoxData[]) => {
     return boxList.length !== 0 ? boxList[boxList.length - 1].id : 0;
 }
 
+const getLatestChartId = (chartList: ChartDescriptor[]) => {
+    return chartList.length !== 0 ? chartList[chartList.length - 1].id : 0;
+}
+
 export const main = (state = initialState, action: Action) => {
     switch (action.type) {
         case actions.SELECT_INDEX:
@@ -91,7 +95,19 @@ export const main = (state = initialState, action: Action) => {
                     break;
                 }
             }
-            return Object.assign({}, state, {charts: charts3});    
+            return Object.assign({}, state, {charts: charts3});
+        case actions.ADD_CHART:
+            const addChartArg = action.arg as {chartId: number};
+            const charts4 = state.charts.slice();
+            let copy = {} as ChartDescriptor;
+            for (let index = 0; index < charts4.length; index++) {
+                if (charts4[index].id === addChartArg.chartId) {
+                    copy = Object.assign({}, charts4[index]);
+                    break;
+                }
+            }
+            copy.id = getLatestChartId(state.charts) + 1;
+            return Object.assign({}, state, {charts: state.charts.concat([copy])});    
         case actions.ADD_BOX:
             let boxTitle = BoxData.getTitle(action.arg as BoxType);
             return Object.assign({}, state, {boxes: state.boxes.concat([new BoxData(getLatestBoxId(state.boxes) + 1, boxTitle, action.arg as BoxType)])});    

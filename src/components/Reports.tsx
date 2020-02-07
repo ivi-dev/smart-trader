@@ -39,7 +39,7 @@ const Reports: ReportsComponent = (prop: ReportsProp) => {
         }
     });
     return (
-    <section className="reports row no-gutters px-4 mt-3">
+    <section className="reports row no-gutters px-4 mt-4">
         {content}
     </section>
     );

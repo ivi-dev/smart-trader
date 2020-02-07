@@ -1,5 +1,4 @@
 import IndexData from '../IndexData';
-import { BoxComponent } from '../components/Box';
 import { BoxType } from '../BoxData';
 
 export const SELECT_INDEX = 'SELECT_INDEX';
@@ -11,6 +10,7 @@ export const SET_CHART_TYPE = 'SET_CHART_TYPE';
 export const SET_CHART_YEAR = 'SET_CHART_SOURCE';
 export const SET_CHART_RESOLUTION = 'SET_CHART_RESOLUTION';
 
+export const ADD_CHART = 'ADD_CHART';
 export const ADD_BOX = 'ADD_BOX';
 export const REMOVE_BOX = 'REMOVE_BOX';
 
@@ -54,6 +54,11 @@ export const setChartYear = (year: string | number, chartId: number) => ({
 export const setChartResolution = (resolution: string, chartId: number, year: number) => ({
     type: SET_CHART_RESOLUTION,
     arg: { resolution: resolution, chartId: chartId, year: year }
+});
+
+export const addChart = (chartId: number) => ({
+    type: ADD_CHART,
+    arg: { chartId: chartId }
 });
 
 export const addBox = (type: BoxType) => ({

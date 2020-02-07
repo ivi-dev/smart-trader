@@ -2,12 +2,13 @@ import React from 'react';
 import './Button.css';
 
 interface ButtonProp {
-    title: string,
+    title?: string,
+    graphic?: string,
     onClick: () => void,
-    classes: string
+    classes?: string
 }
 
 const Button = (prop: ButtonProp) => 
-    <button className={`btn btn-sm btn-outline-light ${prop.classes}`} onClick={() => prop.onClick()}>{prop.title}</button>
+    <button className={`btn btn-sm btn-outline-light single ${prop.classes}`} onClick={() => prop.onClick()}>{prop.title ? prop.title : <i className={prop.graphic}></i>}</button>
 
 export default Button;
