@@ -8,7 +8,7 @@ export const ADD_TO_WATCHLIST = 'ADD_TO_WATCHLIST';
 export const REMOVE_FROM_WATCHLIST = 'REMOVE_FROM_WATCHLIST';
 
 export const SET_CHART_TYPE = 'SET_CHART_TYPE';
-export const SET_CHART_DATA_SOURCE = 'SET_CHART_SOURCE';
+export const SET_CHART_YEAR = 'SET_CHART_SOURCE';
 export const SET_CHART_RESOLUTION = 'SET_CHART_RESOLUTION';
 
 export const ADD_BOX = 'ADD_BOX';
@@ -41,19 +41,19 @@ export const removeFromWatchlist = (indexData: IndexData) => ({
     arg: indexData
 });
 
-export const setChartType = (chartType: string) => ({
+export const setChartType = (chartType: string, chartId: number) => ({
     type: SET_CHART_TYPE,
-    arg: chartType
+    arg: { chartType: chartType, chartId: chartId }
 });
 
-export const setChartDataSource = (source: string | number) => ({
-    type: SET_CHART_DATA_SOURCE,
-    arg: source
+export const setChartYear = (year: string | number, chartId: number) => ({
+    type: SET_CHART_YEAR,
+    arg: { year: year, chartId: chartId }
 });
 
-export const setChartResolution = (resolution: string) => ({
+export const setChartResolution = (resolution: string, chartId: number, year: number) => ({
     type: SET_CHART_RESOLUTION,
-    arg: resolution
+    arg: { resolution: resolution, chartId: chartId, year: year }
 });
 
 export const addBox = (type: BoxType) => ({

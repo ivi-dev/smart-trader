@@ -6,11 +6,10 @@ import IndicesList  from './IndicesList';
 import StatusBar from './StatusBar';
 import IndexDetails from './IndexDetails';
 import ButtonGroup from './ButtonGroup';
-import Selector from './Selector';
-import { Option } from '../redux/store';
-import Chart, { ChartType } from './Chart';
+import { Option, ChartDescriptor } from '../redux/store';
+import Chart from './Chart';
 import Reports from './Reports';
-import { State, ReportData } from '../redux/store';
+import { State, ReportData, ChartType } from '../redux/store';
 import { connect } from 'react-redux';
 import IndexData from '../IndexData';
 import { Action } from '../redux/actions';
@@ -24,14 +23,17 @@ interface AppProp {
   indicesList: IndexData[],
   searchResultsList: IndexData[],
   watchList: IndexData[],
+
   chartType: ChartType,
   chartOptions: any,
   chartTypes: Option[],
-  chartDataSources: Option[],
+  dataSources: Option[],
   chartDataSource: number,
   resolutionOptions: Option[],
   chartResolution: string,
   indexHistory: ChartData,
+  charts: ChartDescriptor[],
+
   reportButtons: Option[],
   reportData: ReportData,
   boxes: BoxData[],
@@ -68,13 +70,13 @@ const App = (prop: AppProp) => {
       <Main>
         <StatusBar>
           <IndexDetails data={prop.selectedIndex} />
-          <Selector title={'Chart type:'} options={prop.chartTypes} selected={prop.chartType} 
-            classes={'ml-4'} handleSelect={(type) => {prop.dispatch(actions.setChartType(type))}} />
             <ButtonGroup options={prop.reportButtons} handleSelect={(type) => prop.dispatch(actions.addBox(BoxData.getBoxType(type)))} classes={'ml-auto'} />
         </StatusBar>
         <Row>
-          <Chart type={prop.chartType} options={prop.chartOptions} data={prop.indexHistory} activeIndex={prop.selectedIndex} chartDataSources={prop.chartDataSources} chartDataSource={prop.chartDataSource} handleDataSourceSelect={(source) => {prop.dispatch(actions.setChartDataSource(source))}} resolutionOptions={prop.resolutionOptions} chartResolution={prop.chartResolution} handleResolutionSelect={(resolution) => prop.dispatch(actions.setChartResolution(resolution))} />
-          <Chart type={prop.chartType} options={prop.chartOptions} data={prop.indexHistory} activeIndex={prop.selectedIndex} chartDataSources={prop.chartDataSources} chartDataSource={prop.chartDataSource} handleDataSourceSelect={(source) => {prop.dispatch(actions.setChartDataSource(source))}} resolutionOptions={prop.resolutionOptions} chartResolution={prop.chartResolution} handleResolutionSelect={(resolution) => prop.dispatch(actions.setChartResolution(resolution))} />
+          {prop.charts.map(chart => <Chart key={chart.id} id={chart.id} type={chart.type} options={prop.chartOptions} data={chart.data} activeIndex={chart.activeIndex} dataSources={prop.dataSources} year={chart.year} handleYearSelect={(year, chartId) => {prop.dispatch(actions.setChartYear(year, chartId))}} resolutionOptions={prop.resolutionOptions} chartResolution={chart.resolution} handleResolutionSelect={(resolution, chartId, year) => prop.dispatch(actions.setChartResolution(resolution, chartId, year))} chartTypes={prop.chartTypes} chartType={prop.chartType} handleChartTypeSelect={(type, chartId) => {prop.dispatch(actions.setChartType(type, chartId))}} />)}
+
+          {/* <Chart type={prop.chartType} options={prop.chartOptions} data={prop.indexHistory} activeIndex={prop.selectedIndex} chartDataSources={prop.chartDataSources} chartDataSource={prop.chartDataSource} handleDataSourceSelect={(source) => {prop.dispatch(actions.setChartDataSource(source))}} resolutionOptions={prop.resolutionOptions} chartResolution={prop.chartResolution} handleResolutionSelect={(resolution) => prop.dispatch(actions.setChartResolution(resolution))} />
+          <Chart type={prop.chartType} options={prop.chartOptions} data={prop.indexHistory} activeIndex={prop.selectedIndex} chartDataSources={prop.chartDataSources} chartDataSource={prop.chartDataSource} handleDataSourceSelect={(source) => {prop.dispatch(actions.setChartDataSource(source))}} resolutionOptions={prop.resolutionOptions} chartResolution={prop.chartResolution} handleResolutionSelect={(resolution) => prop.dispatch(actions.setChartResolution(resolution))} /> */}
         </Row>
         <Reports boxes={prop.boxes} removeBox={(id) => prop.dispatch(actions.removeBox(id))} dismissAlert={(id) => prop.dispatch(actions.dismissAlert(id))} reportData={prop.reportData} />
       </Main>
@@ -88,14 +90,17 @@ function mapStateToProps(state: State) {
     indicesList: state.indicesList,
     searchResultsList: state.searchResultsList,
     watchList: state.watchList,
+
     chartType: state.chartType,
     chartOptions: state.chartOptions,
     chartTypes: state.chartTypes,
-    chartDataSources: state.chartDataSources,
+    dataSources: state.dataSources,
     chartDataSource: state.chartDataSource,
     resolutionOptions: state.resolutionOptions,
     chartResolution: state.chartResolution,
     indexHistory: state.indexHistory,
+    charts: state.charts,
+
     reportButtons: state.reportButtons,
     reportData: state.reportData,
     boxes: state.boxes

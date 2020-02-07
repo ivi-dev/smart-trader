@@ -1,5 +1,5 @@
 import * as actions from './actions';
-import { state as initialState } from './store';
+import { state as initialState, ChartType } from './store';
 import IndexData from '../IndexData';
 import { Action } from './actions';
 import ChartData, { ChartDataEntry } from '../ChartData';
@@ -58,14 +58,40 @@ export const main = (state = initialState, action: Action) => {
         case actions.REMOVE_FROM_WATCHLIST:
             return Object.assign({}, state, {watchList: state.watchList.filter(index => index !== (action.arg as IndexData))});    
         case actions.SET_CHART_TYPE:
-            return Object.assign({}, state, {chartType: (action.arg as string).toLowerCase()});    
-        case actions.SET_CHART_DATA_SOURCE:
-            const year = Number(action.arg), data = formatIndexHistory(state.chartDataSourceArchive.find(entry => entry.year === year)!.data, state.chartResolution);;
-            return Object.assign({}, state, {chartDataSource: year, indexHistory: data});    
+            const chartTypeArg = action.arg as { chartType: string, chartId: number };
+            const charts1 = state.charts.slice();
+            for (let index = 0; index < charts1.length; index++) {
+                if (charts1[index].id === chartTypeArg.chartId) {
+                    charts1[index].type = chartTypeArg.chartType as ChartType;
+                    break;
+                }
+            }
+            return Object.assign({}, state, {charts: charts1});    
+        case actions.SET_CHART_YEAR:
+            const yearArg = action.arg as {year: number, chartId: number};
+            const year = Number(yearArg.year), chart = state.charts.find(chart => chart.id === yearArg.chartId), data = formatIndexHistory(state.chartDataSourceArchive.find(entry => entry.year === year)!.data, chart!.resolution);
+            const charts2 = state.charts.slice();
+            for (let index = 0; index < charts2.length; index++) {
+                if (charts2[index].id === yearArg.chartId) {
+                    charts2[index].data = data;
+                    charts2[index].year = year;
+                    break;
+                }
+            }
+            return Object.assign({}, state, {charts: charts2});    
         case actions.SET_CHART_RESOLUTION:
-            const resolution = action.arg as string;
-            const formatted = formatIndexHistory(state.chartDataSourceArchive.find(entry => entry.year === state.chartDataSource)!.data, resolution);
-            return Object.assign({}, state, {chartResolution: resolution}, {indexHistory: formatted});    
+            const resolutionArg = action.arg as {resolution: string, chartId: number, 
+                year: number};
+            const formatted = formatIndexHistory(state.chartDataSourceArchive.find(entry => entry.year === resolutionArg.year)!.data, resolutionArg.resolution);
+            const charts3 = state.charts.slice();
+            for (let index = 0; index < charts3.length; index++) {
+                if (charts3[index].id === resolutionArg.chartId) {
+                    charts3[index].data = formatted;
+                    charts3[index].resolution = resolutionArg.resolution;
+                    break;
+                }
+            }
+            return Object.assign({}, state, {charts: charts3});    
         case actions.ADD_BOX:
             let boxTitle = BoxData.getTitle(action.arg as BoxType);
             return Object.assign({}, state, {boxes: state.boxes.concat([new BoxData(getLatestBoxId(state.boxes) + 1, boxTitle, action.arg as BoxType)])});    

@@ -2,12 +2,13 @@ import { createStore } from 'redux';
 import { main } from './reducers';
 import IndexData from '../IndexData';
 import * as random from '../randomizer';
-import { ChartType } from '../components/Chart';
 import ChartData from '../ChartData';
 import TableData from '../TableData';
 import ListData from '../ListData';
 import Alert from '../Alert';
 import BoxData, { BoxType } from '../BoxData';
+
+export type ChartType = 'bar' | 'candlestick' | 'line';
 
 export type Option = {
     name: string | number,
@@ -23,6 +24,15 @@ export type ReportData = {
     alerts: Alert[]
 }
 
+export type ChartDescriptor = {
+    id: number,
+    type: ChartType,
+    year: number,
+    resolution: string,
+    data: ChartData,
+    activeIndex: IndexData
+}
+
 export interface State {
     selectedIndex: IndexData | null,
     indicesList: IndexData[],
@@ -33,12 +43,13 @@ export interface State {
     chartOptions: any,
     chartTypes: Option[],
     chartDataSource: number,
-    chartDataSources: Option[],
+    dataSources: Option[],
     chartDataSourceArchive: {year: number, 
                              data: ChartData}[],
     resolutionOptions: Option[],
     chartResolution: string,
     indexHistory: ChartData,
+    charts: ChartDescriptor[],
 
     reportButtons: Option[],
     reportData: ReportData,
@@ -47,10 +58,6 @@ export interface State {
 
 const randomIndices = random.indices(100);
 const history = random.indexHistories();
-const chartTypes = [{name: 'line', selected: true}, {name: 'candlestick'}, {name: 'bar'}];
-const year = (new Date()).getFullYear() - 1;
-const resolutionOptions = [{name: '1d', selected: true}, {name: '1w'}, 
-                           {name: '1m'}, {name: '1q'}];
 const randomOrders = random.orders(50);
 const randomActivities = random.activities(50);
 const randomHeadlines = random.headlines(50);
@@ -76,13 +83,32 @@ export const state: State = {
         },
         timeScale: {fixLeftEdge: true}
     },
-    chartTypes: chartTypes,
-    chartDataSource: year,
-    chartDataSources: history.years,
+    chartTypes: [{name: 'line', selected: true}, {name: 'candlestick'}, {name: 'bar'}],
+    chartDataSource: history.archive[0].year,
+    dataSources: history.years,
     chartDataSourceArchive: history.archive,
-    resolutionOptions: resolutionOptions,
+    resolutionOptions: [{name: '1d', selected: true}, {name: '1w'}, 
+                        {name: '1m'}, {name: '1q'}],
     chartResolution: '1d',
     indexHistory: history.archive[0].data,
+    charts: [
+        {
+            id: 0,
+            type: 'line',
+            year: 2019,
+            resolution: '1d',
+            activeIndex: randomIndices[0],
+            data: history.archive.find(entry => entry.year === 2019)!.data
+        },
+        {
+            id: 1,
+            type: 'bar',
+            year: 2018,
+            resolution: '1w',
+            activeIndex: randomIndices[1],
+            data: history.archive.find(entry => entry.year === 2018)!.data
+        }
+    ],
 
     reportButtons: [{name: '', graphic: 'fas fa-history', title: 'Add an Order History Report'},                   {name: '', graphic: 'fas fa-chart-line', title: 'Add an Activities Report'}, 
                     {name: '', graphic: 'far fa-newspaper', title: 'Add a Headlines Report'}, 

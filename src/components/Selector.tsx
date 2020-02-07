@@ -9,7 +9,7 @@ interface SelectorProp {
     selected: string | number,
     sortOrder?: 'asc' | 'desc',
     classes?: string,
-    handleSelect: (value: string) => void
+    handleSelect: (value: string, ...other: any[]) => void
 }
 
 export interface SelectorComponent {

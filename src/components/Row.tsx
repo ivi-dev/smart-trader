@@ -5,7 +5,7 @@ type RowProp = {
 }
 
 const Row = (prop: RowProp) =>
-    <div className="row">
+    <div className="row px-3">
         {prop.children}
     </div>
 

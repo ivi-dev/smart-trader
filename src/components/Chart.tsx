@@ -3,23 +3,29 @@ import ChartData from '../ChartData';
 import { createChart } from 'lightweight-charts';
 import IndexData from '../IndexData';
 import { Option } from '../redux/store';
+import { ChartType } from '../redux/store';
 import './Chart.css';
 import Selector from './Selector';
 import ButtonGroup from './ButtonGroup';
 
-export type ChartType = 'bar' | 'candlestick' | 'line'
-
 interface ChartProp {
+    id: number,
     type: ChartType,
     options: any,
     data: ChartData,
-    chartDataSources: Option[],
-    chartDataSource: number,
-    handleDataSourceSelect: (source: string) => void,
+    dataSources: Option[],
+    year: number,
+    handleYearSelect: (year: string, 
+        chartId: number) => void,
     resolutionOptions: Option[],
     chartResolution: string,
-    handleResolutionSelect: (resolution: string) => void,
-    activeIndex: IndexData | null
+    handleResolutionSelect: (resolution: string, 
+        chartId: number, year: number) => void,
+    activeIndex: IndexData | null,
+    chartTypes: Option[],
+    chartType: string,
+    handleChartTypeSelect: (type: string, 
+        chartId: number) => void
 }
 
 interface ChartComponent {
@@ -45,11 +51,12 @@ const Chart: ChartComponent = (prop: ChartProp) => {
         ChartData.addSeries(chart, prop.data.entries, prop.type, prop.activeIndex?.name);
     });
     return <section className="row col-6 no-gutters px-4 pt-3 chart align-items-start">
-                        <div className="row justify-content-between align-items-center no-gutters col-12">
-                            <Selector title={'Data Source:'} options={prop.chartDataSources} sortOrder={'desc'} selected={prop.chartDataSource} handleSelect={(source) => prop.handleDataSourceSelect(source)} />
-                            <ButtonGroup options={prop.resolutionOptions} active={prop.chartResolution} handleSelect={(resolution) => prop.handleResolutionSelect(resolution)} />
-                        </div>
-                        <div ref={chartBox} className="row no-gutters col-12 graph mt-2"></div>
+                <div className="row justify-content-between align-items-center no-gutters col-12">
+                    <Selector title={'Data Source:'} options={prop.dataSources} sortOrder={'desc'} selected={prop.year} handleSelect={(year) => prop.handleYearSelect(year, prop.id)} />
+                    <Selector title={'Chart type:'} options={prop.chartTypes} selected={prop.type} classes={'ml-auto'} handleSelect={(type) => {prop.handleChartTypeSelect(type, prop.id)}} />
+                    <ButtonGroup options={prop.resolutionOptions} active={prop.chartResolution} handleSelect={(resolution) => prop.handleResolutionSelect(resolution, prop.id, prop.year)} classes={'ml-2'} />
+                </div>
+                <div ref={chartBox} className="row no-gutters col-12 graph mt-2"></div>
             </section>
 };
 
