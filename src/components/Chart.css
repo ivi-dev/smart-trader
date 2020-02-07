@@ -1,5 +1,9 @@
 .chart {
-    height: 48vh;
+    height: 52vh;
+}
+
+.chart .graph {
+    height: 90%;
 }
 
 @media screen and (min-height: 1024px) {

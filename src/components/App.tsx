@@ -5,7 +5,6 @@ import Search from './Search';
 import IndicesList  from './IndicesList';
 import StatusBar from './StatusBar';
 import IndexDetails from './IndexDetails';
-import Selectors from './Selectors';
 import ButtonGroup from './ButtonGroup';
 import Selector from './Selector';
 import { Option } from '../redux/store';
@@ -18,6 +17,7 @@ import { Action } from '../redux/actions';
 import * as actions from '../redux/actions';
 import BoxData from '../BoxData';
 import ChartData from '../ChartData';
+import Row from './Row';
 
 interface AppProp {
   selectedIndex: IndexData | null,
@@ -72,11 +72,10 @@ const App = (prop: AppProp) => {
             classes={'ml-4'} handleSelect={(type) => {prop.dispatch(actions.setChartType(type))}} />
             <ButtonGroup options={prop.reportButtons} handleSelect={(type) => prop.dispatch(actions.addBox(BoxData.getBoxType(type)))} classes={'ml-auto'} />
         </StatusBar>
-        <Selectors>
-          <Selector title={'Data Source:'} options={prop.chartDataSources} sortOrder={'desc'} selected={prop.chartDataSource} handleSelect={(source) => {prop.dispatch(actions.setChartDataSource(source))}} />
-          <ButtonGroup options={prop.resolutionOptions} active={prop.chartResolution} handleSelect={(resolution) => prop.dispatch(actions.setChartResolution(resolution))} />
-        </Selectors>
-        <Chart type={prop.chartType} options={prop.chartOptions} data={prop.indexHistory} activeIndex={prop.selectedIndex} />
+        <Row>
+          <Chart type={prop.chartType} options={prop.chartOptions} data={prop.indexHistory} activeIndex={prop.selectedIndex} chartDataSources={prop.chartDataSources} chartDataSource={prop.chartDataSource} handleDataSourceSelect={(source) => {prop.dispatch(actions.setChartDataSource(source))}} resolutionOptions={prop.resolutionOptions} chartResolution={prop.chartResolution} handleResolutionSelect={(resolution) => prop.dispatch(actions.setChartResolution(resolution))} />
+          <Chart type={prop.chartType} options={prop.chartOptions} data={prop.indexHistory} activeIndex={prop.selectedIndex} chartDataSources={prop.chartDataSources} chartDataSource={prop.chartDataSource} handleDataSourceSelect={(source) => {prop.dispatch(actions.setChartDataSource(source))}} resolutionOptions={prop.resolutionOptions} chartResolution={prop.chartResolution} handleResolutionSelect={(resolution) => prop.dispatch(actions.setChartResolution(resolution))} />
+        </Row>
         <Reports boxes={prop.boxes} removeBox={(id) => prop.dispatch(actions.removeBox(id))} dismissAlert={(id) => prop.dispatch(actions.dismissAlert(id))} reportData={prop.reportData} />
       </Main>
     </>
