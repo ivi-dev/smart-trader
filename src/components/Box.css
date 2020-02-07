@@ -1,7 +1,8 @@
 .box {
     background-color: rgb(32, 39, 58);
     height: 95%;
-    max-width: 24% !important;
+    max-width: 33% !important;
+    min-width: 320px !important;
     overflow: hidden;
 }
 
@@ -131,8 +132,8 @@
     color: rgb(255, 255, 255);
 }
 
-@media screen and (min-width: 1720px) {
+/* @media screen and (min-width: 1720px) {
     .box {
         max-width: 19% !important;
     }
-}
+} */

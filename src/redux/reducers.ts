@@ -68,7 +68,7 @@ export const main = (state = initialState, action: Action) => {
             return Object.assign({}, state, {chartResolution: resolution}, {indexHistory: formatted});    
         case actions.ADD_BOX:
             let boxTitle = BoxData.getTitle(action.arg as BoxType);
-            return state.boxes.length < 4 ? Object.assign({}, state, {boxes: state.boxes.concat([new BoxData(getLatestBoxId(state.boxes) + 1, boxTitle, action.arg as BoxType)])}) : state;    
+            return Object.assign({}, state, {boxes: state.boxes.concat([new BoxData(getLatestBoxId(state.boxes) + 1, boxTitle, action.arg as BoxType)])});    
         case actions.REMOVE_BOX:
             return Object.assign({}, state, {boxes: state.boxes.filter(box => box.id !== action.arg as number)});    
         case actions.DISMISS_ALERT:

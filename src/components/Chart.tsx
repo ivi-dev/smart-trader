@@ -28,7 +28,8 @@ const Chart: ChartComponent = (prop: ChartProp) => {
         const chartBoxElement = chartBox.current as HTMLElement;
         cleanUp(chartBoxElement);
         const chart = createChart(chartBoxElement, prop.options);
-        window.onresize = () => chart.applyOptions({width: chartBoxElement.clientWidth * 0.96, 
+        window.onresize = () => chart.applyOptions({
+            width: chartBoxElement.clientWidth * 0.96, 
             height: chartBoxElement.clientHeight})
         ChartData.addSeries(chart, prop.data.entries, prop.type, prop.activeIndex?.name);
     });

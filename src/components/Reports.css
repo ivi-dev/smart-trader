@@ -1,3 +1,8 @@
 .reports {
     height: 38vh;
+    overflow: auto;
+}
+
+.reports .content {
+    max-width: none !important;
 }

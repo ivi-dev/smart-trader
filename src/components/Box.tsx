@@ -71,7 +71,7 @@ const Box: BoxComponent = (prop: BoxProp) => {
         }
     }
     return (
-        <div className="box col mr-3 shadow pb-1">
+        <div className="box col mr-3 mb-3 shadow pb-1 rounded">
             <div className="row no-gutters header p-2 pl-3 align-items-center">
                 {prop.title}
                 <i className="fas fa-times px-2 py-1 ml-auto rounded" onClick={() => {prop.removeBox(prop.id)}}></i>
