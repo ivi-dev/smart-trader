@@ -4,9 +4,13 @@
 
 .chart .graph {
     height: 90%;
-    border-color: rgb(70, 159, 233) !important;
+    border-color: transparent !important;
     border-width: 3px !important;
     transition: 500ms;
+}
+
+.chart .graph.selected {
+    border-color: rgb(70, 159, 233) !important;
 }
 
 @media screen and (min-height: 1024px) {
