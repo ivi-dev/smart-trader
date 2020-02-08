@@ -73,7 +73,7 @@ const App = (prop: AppProp) => {
       </SidePanel>
       <Main>
         <StatusBar>
-          <Text content={'Smart Trader®'} classes={'h5 font-weight-light mt-1'} />
+          <Text content={'Smart Trader'} classes={'h5 font-weight-light mt-1'} />
           <Text content={'v0.1'} classes={'ml-2 h6 position-relative small'} style={{'top': '1px'}} />
           <ButtonGroup options={prop.reportButtons} handleSelect={(type) => prop.dispatch(actions.addBox(BoxData.getBoxType(type)))} classes={'ml-auto my-3'} />
         </StatusBar>
