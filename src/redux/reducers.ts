@@ -129,6 +129,34 @@ export const main = (state = initialState, action: Action) => {
         case actions.SELECT_BOX:
             const id1 = action.arg as number;
             return Object.assign({}, state, {selectedBox: state.selectedBox === id1 ? null : id1});
+        case actions.MOVE_BOX_BACK:
+            const id2 = action.arg as number;
+            let boxes_ = state.boxes.slice();
+            for (let index = 0; index < boxes_.length; index++) {
+                if (boxes_[index].id === id2) {
+                    if (boxes_[index] !== boxes_[0]) {
+                        const temp = Object.assign({}, boxes_[index - 1]);
+                        boxes_[index - 1] = Object.assign({}, boxes_[index]);
+                        boxes_[index] = temp;
+                    }
+                    break;
+                }
+            }
+            return Object.assign({}, state, {boxes: boxes_});
+        case actions.MOVE_BOX_FORWARD:
+            const id3 = action.arg as number;
+            let boxes_2 = state.boxes.slice();
+            for (let index = 0; index < boxes_2.length; index++) {
+                if (boxes_2[index].id === id3) {
+                    if (boxes_2[index] !== boxes_2[boxes_2.length - 1]) {
+                        const temp = Object.assign({}, boxes_2[index + 1]);
+                        boxes_2[index + 1] = Object.assign({}, boxes_2[index]);
+                        boxes_2[index] = temp;
+                    }
+                    break;
+                }
+            }
+            return Object.assign({}, state, {boxes: boxes_2});
         case actions.DISMISS_ALERT:
             return Object.assign({}, state, {reportData: {...state.reportData, alerts: state.reportData.alerts.filter(alert => alert.id !== action.arg as number)}})
         default:

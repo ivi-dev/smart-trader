@@ -3,8 +3,11 @@
     height: 98%;
     max-width: 23% !important;
     min-width: 320px !important;
-    overflow: hidden;
     transition: 500ms;
+}
+
+.box:focus {
+    outline: none;
 }
 
 .box.selected {
