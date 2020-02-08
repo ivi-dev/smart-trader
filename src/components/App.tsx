@@ -38,6 +38,7 @@ interface AppProp {
   reportButtons: Option[],
   reportData: ReportData,
   boxes: BoxData[],
+  selectedBox: number | null,
   dispatch: (action: Action) => void
 }
 
@@ -77,7 +78,7 @@ const App = (prop: AppProp) => {
         <Row classes={'chart overflow-auto'} style={{'height': '52vh'}}>
           {prop.charts.length !== 0 ? prop.charts.map(chart => <Chart key={chart.id} id={chart.id} type={chart.type} width={prop.charts.length === 1 ? 12 : 6} options={prop.chartOptions} data={chart.data} activeIndex={chart.activeIndex} dataSources={prop.dataSources} year={chart.year} dispatch={prop.dispatch} resolutionOptions={prop.resolutionOptions} chartResolution={chart.resolution} chartTypes={prop.chartTypes} chartType={prop.chartType} selected={prop.selectedChart === chart.id ? true : false} />) : <div className="row empty-label col-12 justify-content-center mt-5 text-muted">No charts yet. Add some with the button on the top left.</div>}
         </Row>
-        <Reports boxes={prop.boxes} removeBox={(id) => prop.dispatch(actions.removeBox(id))} dismissAlert={(id) => prop.dispatch(actions.dismissAlert(id))} reportData={prop.reportData} />
+        <Reports boxes={prop.boxes} selectedBox={prop.selectedBox} reportData={prop.reportData} dispatch={prop.dispatch} />
       </Main>
     </>
   );
@@ -103,7 +104,8 @@ function mapStateToProps(state: State) {
 
     reportButtons: state.reportButtons,
     reportData: state.reportData,
-    boxes: state.boxes
+    boxes: state.boxes,
+    selectedBox: state.selectedBox
   };
 }
 

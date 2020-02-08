@@ -15,6 +15,7 @@ export const REMOVE_CHART = 'REMOVE_CHART';
 export const SELECT_CHART = 'SELECT_CHART';
 export const ADD_BOX = 'ADD_BOX';
 export const REMOVE_BOX = 'REMOVE_BOX';
+export const SELECT_BOX = 'SELECT_BOX';
 
 export const DISMISS_ALERT = 'DISMISS_ALERT';
 
@@ -80,6 +81,11 @@ export const addBox = (type: BoxType) => ({
 
 export const removeBox = (id: number) => ({
     type: REMOVE_BOX,
+    arg: id
+});
+
+export const selectBox = (id: number) => ({
+    type: SELECT_BOX,
     arg: id
 });
 

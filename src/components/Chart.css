@@ -6,6 +6,7 @@
     height: 90%;
     border-color: rgb(70, 159, 233) !important;
     border-width: 3px !important;
+    transition: 500ms;
 }
 
 @media screen and (min-height: 1024px) {

@@ -3,12 +3,14 @@ import './Reports.css';
 import BoxData, { BoxType } from '../BoxData';
 import Box from './Box';
 import { ReportData } from '../redux/store';
+import * as actions from '../redux/actions';
+import { Action } from '../redux/actions';
 
 interface ReportsProp {
     reportData: ReportData,
     boxes: BoxData[],
-    removeBox: (id: number) => void,
-    dismissAlert: (id: number) => void
+    selectedBox: number | null,
+    dispatch: (action: Action) => void
 }
 
 export interface ReportsComponent {
@@ -25,21 +27,21 @@ const Reports: ReportsComponent = (prop: ReportsProp) => {
     prop.boxes.map(box => {
         switch (box.type) {
             case BoxType.ORDER_HISTORY:
-                return <Box key={box.id} id={box.id} title={box.title} 
-                    tableData={prop.reportData.orderHistory} removeBox={(id) => prop.removeBox(id)} />
+                return <Box key={box.id} id={box.id} title={box.title} selected={prop.selectedBox === box.id ? true : false}
+                    tableData={prop.reportData.orderHistory} dispatch={prop.dispatch}  />
             case BoxType.RECENT_ACTIVIY:
-                return <Box key={box.id} id={box.id} title={box.title} 
-                    listData={prop.reportData.activities} removeBox={(id) => prop.removeBox(id)} />
+                return <Box key={box.id} id={box.id} title={box.title} selected={prop.selectedBox === box.id ? true : false}
+                    listData={prop.reportData.activities} dispatch={prop.dispatch}  />
             case BoxType.HEADLINES:
-                return <Box key={box.id} id={box.id} title={box.title} 
-                    listData={prop.reportData.headlines} removeBox={(id) => prop.removeBox(id)}  />
+                return <Box key={box.id} id={box.id} title={box.title} selected={prop.selectedBox === box.id ? true : false}
+                    listData={prop.reportData.headlines} dispatch={prop.dispatch}   />
             default:
-                return <Box key={box.id} id={box.id} title={box.title} 
-                    alerts={prop.reportData.alerts} removeBox={(id) => prop.removeBox(id)} dismissAlert={(id) => prop.dismissAlert(id)} />
+                return <Box key={box.id} id={box.id} title={box.title} selected={prop.selectedBox === box.id ? true : false}
+                    alerts={prop.reportData.alerts} dispatch={prop.dispatch} />
         }
     });
     return (
-    <section className="reports row no-gutters px-4 mt-4">
+    <section className="reports row no-gutters px-4 mt-2">
         {content}
     </section>
     );

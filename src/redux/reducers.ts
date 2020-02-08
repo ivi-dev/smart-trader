@@ -126,6 +126,9 @@ export const main = (state = initialState, action: Action) => {
             return Object.assign({}, state, {boxes: state.boxes.concat([new BoxData(getLatestBoxId(state.boxes) + 1, boxTitle, action.arg as BoxType)])});    
         case actions.REMOVE_BOX:
             return Object.assign({}, state, {boxes: state.boxes.filter(box => box.id !== action.arg as number)});    
+        case actions.SELECT_BOX:
+            const id1 = action.arg as number;
+            return Object.assign({}, state, {selectedBox: state.selectedBox === id1 ? null : id1});
         case actions.DISMISS_ALERT:
             return Object.assign({}, state, {reportData: {...state.reportData, alerts: state.reportData.alerts.filter(alert => alert.id !== action.arg as number)}})
         default:

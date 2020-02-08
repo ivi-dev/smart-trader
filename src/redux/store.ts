@@ -55,7 +55,8 @@ export interface State {
 
     reportButtons: Option[],
     reportData: ReportData,
-    boxes: BoxData[]
+    boxes: BoxData[],
+    selectedBox: number | null
 }
 
 const randomIndices = random.indices(100);
@@ -120,7 +121,8 @@ export const state: State = {
         new BoxData(1, 'Recent Activity', BoxType.RECENT_ACTIVIY),
         new BoxData(2, 'Latest Headlines', BoxType.HEADLINES),
         new BoxData(3, 'Notifications', BoxType.ALERTS)
-    ]
+    ],
+    selectedBox: null
 }
 
 export const store = createStore(main);

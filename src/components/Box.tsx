@@ -3,15 +3,17 @@ import TableData from '../TableData';
 import ListData from '../ListData';
 import Alert from '../Alert';
 import './Box.css';
+import { Action } from '../redux/actions';
+import * as actions from '../redux/actions';
 
 interface BoxProp {
     id: number,
     title: string,
+    selected: boolean,
     tableData?: TableData,
     listData?: ListData,
     alerts?: Alert[],
-    dismissAlert?: (id: number) => void,
-    removeBox: (id: number) => void
+    dispatch: (action: Action) => void
 }
 
 export interface BoxComponent {
@@ -64,17 +66,17 @@ const Box: BoxComponent = (prop: BoxProp) => {
                 {prop.alerts.map(alert => 
                     <div key={alert.id} className="row p-2 pl-2 mx-3 mb-2 no-gutters alert shadow-sm position-relative">
                         {alert.text}
-                        <i className="fas fa-times position-absolute" onClick={() => prop.dismissAlert!(alert.id)}></i>
+                        <i className="fas fa-times position-absolute" onClick={() => prop.dispatch(actions.dismissAlert!(alert.id))}></i>
                     </div>
                 )}
             </div>
         }
     }
     return (
-        <div className="box col mr-3 mb-3 shadow pb-1 rounded">
+        <div className={`box col mr-3 mb-1 mt-1 shadow pb-1 rounded ${prop.selected ? 'selected' : null}`} onClick={() => prop.dispatch(actions.selectBox(prop.id))}>
             <div className="row no-gutters header p-2 pl-3 align-items-center">
                 {prop.title}
-                <i className="fas fa-times px-2 py-1 ml-auto rounded" onClick={() => {prop.removeBox(prop.id)}}></i>
+                <i className="fas fa-times px-2 py-1 ml-auto rounded" onClick={() => {prop.dispatch(actions.removeBox(prop.id))}}></i>
             </div>
             {content}
         </div>

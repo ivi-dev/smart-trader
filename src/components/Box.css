@@ -1,9 +1,14 @@
 .box {
     background-color: rgb(32, 39, 58);
     height: 98%;
-    max-width: 33% !important;
+    max-width: 23% !important;
     min-width: 320px !important;
     overflow: hidden;
+    transition: 500ms;
+}
+
+.box.selected {
+    outline: 3px solid rgba(233, 217, 70, 0.747);
 }
 
 .box .header {
@@ -131,9 +136,3 @@
 .box .alert .fas.fa-times:hover {
     color: rgb(255, 255, 255);
 }
-
-/* @media screen and (min-width: 1720px) {
-    .box {
-        max-width: 19% !important;
-    }
-} */
