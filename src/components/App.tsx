@@ -4,7 +4,6 @@ import Main from './Main';
 import Search from './Search';
 import IndicesList  from './IndicesList';
 import StatusBar from './StatusBar';
-import ButtonGroup from './ButtonGroup';
 import { Option, ChartDescriptor } from '../redux/store';
 import Chart from './Chart';
 import Reports from './Reports';
@@ -13,10 +12,13 @@ import { connect } from 'react-redux';
 import IndexData from '../IndexData';
 import { Action } from '../redux/actions';
 import * as actions from '../redux/actions';
+import ButtonGroup from './ButtonGroup';
 import BoxData from '../BoxData';
 import ChartData from '../ChartData';
 import Row from './Row';
 import Text from './Text';
+import Image from './Image';
+import Logo from '../img/smart-trader-logo-alt.png';
 
 interface AppProp {
   selectedIndex: IndexData | null,
@@ -71,7 +73,7 @@ const App = (prop: AppProp) => {
       </SidePanel>
       <Main>
         <StatusBar>
-          <Text content={'Smart Trader'} classes={'h5 font-weight-light mt-1'} />
+          <Text content={'Smart Trader®'} classes={'h5 font-weight-light mt-1'} />
           <Text content={'v0.1'} classes={'ml-2 h6 position-relative small'} style={{'top': '1px'}} />
           <ButtonGroup options={prop.reportButtons} handleSelect={(type) => prop.dispatch(actions.addBox(BoxData.getBoxType(type)))} classes={'ml-auto my-3'} />
         </StatusBar>
