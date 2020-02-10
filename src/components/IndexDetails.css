@@ -11,9 +11,7 @@
 }
 
 .index-details .open, 
-.index-details .high, 
-.index-details .low, 
-.index-details ._close {
+.index-details .current {
     font-size: 60%;
 }
 

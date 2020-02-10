@@ -1,0 +1,16 @@
+.empty-label {
+  font-size: 90%;
+}
+
+.status-bar.border-bottom {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+  
+.side-panel {
+  background-color: rgb(35, 43, 65);
+  color: rgb(255, 255, 255);
+}
+
+.main-area {
+  background-color: rgb(30, 35, 49);
+}
