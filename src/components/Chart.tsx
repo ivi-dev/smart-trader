@@ -29,11 +29,7 @@ interface ChartProp {
     dispatch: (action: Action) => void
 }
 
-interface ChartComponent {
-    (prop: ChartProp): JSX.Element;
-}
-
-const Chart: ChartComponent = (prop: ChartProp) => {
+const Chart = (prop: ChartProp) => {
     const cleanUp = (container: HTMLDivElement) => {
         for (let i = 0; i < container.childNodes.length; i++) {
             container.removeChild(container.childNodes[i]);
@@ -51,7 +47,7 @@ const Chart: ChartComponent = (prop: ChartProp) => {
             height: chartBoxElement.clientHeight})
         ChartData.addSeries(chart, prop.data.entries, prop.type, prop.activeIndex?.name);
     });
-    return <section className={`row col-${prop.width} no-gutters px-4 pt-3 chart align-items-start`}>
+    return <section className={`row col-${prop.width} no-gutters px-4 chart align-items-start`}>
                 <div className="row justify-content-between align-items-center no-gutters col-12">
                     <Selector title={'Source:'} options={prop.dataSources} sortOrder={'desc'} selected={prop.year} handleSelect={(year) => prop.dispatch(actions.setChartYear(year, prop.id))} />
                     <Button graphic={'fas fa-plus'} classes={'ml-3'} onClick={() => prop.dispatch(actions.addChart(prop.id))} />

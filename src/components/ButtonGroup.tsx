@@ -16,7 +16,7 @@ const ButtonGroup = (prop: ButtonGroupProp) => {
         aria-label="Timespan selector">
             {prop.options.map(option => 
                 <button key={i++} type="button" title={option.title}
-                    className={`btn btn-secondary ${option.name === prop.active ? 'active' : null}`} onClick={(e) => {prop.handleSelect(option.data ? option.data : (e.target as HTMLButtonElement).innerHTML)}}>
+                    className={`btn btn-secondary ${option.name === prop.active || option.graphic === prop.active ? 'active' : null}`} onClick={(e) => {prop.handleSelect(option.data ? option.data : (e.target as HTMLButtonElement).innerHTML)}}>
                     {option.graphic ? <i className={option.graphic}></i> : option.name}
                 </button>)}
         </div>

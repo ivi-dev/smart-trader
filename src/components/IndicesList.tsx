@@ -6,7 +6,7 @@ import './IndicesList.css';
 interface IndicesListProp {
     title?: string,
     data: IndexData[],
-    handleClick: (e: React.MouseEvent, data: IndexData) => void
+    handleClick: (altKey: boolean, data: IndexData) => void
 }
 
 export interface IndicesListComponent {
@@ -19,7 +19,7 @@ const IndicesList: IndicesListComponent = (prop: IndicesListProp) => {
         <>
             {title}
             <section className="indices-list align-items-start">
-                {prop.data.length === 0 ? <div className="empty-label row justify-content-center col-auto mt-5 mx-auto text-muted">Empty</div> : prop.data.map(index => <Index key={index.id} data={index} handleClick={(e, data) => {prop.handleClick(e, data)}} />)}
+                {prop.data.length === 0 ? <div className="empty-label row justify-content-center col-auto mt-5 mx-auto text-muted">Empty</div> : prop.data.map(index => <Index key={index.id} data={index} handleClick={(altKey, data) => {prop.handleClick(altKey, data)}} />)}
             </section>
         </>
     )

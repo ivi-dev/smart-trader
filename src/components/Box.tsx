@@ -45,17 +45,23 @@ const Box: BoxComponent = (prop: BoxProp) => {
                      </div>
                   </div>;
     } else if (prop.listData) {
-        content = <div className="scroll-area mt-2">
-            {prop.listData.items.map((item, index) => 
-            <div key={index} className="row data-row no-gutters px-3 py-1 border-bottom">
-                <div className="row no-gutters col-12">
-                    {item.main}
-                </div>
-                <div className="row secondary no-gutters col-12">
-                    {item.secondary && item.secondary}
-                </div>
-            </div>)}
-        </div>;
+        if (prop.listData.items.length === 0) {
+            content = <div className="scroll-area mt-2">
+                <div className="pt-4 empty-label text-center col-12 text-muted">All Clear</div>
+            </div>
+        } else {
+            content = <div className="scroll-area mt-2">
+                {prop.listData.items.map((item, index) => 
+                <div key={index} className="row data-row no-gutters px-3 py-1 border-bottom">
+                    <div className="row no-gutters col-12">
+                        {item.main}
+                    </div>
+                    <div className="row secondary no-gutters col-12">
+                        {item.secondary && item.secondary}
+                    </div>
+                </div>)}
+            </div>;
+        }
     } else if (prop.alerts) {
         if (prop.alerts.length === 0) {
             content = <div className="scroll-area mt-2">

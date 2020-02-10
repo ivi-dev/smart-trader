@@ -4,13 +4,13 @@ import './Index.css';
 
 interface IndexProp {
     data: IndexData,
-    handleClick: (e: React.MouseEvent, data: IndexData) => void
+    handleClick: (altKey: boolean, data: IndexData) => void
 }
 
 const Index = (prop: IndexProp) => {
     return (
     <div className="index col-12 p-2 pl-3 mb-2 row align-items-center no-gutters rounded"
-    onClick={(e) => {prop.handleClick(e, prop.data);}}>
+    onClick={(e) => {prop.handleClick(e.altKey, prop.data);}}>
         <div className="col name font-weight-bold">{prop.data.name}</div>
         <div className="col current">{prop.data.current}</div>
         <div className={`col-5 trend text-right ${prop.data.trend > 0 ? 'negative' : 'positive'}`}>
