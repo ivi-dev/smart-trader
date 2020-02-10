@@ -1,5 +1,10 @@
 {
   "name": "smart-trader",
+  "jest": {
+    "transformIgnorePatterns": [
+      "node_modules/(?!(lightweight-charts|fancy-canvas))/"
+    ]
+  },
   "version": "0.1.0",
   "private": true,
   "dependencies": {
