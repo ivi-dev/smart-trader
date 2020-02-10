@@ -4,6 +4,7 @@ import IndexData from '../IndexData';
 import { Action } from './actions';
 import ChartData, { ChartDataEntry } from '../ChartData';
 import BoxData, { BoxType } from '../BoxData';
+import TableData, { TableRow, TableCell } from '../TableData';
 
 const formatIndexHistory = (history: ChartData, format: string) => {
     const formatter = (history: ChartData, chunk: number) => {
@@ -49,6 +50,28 @@ const getLatestBoxId = (boxList: BoxData[]) => {
 
 const getLatestChartId = (chartList: ChartDescriptor[]) => {
     return chartList.length !== 0 ? chartList[chartList.length - 1].id : 0;
+}
+
+const getTargetIndex = (charts: ChartDescriptor[], id: number | null) => {
+    if (id === null) {
+        return null;
+    } else {
+        for (const chart of charts) {
+            if (chart.id === id) {
+                return chart.activeIndex;
+            }
+        }
+    }
+}
+
+const makeTransactionRecord = (type: 'buy' | 'sell', transactions: TableData, indexName: string,  price: number, qty: number) => {
+    const history = Object.assign({}, transactions);
+    history.rows.push(new TableRow([new TableCell('1m'),
+    new TableCell(indexName.toUpperCase()),
+    new TableCell(price.toString()),
+    new TableCell(qty.toString()),
+    new TableCell(type === 'buy' ? 'BUY' : 'SELL', type === 'buy' ? 'buy' : 'sell')]));
+    return { history, price };
 }
 
 export const main = (state = initialState, action: Action) => {
@@ -159,6 +182,34 @@ export const main = (state = initialState, action: Action) => {
             return Object.assign({}, state, {boxes: boxes_2});
         case actions.DISMISS_ALERT:
             return Object.assign({}, state, {reportData: {...state.reportData, alerts: state.reportData.alerts.filter(alert => alert.id !== action.arg as number)}})
+        case actions.BUY:
+            if ((action.arg as number) !== 0) {
+                let index = getTargetIndex(state.charts.slice(), state.selectedChart);
+                if (index !== null) {
+                    const { history, price: spent } = makeTransactionRecord('buy', state.reportData.orderHistory, index!.name, index!.current * state.buyQty, state.buyQty);
+                    return Object.assign({}, state, {balance: state.balance - spent}, {reportData: {...state.reportData, orderHistory: history}});
+                } else {
+                    return state;
+                }
+            } else {
+                return state;
+            }
+        case actions.SELL:
+            if ((action.arg as number) !== 0) {
+                let index2 = getTargetIndex(state.charts.slice(), state.selectedChart);
+                if (index2 !== null) {
+                    const { history, price: earned } = makeTransactionRecord('sell', state.reportData.orderHistory, index2!.name, index2!.current * state.buyQty, state.buyQty);
+                    return Object.assign({}, state, {balance: state.balance + earned}, {reportData: {...state.reportData, orderHistory: history}});
+                } else {
+                    return state;
+                }
+            } else {
+                return state;
+            }
+        case actions.SET_BUY_QTY:
+            return Object.assign({}, state, {buyQty: action.arg as number});
+        case actions.SET_SELL_QTY:
+            return Object.assign({}, state, {sellQty: action.arg as number});
         default:
             return state;
     }

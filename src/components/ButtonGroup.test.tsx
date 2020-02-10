@@ -23,7 +23,7 @@ const renderButtonGroup = (optionType: 'name' | 'graphic' | 'data' = 'name') => 
             break;
 
         case 'graphic':
-            options = graphicOptions, selected = graphicOptions[0].name;
+            options = graphicOptions, selected = graphicOptions[0].graphic;
             break;
 
         default:

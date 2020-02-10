@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import TableData from '../TableData';
 import ListData from '../ListData';
 import Alert from '../Alert';

@@ -53,10 +53,16 @@ export interface State {
     charts: ChartDescriptor[],
     selectedChart: number | null,
 
+    buyButtons: Option[],
+    sellButtons: Option[],
     reportButtons: Option[],
     reportData: ReportData,
     boxes: BoxData[],
-    selectedBox: number | null
+    selectedBox: number | null,
+
+    balance: number,
+    buyQty: number,
+    sellQty: number
 }
 
 const randomIndices = random.indices(100);
@@ -105,7 +111,8 @@ export const state: State = {
         }
     ],
     selectedChart: null,
-
+    buyButtons: [{name: 'Buy'}],
+    sellButtons: [{name: 'Sell'}],
     reportButtons: [{name: '', graphic: 'fas fa-history', title: 'Add a History Report', data: 'history'},
                     {name: '', graphic: 'fas fa-flag', title: 'Add an Activity Report', data: 'activity'},
                     {name: '', graphic: 'far fa-newspaper', title: 'Add a Headlines Report', data: 'headlines'}, 
@@ -122,7 +129,11 @@ export const state: State = {
         new BoxData(2, 'Latest Headlines', BoxType.HEADLINES),
         new BoxData(3, 'Notifications', BoxType.ALERTS)
     ],
-    selectedBox: null
+    selectedBox: null,
+
+    balance: 10000,
+    buyQty: 1,
+    sellQty: 1
 }
 
 export const store = createStore(main);

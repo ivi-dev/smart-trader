@@ -34,10 +34,16 @@ interface AppProp {
   charts: ChartDescriptor[],
   selectedChart: number | null,
 
+  buyButtons: Option[],
+  sellButtons: Option[],
   reportButtons: Option[],
   reportData: ReportData,
   boxes: BoxData[],
   selectedBox: number | null,
+  balance: number,
+  buyQty: number,
+  sellQty: number,
+
   dispatch: (action: Action) => void
 }
 
@@ -70,10 +76,21 @@ const App = (prop: AppProp) => {
       </Column>
       <Column classes={'col-10 vh-100 main-area'}>
         <Row classes={'px-4 border-bottom status-bar'}>
-          <Text content={'Smart Trader'} classes={'h5 font-weight-light mt-1'} />
-          <Text content={'v0.1'} classes={'ml-2 h6 position-relative small'} style={{'top': '1px'}} />
-          <Text content={'alpha'} classes={'ml-1 h6 position-relative small text-warning'} style={{'top': '1px'}} />
-          <ButtonGroup options={prop.reportButtons} handleSelect={(type) => prop.dispatch(actions.addBox(BoxData.getBoxType(type)))} classes={'ml-auto my-3'} />
+          <Text content={'Smart Trader'} classes={'h5 font-weight-light mt-2'} />
+          <Text content={'v0.1'} classes={'ml-2 h6 position-relative small'} style={{'top': '3px'}} />
+          <Text content={'alpha'} classes={'ml-1 h6 position-relative small text-warning'} style={{'top': '3px'}} />
+          <Text content={'Balance:'} classes={'ml-auto mr-2 text-muted small'} style={{top: '2px'}} />
+          <Text content={`${(new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'})).format(prop.balance)}`} style={{fontSize: '120%'}} classes={`mr-4 ${prop.balance < 0 ? 'text-danger' : ''}`} />
+
+          <Text content={'Qty:'} classes={'mr-1 text-muted small'} />
+          <input type="number" value={prop.buyQty} onChange={(e) => prop.dispatch(actions.setBuyQty(Number(e.target.value)))} className="rounded text-white pl-2" style={{width: '25px'}} min="1" />
+          <ButtonGroup options={prop.buyButtons} handleSelect={() => prop.dispatch(actions.buy())} classes={'ml-1 my-3 buy-buttons'} btnClasses={'single'} />
+
+          <Text content={'Qty:'} classes={'ml-3 mr-1 text-muted small'} />
+          <input type="number" value={prop.sellQty} onChange={(e) => prop.dispatch(actions.setSellQty(Number(e.target.value)))} className="rounded text-white pl-2" style={{width: '25px'}} min="1" />
+          <ButtonGroup options={prop.sellButtons} handleSelect={() => prop.dispatch(actions.sell())} classes={'ml-1 my-3 sell-buttons'} btnClasses={'single'} />
+
+          <ButtonGroup options={prop.reportButtons} handleSelect={(type) => prop.dispatch(actions.addBox(BoxData.getBoxType(type)))} classes={'ml-4 my-3'} />
         </Row>
         <Row classes={'chart overflow-auto'} style={{'height': '52vh'}}>
           {prop.charts.map(chart => <Chart key={chart.id} id={chart.id} type={chart.type} width={prop.charts.length === 1 ? 12 : 6} options={prop.chartOptions} data={chart.data} activeIndex={chart.activeIndex} dataSources={prop.dataSources} year={chart.year} dispatch={prop.dispatch} resolutionOptions={prop.resolutionOptions} chartResolution={chart.resolution} chartTypes={prop.chartTypes} chartType={prop.chartType} selected={prop.selectedChart === chart.id ? true : false} />)}
@@ -102,10 +119,15 @@ function mapStateToProps(state: State) {
     charts: state.charts,
     selectedChart: state.selectedChart,
 
+    buyButtons: state.buyButtons,
+    sellButtons: state.sellButtons,
     reportButtons: state.reportButtons,
     reportData: state.reportData,
     boxes: state.boxes,
-    selectedBox: state.selectedBox
+    selectedBox: state.selectedBox,
+    balance: state.balance,
+    buyQty: state.buyQty,
+    sellQty: state.sellQty,
   };
 }
 

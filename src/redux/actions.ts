@@ -18,8 +18,12 @@ export const REMOVE_BOX = 'REMOVE_BOX';
 export const SELECT_BOX = 'SELECT_BOX';
 export const MOVE_BOX_BACK = 'MOVE_BOX_BACK';
 export const MOVE_BOX_FORWARD = 'MOVE_BOX_FORWARD';
-
 export const DISMISS_ALERT = 'DISMISS_ALERT';
+
+export const BUY = 'BUY';
+export const SELL = 'SELL';
+export const SET_BUY_QTY = 'SET_BUY_QTY';
+export const SET_SELL_QTY = 'SET_SELL_QTY';
 
 export interface Action {
     type: string,
@@ -104,4 +108,24 @@ export const moveBoxForward = (id: number) => ({
 export const dismissAlert = (id: number) => ({
     type: DISMISS_ALERT,
     arg: id
+});
+
+export const buy = () => ({
+    type: BUY,
+    arg: null
+});
+
+export const sell = () => ({
+    type: SELL,
+    arg: null
+});
+
+export const setBuyQty = (value: number) => ({
+    type: SET_BUY_QTY,
+    arg: value
+});
+
+export const setSellQty = (value: number) => ({
+    type: SET_SELL_QTY,
+    arg: value
 });

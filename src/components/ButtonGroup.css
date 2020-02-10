@@ -1,17 +1,53 @@
 .button-group .btn {
     font-size: 80% !important;
     background-color: rgb(54, 66, 99) !important;
-    border-color: rgb(54, 66, 99) !important;
+    border-width: 0 !important;
+}
+
+.button-group .btn.single {
+    background-color: transparent !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    font-size: 75% !important;
+    padding: 3px 12px;
 }
 
 .button-group .btn:active {
     background-color: rgba(0, 0, 0, 0.575) !important;
-    border-color: rgba(0, 0, 0, 0.575) !important;
 }
 
 .button-group .btn.active {
     background-color: rgb(26, 27, 34) !important;
-    border-color: rgb(26, 27, 34) !important;
-    border-bottom-color: rgb(70, 159, 233) !important;
-    border-bottom-width: 2px !important;
+    border-bottom: 2px solid rgb(70, 159, 233) !important;
+}
+
+.button-group.sell-buttons .btn {
+    border: 1px solid rgb(46, 136, 51) !important;
+    color: rgb(46, 136, 51) !important;
+}
+
+.button-group.sell-buttons .btn:hover {
+    background-color: rgba(46, 136, 50, 0.15) !important;
+    border: 1px solid rgb(46, 136, 51) !important;
+    color: rgb(46, 136, 51) !important;
+}
+
+.button-group.sell-buttons .btn:active {
+    background-color: rgb(46, 136, 51) !important;
+    color: rgb(255, 255, 255);
+}
+
+.button-group.buy-buttons .btn {
+    border: 1px solid rgb(219, 112, 62) !important;
+    color: rgb(219, 112, 62) !important;
+}
+
+.button-group.buy-buttons .btn:hover {
+    background-color: rgba(219, 112, 62, .15) !important;
+    border: 1px solid rgb(219, 112, 62) !important;
+    color: rgb(219, 112, 62) !important;
+}
+
+.button-group.buy-buttons .btn:active {
+    background-color: rgb(219, 112, 62) !important;
+    color: rgb(255, 255, 255);
 }
