@@ -66,7 +66,8 @@ const getTargetIndex = (charts: ChartDescriptor[], id: number | null) => {
 
 const makeTransactionRecord = (type: 'buy' | 'sell', transactions: TableData, indexName: string,  price: number, qty: number) => {
     const history = Object.assign({}, transactions);
-    history.rows.push(new TableRow([new TableCell('1m'),
+    const date = new Date();
+    history.rows.push(new TableRow([new TableCell(`${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`),
     new TableCell(indexName.toUpperCase()),
     new TableCell(price.toString()),
     new TableCell(qty.toString()),
