@@ -1,5 +1,3 @@
-import ChartDataEntry from "./ChartData";
-
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 export const capitalize = (word: string) => {
