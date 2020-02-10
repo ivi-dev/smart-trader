@@ -86,7 +86,7 @@ const Box: BoxComponent = (prop: BoxProp) => {
         }
     }
     return (
-        <div className={`box col mr-3 mb-1 mt-1 shadow pb-1 rounded ${prop.selected ? 'selected' : null}`} onClick={() => prop.dispatch(actions.selectBox(prop.id))} tabIndex={prop.id} onKeyDown={(e) => handleKeyDown(e.keyCode)}>
+        <div className={`box col mr-3 mb-2 mt-1 shadow pb-1 rounded ${prop.selected ? 'selected' : null}`} onClick={() => prop.dispatch(actions.selectBox(prop.id))} tabIndex={prop.id} onKeyDown={(e) => handleKeyDown(e.keyCode)}>
             <div className="row no-gutters header p-2 pl-3 align-items-center">
                 {prop.title}
                 <i className="fas fa-times px-2 py-1 ml-auto rounded" onClick={() => {prop.dispatch(actions.removeBox(prop.id))}}></i>
