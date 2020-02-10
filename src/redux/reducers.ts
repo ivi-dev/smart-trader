@@ -198,7 +198,7 @@ export const main = (state = initialState, action: Action) => {
             if ((action.arg as number) !== 0) {
                 let index2 = getTargetIndex(state.charts.slice(), state.selectedChart);
                 if (index2 !== null) {
-                    const { history, price: earned } = makeTransactionRecord('sell', state.reportData.orderHistory, index2!.name, index2!.current * state.buyQty, state.buyQty);
+                    const { history, price: earned } = makeTransactionRecord('sell', state.reportData.orderHistory, index2!.name, index2!.current * state.sellQty, state.buyQty);
                     return Object.assign({}, state, {balance: state.balance + earned}, {reportData: {...state.reportData, orderHistory: history}});
                 } else {
                     return state;

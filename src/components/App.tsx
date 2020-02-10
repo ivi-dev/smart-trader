@@ -16,6 +16,7 @@ import ChartData from '../ChartData';
 import Row from './Row';
 import Text from './Text';
 import Column from './Column';
+import Input from './Input';
 
 interface AppProp {
   selectedIndex: IndexData | null,
@@ -83,11 +84,11 @@ const App = (prop: AppProp) => {
           <Text content={`${(new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'})).format(prop.balance)}`} style={{fontSize: '120%'}} classes={`mr-4 ${prop.balance < 0 ? 'text-danger' : ''}`} />
 
           <Text content={'Qty:'} classes={'mr-1 text-muted small'} />
-          <input type="number" value={prop.buyQty} onChange={(e) => prop.dispatch(actions.setBuyQty(Number(e.target.value)))} className="rounded text-white pl-2" style={{width: '25px'}} min="1" />
+          <Input type="number" value={prop.buyQty} handleChange={(value) => prop.dispatch(actions.setBuyQty(Number(value)))} classes="rounded text-white pl-2" style={{width: '25px'}} />
           <ButtonGroup options={prop.buyButtons} handleSelect={() => prop.dispatch(actions.buy())} classes={'ml-1 my-3 buy-buttons'} btnClasses={'single'} />
 
           <Text content={'Qty:'} classes={'ml-3 mr-1 text-muted small'} />
-          <input type="number" value={prop.sellQty} onChange={(e) => prop.dispatch(actions.setSellQty(Number(e.target.value)))} className="rounded text-white pl-2" style={{width: '25px'}} min="1" />
+          <Input type="number" value={prop.sellQty} handleChange={(value) => prop.dispatch(actions.setSellQty(Number(value)))} classes="rounded text-white pl-2" style={{width: '25px'}} />
           <ButtonGroup options={prop.sellButtons} handleSelect={() => prop.dispatch(actions.sell())} classes={'ml-1 my-3 sell-buttons'} btnClasses={'single'} />
 
           <ButtonGroup options={prop.reportButtons} handleSelect={(type) => prop.dispatch(actions.addBox(BoxData.getBoxType(type)))} classes={'ml-4 my-3'} />
