@@ -7,7 +7,7 @@ interface ColumnProp {
 }
 
 const Column = (prop: ColumnProp) =>
-    <section id="main-area" className={prop.classes}>
+    <section className={prop.classes}>
         {prop.children}
     </section>
 
