@@ -72,6 +72,7 @@ const App = (prop: AppProp) => {
         <Row classes={'px-4 border-bottom status-bar'}>
           <Text content={'Smart Trader'} classes={'h5 font-weight-light mt-1'} />
           <Text content={'v0.1'} classes={'ml-2 h6 position-relative small'} style={{'top': '1px'}} />
+          <Text content={'alpha'} classes={'ml-1 h6 position-relative small text-warning'} style={{'top': '1px'}} />
           <ButtonGroup options={prop.reportButtons} handleSelect={(type) => prop.dispatch(actions.addBox(BoxData.getBoxType(type)))} classes={'ml-auto my-3'} />
         </Row>
         <Row classes={'chart overflow-auto'} style={{'height': '52vh'}}>

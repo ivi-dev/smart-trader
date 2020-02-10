@@ -23,31 +23,35 @@ export interface BoxComponent {
 const Box: BoxComponent = (prop: BoxProp) => {
     let content = null;
     if (prop.tableData) {
-        content = <div className="row no-gutters content">
-                     <div className="col-12 table-headers row no-gutters position-absolute">
-                        {prop.tableData.headers.map((header, index) => 
-                        <div key={index} className="col text-center">
-                            {header.content}
-                        </div>)}
-                     </div>
-                     <div className="scroll-area col-12">
-                        <table id="order-history-table" className="col-12 mt-4 table table-borderless table-hover">
-                           <tbody>
-                               {prop.tableData.rows.map((row, index) => 
-                                <tr key={index}>
-                                    {row.cells.map((cell, index) => 
-                                    <td key={index} className={`text-center ${cell.classes}`}>
-                                        {cell.content}
-                                    </td>)}
-                                </tr>)}
-                           </tbody>
-                        </table>
-                     </div>
-                  </div>;
+        if (prop.tableData?.rows.length === 0) {
+            content = <div className="empty-label text-muted text-center col-12 mt-5">No data yet.</div>
+        } else {
+            content = <div className="row no-gutters content">
+                         <div className="col-12 table-headers row no-gutters position-absolute">
+                            {prop.tableData?.headers.map((header, index) => 
+                            <div key={index} className="col text-center">
+                                {header.content}
+                            </div>)}
+                         </div>
+                         <div className="scroll-area col-12">
+                            <table id="order-history-table" className="col-12 mt-4 table table-borderless table-hover">
+                               <tbody>
+                                   {prop.tableData?.rows.map((row, index) => 
+                                    <tr key={index}>
+                                        {row.cells.map((cell, index) => 
+                                        <td key={index} className={`text-center ${cell.classes}`}>
+                                            {cell.content}
+                                        </td>)}
+                                    </tr>)}
+                               </tbody>
+                            </table>
+                         </div>
+                      </div>;
+        }
     } else if (prop.listData) {
         if (prop.listData.items.length === 0) {
             content = <div className="scroll-area mt-2">
-                <div className="pt-4 empty-label text-center col-12 text-muted">All Clear</div>
+                <div className="empty-label text-muted text-center col-12 mt-5">No data yet.</div>
             </div>
         } else {
             content = <div className="scroll-area mt-2">
@@ -65,7 +69,7 @@ const Box: BoxComponent = (prop: BoxProp) => {
     } else if (prop.alerts) {
         if (prop.alerts.length === 0) {
             content = <div className="scroll-area mt-2">
-                <div className="pt-4 empty-label text-center col-12 text-muted">All Clear</div>
+                <div className="empty-label text-muted text-center col-12 mt-5">No data yet.</div>
             </div>
         } else {
             content = <div className="scroll-area mt-2">

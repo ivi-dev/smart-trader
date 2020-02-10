@@ -61,10 +61,10 @@ export interface State {
 
 const randomIndices = random.indices(100);
 const history = random.indexHistories();
-const randomOrders = random.orders(50);
-const randomActivities = random.activities(50);
-const randomHeadlines = random.headlines(50);
-const randomAlerts = random.alerts(15);
+const randomOrders = random.orders(0);
+const randomActivities = random.activities(0);
+const randomHeadlines = random.headlines(0);
+const randomAlerts = random.alerts(0);
 
 export const state: State = {
     selectedIndex: randomIndices[0],
