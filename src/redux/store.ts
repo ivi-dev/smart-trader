@@ -3,12 +3,21 @@ import { main } from './reducers';
 import IndexData from '../IndexData';
 import * as random from '../randomizer';
 import ChartData from '../ChartData';
-import TableData from '../TableData';
-import ListData from '../ListData';
+import TableData, { TableCell, TableRow } from '../TableData';
+import ListData, { ListDataRow } from '../ListData';
 import Alert from '../Alert';
 import BoxData, { BoxType } from '../BoxData';
+import Store, { Keys } from '../Store';
+import * as actions from './actions';
 
 export type ChartType = 'bar' | 'candlestick' | 'line';
+export const ORDER_HEADERS = [
+    new TableCell('Time'), 
+    new TableCell('Stock'), 
+    new TableCell('Price'), 
+    new TableCell('Amount'), 
+    new TableCell('Type')
+];
 
 export type Option = {
     name: string | number,
@@ -67,10 +76,25 @@ export interface State {
 
 const randomIndices = random.indices(100);
 const history = random.indexHistories();
-const randomOrders = random.orders(0);
-const randomActivities = random.activities(0);
+
+Store.get(Keys.ORDERS).then(orders => { 
+    if (orders) {
+        store.dispatch(actions.setOrderHistory(
+            new TableData(ORDER_HEADERS, (orders as Array<TableRow>))));
+    }
+});
+
+Store.get(Keys.ACTIVITY).then(rows => { 
+    if (rows) {
+        store.dispatch(actions.setActivities(
+            new ListData(rows as Array<ListDataRow>)));
+    }
+});
+
 const randomHeadlines = random.headlines(0);
 const randomAlerts = random.alerts(0);
+
+
 
 export const state: State = {
     selectedIndex: randomIndices[0],
@@ -118,8 +142,8 @@ export const state: State = {
                     {name: '', graphic: 'far fa-newspaper', title: 'Add a Headlines Report', data: 'headlines'}, 
                     {name: '', graphic: 'far fa-bell', title: 'Add a Notifications Report', data: 'alerts'}],
     reportData: {
-        orderHistory: randomOrders,
-        activities: randomActivities,
+        orderHistory: new TableData(ORDER_HEADERS, []),
+        activities: new ListData([]),
         headlines: randomHeadlines,
         alerts: randomAlerts
     },
