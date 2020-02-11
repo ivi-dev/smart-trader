@@ -28,7 +28,7 @@ interface AppProp {
   chartOptions: any,
   chartTypes: Option[],
   dataSources: Option[],
-  chartDataSource: number,
+  chartDataSource: number | string,
   resolutionOptions: Option[],
   chartResolution: string,
   indexHistory: ChartData,
@@ -94,7 +94,7 @@ const App = (prop: AppProp) => {
           <ButtonGroup options={prop.reportButtons} handleSelect={(type) => prop.dispatch(actions.addBox(BoxData.getBoxType(type)))} classes={'ml-4 my-3'} />
         </Row>
         <Row classes={'chart overflow-auto'} style={{'height': '52vh'}}>
-          {prop.charts.map(chart => <Chart key={chart.id} id={chart.id} type={chart.type} width={prop.charts.length === 1 ? 12 : 6} options={prop.chartOptions} data={chart.data} activeIndex={chart.activeIndex} dataSources={prop.dataSources} year={chart.year} dispatch={prop.dispatch} resolutionOptions={prop.resolutionOptions} chartResolution={chart.resolution} chartTypes={prop.chartTypes} chartType={prop.chartType} selected={prop.selectedChart === chart.id ? true : false} />)}
+          {prop.charts.map(chart => <Chart key={chart.id} id={chart.id} type={chart.type} width={prop.charts.length === 1 ? 12 : 6} options={prop.chartOptions} data={chart.data} activeIndex={chart.activeIndex} dataSources={prop.dataSources} year={chart.source} dispatch={prop.dispatch} resolutionOptions={prop.resolutionOptions} chartResolution={chart.resolution} chartTypes={prop.chartTypes} chartType={prop.chartType} selected={prop.selectedChart === chart.id ? true : false} />)}
         </Row>
         <Reports boxes={prop.boxes} selectedBox={prop.selectedBox} data={prop.reportData} dispatch={prop.dispatch} />
       </Column>

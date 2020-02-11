@@ -53,7 +53,7 @@ export const indices = (num: number, list?: IndexData[] | undefined) => {
     }
 }
 
-export const indexHistory = (year = (new Date().getFullYear() - 1)) => {
+export const indexHistory = (year: number | string = (new Date().getFullYear() - 1)) => {
     let history: ChartData = new ChartData([]);
     const months = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
     for (let index = 1; index < months.length + 1; index++) {
@@ -68,14 +68,14 @@ export const indexHistory = (year = (new Date().getFullYear() - 1)) => {
     return history;
 }
 
-export const indexHistories = (upTo: number = 1970) => {
-    let histories: {year: number, data: ChartData}[] = [],
-    years: {name: number, selected?: boolean}[] = [];
+export const indexHistories = (upTo: number = 2000) => {
+    let histories: {source: number | string, data: ChartData}[] = [{source: 'Intraday', data: indexHistory('Intraday')}],
+    years: {name: number | string, selected?: boolean}[] = [];
     for (let index = (new Date()).getFullYear() - 1; index > upTo; index--) {
-        histories.push({year: index, data: indexHistory(index)});
+        histories.push({source: index, data: indexHistory(index)});
     }
     for (let index = 0; index < histories.length; index++) {
-        const entry = index === 0 ? {name: histories[index].year, selected: true} : {name: histories[index].year};
+        const entry = index === 0 ? {name: histories[index].source, selected: true} : {name: histories[index].source};
         years.push(entry);
     }
     return {years: years, archive: histories};

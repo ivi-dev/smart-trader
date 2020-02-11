@@ -1,3 +1,5 @@
+import { ChartType } from './redux/store';
+
 export class ChartDataEntry {
     constructor(public time: string, public open: number, 
         public close: number, public high: number, 
@@ -7,10 +9,11 @@ export class ChartDataEntry {
 export default class ChartData {
     constructor(public entries: ChartDataEntry[]) {}
     
-    static convertData(data: ChartDataEntry[], to: string) {
+    static convertData(data: ChartDataEntry[], to: ChartType) {
         let newData: {time: string, value: number}[] = [];
         for (const entry of data) {
-            newData.push({time: entry.time, value: entry.close});
+            if (to === 'line')
+            newData.push({time: !entry.time.includes('Intraday') ? entry.time : entry.time.replace('Intraday', (new Date()).getFullYear().toString()), value: entry.close});
         }
         return newData;
     }

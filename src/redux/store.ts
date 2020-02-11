@@ -37,7 +37,7 @@ export type ReportData = {
 export type ChartDescriptor = {
     id: number,
     type: ChartType,
-    year: number,
+    source: number,
     resolution: string,
     data: ChartData,
     activeIndex: IndexData
@@ -52,9 +52,9 @@ export interface State {
     chartType: ChartType,
     chartOptions: any,
     chartTypes: Option[],
-    chartDataSource: number,
+    chartDataSource: number | string,
     dataSources: Option[],
-    chartDataSourceArchive: {year: number, 
+    chartDataSourceArchive: {source: number | string, 
                              data: ChartData}[],
     resolutionOptions: Option[],
     chartResolution: string,
@@ -117,7 +117,7 @@ export const state: State = {
         timeScale: {fixLeftEdge: true}
     },
     chartTypes: [{name: 'line', selected: true}, {name: 'candlestick'}, {name: 'bar'}],
-    chartDataSource: history.archive[0].year,
+    chartDataSource: history.archive[0].source,
     dataSources: history.years,
     chartDataSourceArchive: history.archive,
     resolutionOptions: [{name: '1d', selected: true}, {name: '1w'}, 
@@ -128,10 +128,10 @@ export const state: State = {
         {
             id: 0,
             type: 'line',
-            year: 2019,
+            source: 2019,
             resolution: '1d',
             activeIndex: randomIndices[0],
-            data: history.archive.find(entry => entry.year === 2019)!.data
+            data: history.archive.find(entry => entry.source === 2019)!.data
         }
     ],
     selectedChart: null,

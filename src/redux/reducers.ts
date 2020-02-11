@@ -68,7 +68,8 @@ const getTargetIndex = (charts: ChartDescriptor[], id: number | null) => {
     }
 }
 
-const recordOrder = (type: 'buy' | 'sell', indexName: string,  price: number, qty: number) => {
+const recordOrder = (type: 'buy' | 'sell', indexName: string, 
+    price: number, qty: number) => {
     const date = new Date();
 
     const order = new TableRow([new TableCell(time(new Date())),
@@ -78,7 +79,7 @@ const recordOrder = (type: 'buy' | 'sell', indexName: string,  price: number, qt
     new TableCell(type === 'buy' ? 'BUY' : 'SELL', type === 'buy' ? 'buy' : 'sell')]);
     Store.order(order, (data) => store.dispatch(actions.setOrderHistory(data)));
 
-    const activity = new ListDataRow(type ==='buy' ? actions.activityLabels.buy(qty, indexName, price) : actions.activityLabels.sell(qty, indexName, price), fullDate(date));
+    const activity = new ListDataRow(type ==='buy' ? actions.activityLabels.buy(qty, indexName, price) : actions.activityLabels.sell(qty, indexName, price), 'far fa-money-bill-alt', fullDate(date));
     Store.activity(activity, (activities) => store.dispatch(actions.setActivities(new ListData(activities))));
     
     return { price };
@@ -113,12 +114,12 @@ export const main = (state = initialState, action: Action) => {
             return Object.assign({}, state, {charts: charts1});    
         case actions.SET_CHART_YEAR:
             const yearArg = action.arg as {year: number, chartId: number};
-            const year = Number(yearArg.year), chart = state.charts.find(chart => chart.id === yearArg.chartId), data = formatIndexHistory(state.chartDataSourceArchive.find(entry => entry.year === year)!.data, chart!.resolution);
+            const source = yearArg.year, chart = state.charts.find(chart => chart.id === yearArg.chartId), data = formatIndexHistory(state.chartDataSourceArchive.find(entry => entry.source == source)!.data, chart!.resolution);
             const charts2 = state.charts.slice();
             for (let index = 0; index < charts2.length; index++) {
                 if (charts2[index].id === yearArg.chartId) {
                     charts2[index].data = data;
-                    charts2[index].year = year;
+                    charts2[index].source = source;
                     break;
                 }
             }
@@ -126,7 +127,7 @@ export const main = (state = initialState, action: Action) => {
         case actions.SET_CHART_RESOLUTION:
             const resolutionArg = action.arg as {resolution: string, chartId: number, 
                 year: number};
-            const formatted = formatIndexHistory(state.chartDataSourceArchive.find(entry => entry.year === resolutionArg.year)!.data, resolutionArg.resolution);
+            const formatted = formatIndexHistory(state.chartDataSourceArchive.find(entry => entry.source == resolutionArg.year)!.data, resolutionArg.resolution);
             const charts3 = state.charts.slice();
             for (let index = 0; index < charts3.length; index++) {
                 if (charts3[index].id === resolutionArg.chartId) {
