@@ -79,15 +79,13 @@ const App = (prop: AppProp) => {
         <Row classes={'px-4 border-bottom status-bar'}>
           <Text content={'Smart Trader'} classes={'h5 font-weight-light mt-2'} />
           <Text content={'v0.1'} classes={'ml-2 h6 position-relative small'} style={{'top': '3px'}} />
-          <Text content={'alpha'} classes={'ml-1 h6 position-relative small text-warning'} style={{'top': '3px'}} />
+          <Text content={'alpha'} classes={'ml-1 h6 position-relative text-warning'} style={{top: '0px', fontSize: '65%'}} />
           <Text content={'Balance:'} classes={'ml-auto mr-2 text-muted small'} style={{top: '2px'}} />
           <Text content={`${(new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'})).format(prop.balance)}`} style={{fontSize: '120%'}} classes={`mr-4 ${prop.balance < 0 ? 'text-danger' : ''}`} />
 
-          {/* <Text content={'Qty:'} classes={'mr-1 text-muted small'} /> */}
           <Input type="number" value={prop.buyQty} handleChange={(value) => prop.dispatch(actions.setBuyQty(Number(value)))} classes="text-white pl-2 buy rounded-left" style={{width: '50px'}} handleReturnKeyPress={() => prop.dispatch(actions.buy())} />
           <ButtonGroup options={prop.buyButtons} handleSelect={() => prop.dispatch(actions.buy())} classes={'my-3 buy-buttons'} btnClasses={'single'} />
 
-          {/* <Text content={'Qty:'} classes={'ml-3 mr-1 text-muted small'} /> */}
           <Input type="number" value={prop.sellQty} handleChange={(value) => prop.dispatch(actions.setSellQty(Number(value)))} classes="ml-3 text-white pl-2 sell rounded-left" style={{width: '50px'}} handleReturnKeyPress={() => prop.dispatch(actions.sell())} />
           <ButtonGroup options={prop.sellButtons} handleSelect={() => prop.dispatch(actions.sell())} classes={'my-3 sell-buttons'} btnClasses={'single'} />
 
