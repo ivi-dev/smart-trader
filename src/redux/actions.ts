@@ -1,5 +1,7 @@
 import IndexData from '../IndexData';
 import { BoxType } from '../BoxData';
+import ListData, { ListDataRow } from '../ListData';
+import TableData from '../TableData';
 
 export const SELECT_INDEX = 'SELECT_INDEX';
 export const SEARCH_FOR_INDEX = 'SEARCH_FOR_INDEX';
@@ -24,6 +26,19 @@ export const BUY = 'BUY';
 export const SELL = 'SELL';
 export const SET_BUY_QTY = 'SET_BUY_QTY';
 export const SET_SELL_QTY = 'SET_SELL_QTY';
+
+export const SET_ORDER_HISTORY = 'SET_ORDER_HISTORY';
+export const SET_ACTIVITIES = 'ADD_ACTIVITY';
+
+export const activityLabels = {
+    sell: (amount: number, indexName: string, price: number) => {
+        const price_ = (new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'})).format(price);
+        return `You sold ${amount} of ${indexName} (+${price_})`;
+    },
+    buy: (amount: number, indexName: string, price: number) => {
+        const price_ = (new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'})).format(price);
+        return `You bought ${amount} of ${indexName} (-${price_})`
+    }};
 
 export interface Action {
     type: string,
@@ -128,4 +143,14 @@ export const setBuyQty = (value: number) => ({
 export const setSellQty = (value: number) => ({
     type: SET_SELL_QTY,
     arg: value
+});
+
+export const setOrderHistory = (history: TableData) => ({
+    type: SET_ORDER_HISTORY,
+    arg: history
+});
+
+export const setActivities = (activity: ListData) => ({
+    type: SET_ACTIVITIES,
+    arg: activity
 });

@@ -1,10 +1,14 @@
 import * as actions from './actions';
-import { state as initialState, ChartType, ChartDescriptor } from './store';
+import { state as initialState, ChartType, ChartDescriptor, store } from './store';
 import IndexData from '../IndexData';
 import { Action } from './actions';
 import ChartData, { ChartDataEntry } from '../ChartData';
 import BoxData, { BoxType } from '../BoxData';
 import TableData, { TableRow, TableCell } from '../TableData';
+import ListData, { ListDataRow } from '../ListData';
+import { fullDate, shortDate, time } from '../utility';
+import localforage from 'localforage';
+import Store from '../Store';
 
 const formatIndexHistory = (history: ChartData, format: string) => {
     const formatter = (history: ChartData, chunk: number) => {
@@ -64,15 +68,20 @@ const getTargetIndex = (charts: ChartDescriptor[], id: number | null) => {
     }
 }
 
-const makeTransactionRecord = (type: 'buy' | 'sell', transactions: TableData, indexName: string,  price: number, qty: number) => {
-    const history = Object.assign({}, transactions);
+const recordOrder = (type: 'buy' | 'sell', indexName: string,  price: number, qty: number) => {
     const date = new Date();
-    history.rows.push(new TableRow([new TableCell(`${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`),
+
+    const order = new TableRow([new TableCell(time(new Date())),
     new TableCell(indexName.toUpperCase()),
     new TableCell(price.toString()),
     new TableCell(qty.toString()),
-    new TableCell(type === 'buy' ? 'BUY' : 'SELL', type === 'buy' ? 'buy' : 'sell')]));
-    return { history, price };
+    new TableCell(type === 'buy' ? 'BUY' : 'SELL', type === 'buy' ? 'buy' : 'sell')]);
+    Store.order(order, (data) => store.dispatch(actions.setOrderHistory(data)));
+
+    const activity = new ListDataRow(type ==='buy' ? actions.activityLabels.buy(qty, indexName, price) : actions.activityLabels.sell(qty, indexName, price), fullDate(date));
+    Store.activity(activity, (activities) => store.dispatch(actions.setActivities(new ListData(activities))));
+    
+    return { price };
 }
 
 export const main = (state = initialState, action: Action) => {
@@ -187,8 +196,8 @@ export const main = (state = initialState, action: Action) => {
             if ((action.arg as number) !== 0) {
                 let index = getTargetIndex(state.charts.slice(), state.selectedChart);
                 if (index !== null) {
-                    const { history, price: spent } = makeTransactionRecord('buy', state.reportData.orderHistory, index!.name, index!.current * state.buyQty, state.buyQty);
-                    return Object.assign({}, state, {balance: state.balance - spent}, {reportData: {...state.reportData, orderHistory: history}});
+                    const { price: spent } = recordOrder('buy', index!.name, index!.current * state.buyQty, state.buyQty);
+                    return Object.assign({}, state, {balance: state.balance - spent});
                 } else {
                     return state;
                 }
@@ -199,8 +208,8 @@ export const main = (state = initialState, action: Action) => {
             if ((action.arg as number) !== 0) {
                 let index2 = getTargetIndex(state.charts.slice(), state.selectedChart);
                 if (index2 !== null) {
-                    const { history, price: earned } = makeTransactionRecord('sell', state.reportData.orderHistory, index2!.name, index2!.current * state.sellQty, state.buyQty);
-                    return Object.assign({}, state, {balance: state.balance + earned}, {reportData: {...state.reportData, orderHistory: history}});
+                    const { price: earned } = recordOrder('sell', index2!.name, index2!.current * state.sellQty, state.buyQty);
+                    return Object.assign({}, state, {balance: state.balance + earned});
                 } else {
                     return state;
                 }
@@ -211,6 +220,11 @@ export const main = (state = initialState, action: Action) => {
             return Object.assign({}, state, {buyQty: action.arg as number});
         case actions.SET_SELL_QTY:
             return Object.assign({}, state, {sellQty: action.arg as number});
+        case actions.SET_ORDER_HISTORY:
+            console.log(action.arg as TableData)
+            return Object.assign({}, state, {reportData: {...state.reportData, orderHistory: (action.arg as TableData)}});
+        case actions.SET_ACTIVITIES:
+            return Object.assign({}, state, {reportData: {...state.reportData, activities: (action.arg as ListData)}});
         default:
             return state;
     }
