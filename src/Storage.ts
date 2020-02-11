@@ -8,7 +8,7 @@ export enum Keys {
     ORDERS = 'ORDERS'
 }
 
-export default class Store {
+export default class Storage {
     static order(row: TableRow, callback?: (arg: any) => void) {
         localForage.getItem(Keys.ORDERS).then(orders => {
             let orders_: TableRow[] = [];

@@ -8,7 +8,7 @@ import TableData, { TableRow, TableCell } from '../TableData';
 import ListData, { ListDataRow } from '../ListData';
 import { fullDate, shortDate, time } from '../utility';
 import localforage from 'localforage';
-import Store from '../Store';
+import Storage from '../Storage';
 
 const formatIndexHistory = (history: ChartData, format: string) => {
     const formatter = (history: ChartData, chunk: number) => {
@@ -77,10 +77,10 @@ const recordOrder = (type: 'buy' | 'sell', indexName: string,
     new TableCell(price.toString()),
     new TableCell(qty.toString()),
     new TableCell(type === 'buy' ? 'BUY' : 'SELL', type === 'buy' ? 'buy' : 'sell')]);
-    Store.order(order, (data) => store.dispatch(actions.setOrderHistory(data)));
+    Storage.order(order, (data) => store.dispatch(actions.setOrderHistory(data)));
 
     const activity = new ListDataRow(type ==='buy' ? actions.activityLabels.buy(qty, indexName, price) : actions.activityLabels.sell(qty, indexName, price), 'far fa-money-bill-alt', fullDate(date));
-    Store.activity(activity, (activities) => store.dispatch(actions.setActivities(new ListData(activities))));
+    Storage.activity(activity, (activities) => store.dispatch(actions.setActivities(new ListData(activities))));
     
     return { price };
 }

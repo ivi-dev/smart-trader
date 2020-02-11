@@ -7,7 +7,7 @@ import TableData, { TableCell, TableRow } from '../TableData';
 import ListData, { ListDataRow } from '../ListData';
 import Alert from '../Alert';
 import BoxData, { BoxType } from '../BoxData';
-import Store, { Keys } from '../Store';
+import Storage, { Keys } from '../Storage';
 import * as actions from './actions';
 
 export type ChartType = 'bar' | 'candlestick' | 'line';
@@ -77,14 +77,14 @@ export interface State {
 const randomIndices = random.indices(100);
 const history = random.indexHistories();
 
-Store.get(Keys.ORDERS).then(orders => { 
+Storage.get(Keys.ORDERS).then(orders => { 
     if (orders) {
         store.dispatch(actions.setOrderHistory(
             new TableData(ORDER_HEADERS, (orders as Array<TableRow>))));
     }
 });
 
-Store.get(Keys.ACTIVITY).then(rows => { 
+Storage.get(Keys.ACTIVITY).then(rows => { 
     if (rows) {
         store.dispatch(actions.setActivities(
             new ListData(rows as Array<ListDataRow>)));
