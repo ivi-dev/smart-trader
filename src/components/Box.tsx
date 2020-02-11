@@ -30,8 +30,10 @@ const Box: BoxComponent = (prop: BoxProp) => {
                          <div className="scroll-area col-12">
                             <table id="order-history-table" className="col-12 table table-borderless table-hover">
                                 <thead>
-                                    {prop.tableData?.headers.map((header, index) => 
-                                    <th>{header.content}</th>)}
+                                    <tr>
+                                        {prop.tableData?.headers.map((header, index) => 
+                                        <th key={index}>{header.content}</th>)}
+                                    </tr>
                                 </thead>
                                <tbody>
                                    {prop.tableData?.rows.map((row, index) => 
