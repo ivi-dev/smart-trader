@@ -1,5 +1,6 @@
 export class ListDataRow {
-    constructor(public main: string, public secondary?: string) {}
+    constructor(public main: string, public graphic?: string, 
+        public secondary?: string) {}
 }
 
 export default class ListData {
