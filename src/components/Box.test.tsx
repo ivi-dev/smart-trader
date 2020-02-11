@@ -45,7 +45,7 @@ const renderMultiRowListBox = (mainListItems: string[],
     secondaryListItems: string[]) => {
     const listRows: ListDataRow[] = [];
     for (let index = 0; index < mainListItems.length; index++) {
-        listRows.push(new ListDataRow(mainListItems[index], secondaryListItems[index]));
+        listRows.push(new ListDataRow(mainListItems[index], undefined, secondaryListItems[index]));
     }
     const listData = new ListData(listRows);
     return render(<Box id={0} 
@@ -100,15 +100,15 @@ test('renders a box with table data', () => {
     const cellsContent = ['1m', 'ABC', '123', 'SELL'];
     const { container } = renderTableBox(headerContent, cellsContent);
     const box = container.querySelector('.box');
-    const tableHeaders = box?.querySelector('.table-headers')
-    expect(tableHeaders).toBeTruthy();
-    for (let index = 0; index < tableHeaders!.children.length; index++) {
-        expect(tableHeaders?.children[index].innerHTML).toBe(headerContent[index]);
+    const tableHeaders = container.querySelectorAll('table thead tr th');
+    expect(tableHeaders).toHaveLength(headerContent.length);
+    for (let index = 0; index < tableHeaders!.length; index++) {
+        expect(tableHeaders[index].innerHTML).toBe(headerContent[index]);
     }
     const table = container.querySelector('table');
     expect(table).toBeTruthy();
-    expect(table?.querySelectorAll('tr')).toHaveLength(1);
-    const tableCells = table!.querySelectorAll('tr')[0].querySelectorAll('td');
+    expect(table?.querySelectorAll('table tbody tr')).toHaveLength(1);
+    const tableCells = table!.querySelectorAll('table tbody tr')[0].querySelectorAll('td');
     expect(tableCells).toHaveLength(4);
     for (let index = 0; index < tableCells.length; index++) {
         expect(tableCells[index].innerHTML).toBe(cellsContent[index]);
