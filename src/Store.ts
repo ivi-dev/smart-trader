@@ -16,7 +16,8 @@ export default class Store {
                 localForage.setItem(Keys.ORDERS, [row]).then(() => {
                     if (callback) {
                         localForage.getItem(Keys.ORDERS).then(orders => {
-                            callback(new TableData(ORDER_HEADERS, orders as Array<TableRow>));
+                            callback(new TableData(ORDER_HEADERS, 
+                                orders as Array<TableRow>));
                         })
                     }
                 });
