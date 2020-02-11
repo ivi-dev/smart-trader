@@ -58,6 +58,15 @@
     color: rgba(255, 255, 255, 0.5);
 }
 
+.box table thead th {
+    position: sticky;
+    top: 0;
+    font-size: 75%;
+    font-weight: normal;
+    color: rgba(255, 255, 255, 0.5);
+    background-color: rgb(38, 45, 70);
+}
+
 .box table tbody {
     font-size: 70%;
 }
@@ -98,7 +107,7 @@
 }
 
 .box .data-row {
-    font-size: 95%;
+    font-size: 90%;
     color: rgba(255, 255, 255, 0.5);
     cursor: pointer;
     border-color: rgba(255, 255, 255, 0.1) !important;
