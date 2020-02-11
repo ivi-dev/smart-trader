@@ -4,6 +4,7 @@ import TableData, { TableRow, TableCell } from './TableData';
 import ListData, { ListDataRow } from './ListData';
 import { formatDate } from './utility';
 import Alert from './Alert';
+import { ORDER_HEADERS } from './redux/store';
 
 export const number = (min: number, max: number) => {
     return Math.floor(Math.random() * ((max - min) + min + 1));
@@ -81,13 +82,7 @@ export const indexHistories = (upTo: number = 1970) => {
 }
 
 export const orders = (num = 50) => {
-    const tableData = new TableData([
-        new TableCell('Time'), 
-        new TableCell('Tool'), 
-        new TableCell('Price'), 
-        new TableCell('Amount'), 
-        new TableCell('Type')
-        ], []);
+    const tableData = new TableData(ORDER_HEADERS, []);
     const types = ['buy', 'sell'];
     for (let index = 0; index < num; index++) {
         let cells: TableCell[] = [];
