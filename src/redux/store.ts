@@ -155,12 +155,12 @@ export const state: State = {
         }
     ],
     selectedChart: null,
-    buyButtons: [{name: 'Buy'}],
-    sellButtons: [{name: 'Sell'}],
-    reportButtons: [{name: '', graphic: 'fas fa-history', title: 'Add a History Report', data: 'history'},
-                    {name: '', graphic: 'fas fa-flag', title: 'Add an Activity Report', data: 'activity'},
-                    {name: '', graphic: 'far fa-newspaper', title: 'Add a Headlines Report', data: 'headlines'}, 
-                    {name: '', graphic: 'far fa-bell', title: 'Add a Notifications Report', data: 'alerts'}],
+    buyButtons: [{name: 'Buy', onClick: () => store.dispatch(actions.buy())}],
+    sellButtons: [{name: 'Sell', onClick: () => store.dispatch(actions.buy())}],
+    reportButtons: [{name: '', graphic: 'fas fa-history', title: 'Add a History Report', data: 'history', onClick: () => store.dispatch(actions.addBox(BoxData.getBoxType('history')))},
+                    {name: '', graphic: 'fas fa-flag', title: 'Add an Activity Report', data: 'activity', onClick: () => store.dispatch(actions.addBox(BoxData.getBoxType('activity')))},
+                    {name: '', graphic: 'far fa-newspaper', title: 'Add a Headlines Report', data: 'headlines', onClick: () => store.dispatch(actions.addBox(BoxData.getBoxType('headlines')))}, 
+                    {name: '', graphic: 'far fa-bell', title: 'Add a Notifications Report', data: 'alerts', onClick: () => store.dispatch(actions.addBox(BoxData.getBoxType('alerts')))}],
     generalButtons: [{name: '', graphic: 'fas fa-question-circle', onClick: () => store.dispatch(actions.toggleHelp('open'))}],
     reportData: {
         orderHistory: new TableData(ORDER_HEADERS, []),
