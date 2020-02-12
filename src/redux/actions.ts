@@ -1,6 +1,6 @@
 import IndexData from '../IndexData';
 import { BoxType } from '../BoxData';
-import ListData, { ListDataRow } from '../ListData';
+import ListData from '../ListData';
 import TableData from '../TableData';
 
 export const SELECT_INDEX = 'SELECT_INDEX';
@@ -29,6 +29,7 @@ export const SET_SELL_QTY = 'SET_SELL_QTY';
 
 export const SET_ORDER_HISTORY = 'SET_ORDER_HISTORY';
 export const SET_ACTIVITIES = 'ADD_ACTIVITY';
+export const SET_HEADLINES = 'SET_HEADLINES';
 
 export const activityLabels = {
     sell: (amount: number, indexName: string, price: number) => {
@@ -153,4 +154,9 @@ export const setOrderHistory = (history: TableData) => ({
 export const setActivities = (activity: ListData) => ({
     type: SET_ACTIVITIES,
     arg: activity
+});
+
+export const setHeadlines = (headlines: ListData) => ({
+    type: SET_HEADLINES,
+    arg: headlines
 });
