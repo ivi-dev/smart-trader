@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import Search from './Search';
 import IndicesList  from './IndicesList';
-import { Option, ChartDescriptor } from '../redux/store';
+import { Option, ChartDescriptor, HelpType } from '../redux/store';
 import Chart from './Chart';
 import Reports from './Reports';
 import { State, ReportData, ChartType } from '../redux/store';
@@ -17,6 +17,8 @@ import Row from './Row';
 import Text from './Text';
 import Column from './Column';
 import Input from './Input';
+import Help from './Help';
+import { help } from '../help';
 
 interface AppProp {
   selectedIndex: IndexData | null,
@@ -46,6 +48,8 @@ interface AppProp {
   buyQty: number,
   sellQty: number,
 
+  help: HelpType
+
   dispatch: (action: Action) => void
 }
 
@@ -68,15 +72,24 @@ const App = (prop: AppProp) => {
         }
       }
   }
+  const getActiveHelpSection = () => {
+    for (const section of prop.help.sections) {
+      if (section.selected) {
+        return section;
+      }
+    }
+    return prop.help.sections[0];
+  }
   return (
     <>
-      <Column classes={'col-2 p-2 vh-100 side-panel'}>
+      <Help sections={prop.help.sections} active={getActiveHelpSection().name.toString()} content={getActiveHelpSection().data!} visible={prop.help.visible} dispatch={prop.dispatch} />
+      <Column classes={`col-2 p-2 vh-100 side-panel ${prop.help.visible ? 'faded' : null}`}>
         <Search placeholder="Search for indices" dispatch={prop.dispatch} />
         <IndicesList data={prop.searchResultsList.length === 0 ? prop.indicesList : prop.searchResultsList} 
         handleClick={(altKey, data) => {handleIndicesListClick(altKey, data)}} />
         <IndicesList title={'Watchlist'} data={prop.watchList} handleClick={(altKey, data) => {handleWatchlistClick(altKey, data)}} />
       </Column>
-      <Column classes={'col-10 vh-100 main-area'}>
+      <Column classes={`col-10 vh-100 main-area ${prop.help.visible ? 'faded' : null}`}>
         <Row classes={'px-4 border-bottom status-bar'}>
           <Text content={'Smart Trader'} classes={'h5 font-weight-light mt-2'} />
           <Text content={'v0.1'} classes={'ml-2 h6 position-relative small'} style={{'top': '3px'}} />
@@ -92,7 +105,7 @@ const App = (prop: AppProp) => {
 
           <ButtonGroup options={prop.reportButtons} handleSelect={(type) => prop.dispatch(actions.addBox(BoxData.getBoxType(type)))} classes={'ml-4 my-3'} />
 
-          <ButtonGroup options={prop.generalButtons} handleSelect={(value) => prop.dispatch(actions.handleGeneralButtonClick(value))} classes={'ml-2 my-3'} />
+          <ButtonGroup options={prop.generalButtons} classes={'ml-2 my-3'} />
         </Row>
         <Row classes={'chart overflow-auto'} style={{'height': '52vh'}}>
           {prop.charts.map(chart => <Chart key={chart.id} id={chart.id} type={chart.type} width={prop.charts.length === 1 ? 12 : 6} options={prop.chartOptions} data={chart.data} activeIndex={chart.activeIndex} dataSources={prop.dataSources} year={chart.source} dispatch={prop.dispatch} resolutionOptions={prop.resolutionOptions} chartResolution={chart.resolution} chartTypes={prop.chartTypes} chartType={prop.chartType} selected={prop.selectedChart === chart.id ? true : false} />)}
@@ -131,6 +144,8 @@ function mapStateToProps(state: State) {
     balance: state.balance,
     buyQty: state.buyQty,
     sellQty: state.sellQty,
+
+    help: state.help
   };
 }
 
