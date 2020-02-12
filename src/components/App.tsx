@@ -18,7 +18,6 @@ import Text from './Text';
 import Column from './Column';
 import Input from './Input';
 import Help from './Help';
-import { help } from '../help';
 
 interface AppProp {
   selectedIndex: IndexData | null,
