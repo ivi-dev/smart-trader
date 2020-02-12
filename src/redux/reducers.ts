@@ -156,7 +156,7 @@ export const main = (state = initialState, action: Action) => {
             return Object.assign({}, state, {selectedChart: state.selectedChart === id ? null : id});   
         case actions.ADD_BOX:
             let boxTitle = BoxData.getTitle(action.arg as BoxType);
-            return Object.assign({}, state, {boxes: state.boxes.concat([new BoxData(getLatestBoxId(state.boxes) + 1, boxTitle, action.arg as BoxType)])});    
+            return Object.assign({}, state, {boxes: state.boxes.concat([new BoxData(getLatestBoxId(state.boxes) + 1, boxTitle, action.arg as BoxType)])}, {selectedBox: null});    
         case actions.REMOVE_BOX:
             return Object.assign({}, state, {boxes: state.boxes.filter(box => box.id !== action.arg as number)});    
         case actions.SELECT_BOX:
