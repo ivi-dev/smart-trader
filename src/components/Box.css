@@ -8,6 +8,11 @@
     to { opacity: 1; }
 }
 
+@keyframes rotate-in {
+    from { transform: rotateX(90deg); }
+    to { transform: rotateX(0deg); }
+}
+
 .box {
     background-color: rgb(32, 39, 58);
     height: 98%;
@@ -115,13 +120,17 @@
 }
 
 .box .data-row {
-    font-size: 80%;
+    font-size: 75%;
     color: rgba(255, 255, 255, 0.5);
     cursor: pointer;
     border-color: rgba(255, 255, 255, 0.1) !important;
     transform: translateX(100px);
     animation: slide-in 1s forwards;
     transition: 250ms;
+}
+
+.box.headlines .data-row {
+    animation: rotate-in 500ms forwards;
 }
 
 .box .data-row:hover {
