@@ -97,10 +97,10 @@ const App = (prop: AppProp) => {
           <Text content={`${(new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'})).format(prop.balance)}`} style={{fontSize: '120%'}} classes={`mr-4 ${prop.balance < 0 ? 'text-danger' : ''}`} />
 
           <Input type="number" value={prop.buyQty} handleChange={(value) => prop.dispatch(actions.setBuyQty(Number(value)))} classes="text-white pl-2 buy rounded-left" style={{width: '50px'}} handleReturnKeyPress={() => prop.dispatch(actions.buy())} />
-          <ButtonGroup options={prop.buyButtons} handleSelect={() => prop.dispatch(actions.buy())} classes={'my-3 buy-buttons'} btnClasses={'single'} />
+          <ButtonGroup options={prop.buyButtons} classes={'my-3 buy-buttons'} btnClasses={'single'} />
 
           <Input type="number" value={prop.sellQty} handleChange={(value) => prop.dispatch(actions.setSellQty(Number(value)))} classes="ml-3 text-white pl-2 sell rounded-left" style={{width: '50px'}} handleReturnKeyPress={() => prop.dispatch(actions.sell())} />
-          <ButtonGroup options={prop.sellButtons} handleSelect={() => prop.dispatch(actions.sell())} classes={'my-3 sell-buttons'} btnClasses={'single'} />
+          <ButtonGroup options={prop.sellButtons} classes={'my-3 sell-buttons'} btnClasses={'single'} />
 
           <ButtonGroup options={prop.reportButtons} handleSelect={(type) => prop.dispatch(actions.addBox(BoxData.getBoxType(type)))} classes={'ml-4 my-3'} />
 
