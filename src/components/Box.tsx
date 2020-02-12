@@ -1,15 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import TableData from '../TableData';
 import ListData from '../ListData';
 import Alert from '../Alert';
 import './Box.css';
 import { Action } from '../redux/actions';
 import * as actions from '../redux/actions';
+import { Option } from '../redux/store';
+import Menu from './Menu';
 
 interface BoxProp {
     id: number,
     title: string,
+    status?: string,
+    menuItems?: Option[],
+    secondary?: JSX.Element,
     selected: boolean,
+    classes?: string,
     tableData?: TableData,
     listData?: ListData,
     alerts?: Alert[],
@@ -21,10 +27,10 @@ export interface BoxComponent {
 }
 
 const Box: BoxComponent = (prop: BoxProp) => {
-    let content = null;
+    let content = <div className="empty-label text-muted text-center col-12 mt-5">{prop.status}</div>;
     if (prop.tableData) {
         if (prop.tableData?.rows.length === 0) {
-            content = <div className="empty-label text-muted text-center col-12 mt-5">No data yet.</div>
+            content = <div className="empty-label text-muted text-center col-12 mt-5">{prop.status}</div>
         } else {
             content = <div className="row no-gutters content">
                          <div className="scroll-area col-12">
@@ -51,8 +57,8 @@ const Box: BoxComponent = (prop: BoxProp) => {
     } else if (prop.listData) {
         if (prop.listData.items.length === 0) {
             content = <div className="scroll-area mt-2">
-                <div className="empty-label text-muted text-center col-12 mt-5">No data yet.</div>
-            </div>
+                      <div className="empty-label text-muted text-center col-12 mt-5">{prop.status}</div>
+                  </div>;
         } else {
             content = <div className="scroll-area">
                 {prop.listData.items.map((item, index) => 
@@ -69,7 +75,7 @@ const Box: BoxComponent = (prop: BoxProp) => {
     } else if (prop.alerts) {
         if (prop.alerts.length === 0) {
             content = <div className="scroll-area mt-2">
-                <div className="empty-label text-muted text-center col-12 mt-5">No data yet.</div>
+                <div className="empty-label text-muted text-center col-12 mt-5">{prop.status}</div>
             </div>
         } else {
             content = <div className="scroll-area mt-2">
@@ -87,13 +93,19 @@ const Box: BoxComponent = (prop: BoxProp) => {
             prop.dispatch(actions.moveBoxBack(prop.id));
         } else if (keyCode === 39) {
             prop.dispatch(actions.moveBoxForward(prop.id));
+        } else if (keyCode === 27) {
+            setMenuVisible(false);
         }
     }
+    const [ menuVisible, setMenuVisible ] = useState(false);
     return (
-        <div className={`box col mr-3 mt-1 shadow pb-1 rounded ${prop.selected ? 'selected' : null}`} onClick={() => prop.dispatch(actions.selectBox(prop.id))} tabIndex={prop.id} onKeyDown={(e) => handleKeyDown(e.keyCode)}>
+        <div className={`box col mr-3 mt-1 shadow pb-1 rounded ${prop.classes} ${prop.selected ? 'selected' : null}`} onClick={() => prop.dispatch(actions.selectBox(prop.id))} tabIndex={prop.id} onKeyDown={(e) => handleKeyDown(e.keyCode)}>
+            {prop.menuItems && <Menu items={prop.menuItems} visible={menuVisible} />}
             <div className="row no-gutters header p-2 pl-3 align-items-center">
-                {prop.title}
-                <i className="fas fa-times px-2 py-1 ml-auto rounded" onClick={() => {prop.dispatch(actions.removeBox(prop.id))}}></i>
+                {prop.title}&nbsp;&nbsp;
+                {prop.secondary}
+                <i className="fas fa-ellipsis-v px-2 py-1 ml-auto rounded" onClick={(e) => {e.stopPropagation(); setMenuVisible(!menuVisible)}}></i>
+                <i className="fas fa-times px-2 py-1 rounded" onClick={() => {prop.dispatch(actions.removeBox(prop.id))}}></i>
             </div>
             {content}
         </div>
