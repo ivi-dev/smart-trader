@@ -226,6 +226,8 @@ export const main = (state = initialState, action: Action) => {
             return Object.assign({}, state, {reportData: {...state.reportData, orderHistory: (action.arg as TableData)}});
         case actions.SET_ACTIVITIES:
             return Object.assign({}, state, {reportData: {...state.reportData, activities: (action.arg as ListData)}});
+        case actions.SET_HEADLINES:
+            return Object.assign({}, state, {reportData: {...state.reportData, headlines: (action.arg as ListData)}});
         default:
             return state;
     }
