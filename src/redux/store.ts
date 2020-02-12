@@ -27,7 +27,7 @@ export type Option = {
     graphic?: string,
     title?: string,
     data?: string,
-    onClick?: (value: string | number) => void,
+    onClick?: (value: string | number, ...other: any) => void,
     selected?: boolean
 }
 
@@ -140,8 +140,8 @@ export const state: State = {
     chartDataSource: history.archive[0].source,
     dataSources: history.years,
     chartDataSourceArchive: history.archive,
-    resolutionOptions: [{name: '1d', selected: true}, {name: '1w'}, 
-                        {name: '1m'}, {name: '1q'}],
+    resolutionOptions: [{name: '1d', selected: true, onClick: () => store.dispatch(actions.setChartResolution('1d', 0, 0))}, {name: '1w', onClick: () => store.dispatch(actions.setChartResolution('1w', 0, 0))}, 
+                        {name: '1m', onClick: () => store.dispatch(actions.setChartResolution('1m', 0, 0))}, {name: '1q', onClick: () => store.dispatch(actions.setChartResolution('1q', 0, 0))}],
     chartResolution: '1d',
     indexHistory: history.archive[0].data,
     charts: [

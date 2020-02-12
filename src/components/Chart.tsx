@@ -47,6 +47,8 @@ const Chart = (prop: ChartProp) => {
             height: chartBoxElement.clientHeight})
         ChartData.addSeries(chart, prop.data.entries, prop.type, prop.activeIndex?.name);
     });
+    const handleResolutionSelect = (resolution: string, chartId: number, source: number) =>
+        prop.dispatch(actions.setChartResolution(resolution, chartId, source));
     return <section className={`row col-${prop.width} no-gutters px-4 chart align-items-start`}>
                 <div className="row justify-content-between align-items-center no-gutters col-12">
                     <Selector title={'Source:'} options={prop.dataSources} sortOrder={'desc'} selected={prop.year} handleSelect={(year) => prop.dispatch(actions.setChartYear(year, prop.id))} />
@@ -54,7 +56,7 @@ const Chart = (prop: ChartProp) => {
                     <Button graphic={'fas fa-trash'} classes={'ml-2 mr-4 danger'} onClick={() => prop.dispatch(actions.removeChart(prop.id))} />
                     <IndexDetails data={prop.activeIndex} />
                     <Selector title={'Type:'} options={prop.chartTypes} selected={prop.type} classes={'ml-auto'} handleSelect={(type) => prop.dispatch(actions.setChartType(type, prop.id))} />
-                    <ButtonGroup options={prop.resolutionOptions} active={prop.chartResolution} handleSelect={(resolution) => prop.dispatch(actions.setChartResolution(resolution, prop.id, prop.year))} classes={`${prop.width === 12 ? 'ml-2' : ''}`} />
+                    <ButtonGroup options={prop.resolutionOptions} active={prop.chartResolution}  classes={`${prop.width === 12 ? 'ml-2' : ''}`} handleSelect={resolution => handleResolutionSelect(resolution.toString(), prop.id, prop.year)} />
                 </div>
                 <div ref={chartBox} className={`row no-gutters col-12 graph mt-2 border ${prop.selected ? 'selected' : null} rounded`} onClick={() => prop.dispatch(actions.selectChart(prop.id))}></div>
             </section>
