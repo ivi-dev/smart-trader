@@ -113,7 +113,7 @@ export const main = (state = initialState, action: Action) => {
             return Object.assign({}, state, {charts: charts1});    
         case actions.SET_CHART_YEAR:
             const yearArg = action.arg as {year: number, chartId: number};
-            const source = yearArg.year, chart = state.charts.find(chart => chart.id === yearArg.chartId), data = formatIndexHistory(state.chartDataSourceArchive.find(entry => entry.source == source)!.data, chart!.resolution);
+            const source = yearArg.year, chart = state.charts.find(chart => chart.id === yearArg.chartId), data = formatIndexHistory(state.chartDataSourceArchive.find(entry => String(entry.source) === String(source))!.data, chart!.resolution);
             const charts2 = state.charts.slice();
             for (let index = 0; index < charts2.length; index++) {
                 if (charts2[index].id === yearArg.chartId) {
@@ -126,7 +126,7 @@ export const main = (state = initialState, action: Action) => {
         case actions.SET_CHART_RESOLUTION:
             const resolutionArg = action.arg as {resolution: string, chartId: number, 
                 year: number};
-            const formatted = formatIndexHistory(state.chartDataSourceArchive.find(entry => entry.source == resolutionArg.year)!.data, resolutionArg.resolution);
+            const formatted = formatIndexHistory(state.chartDataSourceArchive.find(entry => String(entry.source) === String(resolutionArg.year))!.data, resolutionArg.resolution);
             const charts3 = state.charts.slice();
             for (let index = 0; index < charts3.length; index++) {
                 if (charts3[index].id === resolutionArg.chartId) {
@@ -221,14 +221,14 @@ export const main = (state = initialState, action: Action) => {
         case actions.SET_SELL_QTY:
             return Object.assign({}, state, {sellQty: action.arg as number});
         case actions.SET_ORDER_HISTORY:
-            console.log(action.arg as TableData)
             return Object.assign({}, state, {reportData: {...state.reportData, orderHistory: (action.arg as TableData)}});
         case actions.SET_ACTIVITIES:
             return Object.assign({}, state, {reportData: {...state.reportData, activities: (action.arg as ListData)}});
         case actions.SET_HEADLINES:
             return Object.assign({}, state, {reportData: {...state.reportData, headlines: (action.arg as ListData)}});
         case actions.TOGGLE_HELP:
-            return Object.assign({}, state, {help: {...state.help, visible: !state.help.visible}});
+            const option = action.arg as string
+            return Object.assign({}, state, {help: {...state.help, visible: option === 'close' ? false : true}});
         case actions.SET_ACTIVE_HELP_SECTION:
             const sections = state.help.sections.slice();
             sections.forEach(section => {if (section.name === action.arg as string) {section.selected = true} else {delete section.selected}});
