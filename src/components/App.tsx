@@ -102,7 +102,7 @@ const App = (prop: AppProp) => {
           <Input type="number" value={prop.sellQty} handleChange={(value) => prop.dispatch(actions.setSellQty(Number(value)))} classes="ml-3 text-white pl-2 sell rounded-left" style={{width: '50px'}} handleReturnKeyPress={() => prop.dispatch(actions.sell())} />
           <ButtonGroup options={prop.sellButtons} classes={'my-3 sell-buttons'} btnClasses={'single'} />
 
-          <ButtonGroup options={prop.reportButtons} handleSelect={(type) => prop.dispatch(actions.addBox(BoxData.getBoxType(type)))} classes={'ml-4 my-3'} />
+          <ButtonGroup options={prop.reportButtons} classes={'ml-4 my-3'} />
 
           <ButtonGroup options={prop.generalButtons} classes={'ml-2 my-3'} />
         </Row>
