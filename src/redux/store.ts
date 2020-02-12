@@ -9,6 +9,8 @@ import Alert from '../Alert';
 import BoxData, { BoxType } from '../BoxData';
 import Storage, { Keys } from '../Storage';
 import * as actions from './actions';
+import News, { Category } from '../News';
+import { fullDate } from '../utility';
 
 export type ChartType = 'bar' | 'candlestick' | 'line';
 export const ORDER_HEADERS = [
@@ -24,6 +26,7 @@ export type Option = {
     graphic?: string,
     title?: string,
     data?: string,
+    onClick?: (value: string | number) => void,
     selected?: boolean
 }
 
@@ -31,6 +34,7 @@ export type ReportData = {
     orderHistory: TableData,
     activities: ListData,
     headlines: ListData,
+    headlinesMenuItems: Option[],
     alerts: Alert[]
 }
 
@@ -91,7 +95,14 @@ Storage.get(Keys.ACTIVITY).then(rows => {
     }
 });
 
-const randomHeadlines = random.headlines(0);
+const fetchHeadlines = (category: Category) =>
+    News.headlines(category, articles => {
+        const headlines: ListDataRow[] = [];
+        articles.forEach(article => headlines.push(new ListDataRow(article.title, undefined, `${article.author} @ ${fullDate(new Date(article.publishedAt))}`)));
+        store.dispatch(actions.setHeadlines(new ListData(headlines)));
+    }, error => store.dispatch(actions.setHeadlines(new ListData([new ListDataRow('An error occurred while trying get the latest headlines.')]))));
+fetchHeadlines('business');
+
 const randomAlerts = random.alerts(0);
 
 
@@ -144,7 +155,8 @@ export const state: State = {
     reportData: {
         orderHistory: new TableData(ORDER_HEADERS, []),
         activities: new ListData([]),
-        headlines: randomHeadlines,
+        headlines: new ListData([]),
+        headlinesMenuItems: [{name: 'business', onClick: (category) => fetchHeadlines(category as Category)}, {name: 'entertainment', onClick: (category) => fetchHeadlines(category as Category)}, {name: 'general', onClick: (category) => fetchHeadlines(category as Category)}, {name: 'health', onClick: (category) => fetchHeadlines(category as Category)}, {name: 'science', onClick: (category) => fetchHeadlines(category as Category)}, {name: 'sports', onClick: (category) => fetchHeadlines(category as Category)}, {name: 'technology', onClick: (category) => fetchHeadlines(category as Category)}],
         alerts: randomAlerts
     },
     boxes: [
