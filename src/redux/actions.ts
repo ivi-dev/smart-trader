@@ -165,9 +165,9 @@ export const setHeadlines = (headlines: ListData) => ({
     arg: headlines
 });
 
-export const toggleHelp = () => ({
+export const toggleHelp = (option: 'open' | 'close') => ({
     type: TOGGLE_HELP,
-    arg: null
+    arg: option
 });
 
 export const setActiveHelpSection = (section: string) =>({
