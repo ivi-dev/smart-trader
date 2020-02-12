@@ -14,11 +14,13 @@ type HelpProp = {
 
 const Help = (prop: HelpProp) => {
     const handleKeyDown = (keyCode: number) => {
-        if (keyCode === 27) {
-            if (prop.dispatch) {
-                prop.dispatch(actions.toggleHelp());
+        if (prop.dispatch) {
+            if (keyCode === 27) {
+                prop.dispatch(actions.toggleHelp('close'));
+            } else if (keyCode === 112) {
+                prop.dispatch(actions.toggleHelp('open'));
             }
-        }
+        } 
     }
     const ref: RefObject<HTMLDivElement> = React.createRef();
     useEffect(() => {
@@ -26,9 +28,9 @@ const Help = (prop: HelpProp) => {
     });
     return (
         <div className={`help position-fixed shadow rounded p-4 ${prop.visible ? 'slid-down' : 'slid-up'}`} tabIndex={0} onKeyDown={(e) => handleKeyDown(e.keyCode)} ref={ref}>
-        <i className="fas fa-times rounded position-absolute px-2 py-1" onClick={() => { if (prop.dispatch) {prop.dispatch(actions.toggleHelp())}}}></i>
+        <i className="fas fa-times rounded position-absolute px-2 py-1" onClick={() => { if (prop.dispatch) {prop.dispatch(actions.toggleHelp('close'))}}}></i>
             <div className="row no-gutters mt-2 mb-3 border-bottom sections">
-        {prop.sections.map((section, index) => <a key={index} href="#" className={`col-auto rounded-top p-1 px-2 text-reset text-decoration-none section mr-1 border ${prop.active.toLowerCase() === section.name.toString().toLowerCase() ? 'active' : null}`} onClick={() => {if(prop.dispatch) {prop.dispatch(actions.setActiveHelpSection(section.name.toString()))}}}>{section.name}</a>)}
+        {prop.sections.map((section, index) => <a key={index} href="/" className={`col-auto rounded-top p-1 px-2 text-reset text-decoration-none section mr-1 border ${prop.active.toLowerCase() === section.name.toString().toLowerCase() ? 'active' : null}`} onClick={(e) => {e.preventDefault(); if(prop.dispatch) {prop.dispatch(actions.setActiveHelpSection(section.name.toString()))}}}>{section.name}</a>)}
             </div>
             <div className="row no-gutters">
                 {prop.content}
