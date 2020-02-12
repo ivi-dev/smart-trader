@@ -38,6 +38,7 @@ interface AppProp {
   buyButtons: Option[],
   sellButtons: Option[],
   reportButtons: Option[],
+  generalButtons: Option[],
   reportData: ReportData,
   boxes: BoxData[],
   selectedBox: number | null,
@@ -90,6 +91,8 @@ const App = (prop: AppProp) => {
           <ButtonGroup options={prop.sellButtons} handleSelect={() => prop.dispatch(actions.sell())} classes={'my-3 sell-buttons'} btnClasses={'single'} />
 
           <ButtonGroup options={prop.reportButtons} handleSelect={(type) => prop.dispatch(actions.addBox(BoxData.getBoxType(type)))} classes={'ml-4 my-3'} />
+
+          <ButtonGroup options={prop.generalButtons} handleSelect={(value) => prop.dispatch(actions.handleGeneralButtonClick(value))} classes={'ml-2 my-3'} />
         </Row>
         <Row classes={'chart overflow-auto'} style={{'height': '52vh'}}>
           {prop.charts.map(chart => <Chart key={chart.id} id={chart.id} type={chart.type} width={prop.charts.length === 1 ? 12 : 6} options={prop.chartOptions} data={chart.data} activeIndex={chart.activeIndex} dataSources={prop.dataSources} year={chart.source} dispatch={prop.dispatch} resolutionOptions={prop.resolutionOptions} chartResolution={chart.resolution} chartTypes={prop.chartTypes} chartType={prop.chartType} selected={prop.selectedChart === chart.id ? true : false} />)}
@@ -121,6 +124,7 @@ function mapStateToProps(state: State) {
     buyButtons: state.buyButtons,
     sellButtons: state.sellButtons,
     reportButtons: state.reportButtons,
+    generalButtons: state.generalButtons,
     reportData: state.reportData,
     boxes: state.boxes,
     selectedBox: state.selectedBox,

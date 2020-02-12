@@ -31,6 +31,8 @@ export const SET_ORDER_HISTORY = 'SET_ORDER_HISTORY';
 export const SET_ACTIVITIES = 'ADD_ACTIVITY';
 export const SET_HEADLINES = 'SET_HEADLINES';
 
+export const HANDLE_GENERAL_BUTTON_CLICK = 'HANDLE_GENERAL_BUTTON_CLICK';
+
 export const activityLabels = {
     sell: (amount: number, indexName: string, price: number) => {
         const price_ = (new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'})).format(price);
@@ -159,4 +161,9 @@ export const setActivities = (activity: ListData) => ({
 export const setHeadlines = (headlines: ListData) => ({
     type: SET_HEADLINES,
     arg: headlines
+});
+
+export const handleGeneralButtonClick = (value: string) => ({
+    type: HANDLE_GENERAL_BUTTON_CLICK,
+    arg: value
 });
