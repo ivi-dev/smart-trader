@@ -163,7 +163,3 @@
     top: 35%;
     transition: 250ms;
 }
-
-.box .alert .fas.fa-times:hover {
-    color: rgb(255, 255, 255);
-}
