@@ -31,7 +31,9 @@ export const SET_ORDER_HISTORY = 'SET_ORDER_HISTORY';
 export const SET_ACTIVITIES = 'ADD_ACTIVITY';
 export const SET_HEADLINES = 'SET_HEADLINES';
 
-export const HANDLE_GENERAL_BUTTON_CLICK = 'HANDLE_GENERAL_BUTTON_CLICK';
+export const TOGGLE_HELP = 'TOGGLE_HELP';
+
+export const SET_ACTIVE_HELP_SECTION = 'SET_ACTIVE_HELP_SECTION';
 
 export const activityLabels = {
     sell: (amount: number, indexName: string, price: number) => {
@@ -163,7 +165,12 @@ export const setHeadlines = (headlines: ListData) => ({
     arg: headlines
 });
 
-export const handleGeneralButtonClick = (value: string) => ({
-    type: HANDLE_GENERAL_BUTTON_CLICK,
-    arg: value
+export const toggleHelp = () => ({
+    type: TOGGLE_HELP,
+    arg: null
+});
+
+export const setActiveHelpSection = (section: string) =>({
+    type: SET_ACTIVE_HELP_SECTION,
+    arg: section
 });
