@@ -1,12 +1,12 @@
 .menu {
     top: 20px;
-    right: 25px;
+    right: 50px;
     background-color: rgb(52, 63, 88);
     z-index: 10000;
 }
 
 a {
-    font-size: 95%;
+    font-size: 80%;
     transition: 250ms;
 }
 
