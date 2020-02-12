@@ -6,8 +6,7 @@ import ChartData, { ChartDataEntry } from '../ChartData';
 import BoxData, { BoxType } from '../BoxData';
 import TableData, { TableRow, TableCell } from '../TableData';
 import ListData, { ListDataRow } from '../ListData';
-import { fullDate, shortDate, time } from '../utility';
-import localforage from 'localforage';
+import { fullDate, time } from '../utility';
 import Storage from '../Storage';
 
 const formatIndexHistory = (history: ChartData, format: string) => {
@@ -228,6 +227,12 @@ export const main = (state = initialState, action: Action) => {
             return Object.assign({}, state, {reportData: {...state.reportData, activities: (action.arg as ListData)}});
         case actions.SET_HEADLINES:
             return Object.assign({}, state, {reportData: {...state.reportData, headlines: (action.arg as ListData)}});
+        case actions.TOGGLE_HELP:
+            return Object.assign({}, state, {help: {...state.help, visible: !state.help.visible}});
+        case actions.SET_ACTIVE_HELP_SECTION:
+            const sections = state.help.sections.slice();
+            sections.forEach(section => {if (section.name === action.arg as string) {section.selected = true} else {delete section.selected}});
+            return Object.assign({}, state, {help: {...state.help, sections: sections}});
         default:
             return state;
     }
