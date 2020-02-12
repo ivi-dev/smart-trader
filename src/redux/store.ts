@@ -161,7 +161,7 @@ export const state: State = {
                     {name: '', graphic: 'fas fa-flag', title: 'Add an Activity Report', data: 'activity'},
                     {name: '', graphic: 'far fa-newspaper', title: 'Add a Headlines Report', data: 'headlines'}, 
                     {name: '', graphic: 'far fa-bell', title: 'Add a Notifications Report', data: 'alerts'}],
-    generalButtons: [{name: '', graphic: 'fas fa-question-circle', onClick: () => store.dispatch(actions.toggleHelp())}],
+    generalButtons: [{name: '', graphic: 'fas fa-question-circle', onClick: () => store.dispatch(actions.toggleHelp('open'))}],
     reportData: {
         orderHistory: new TableData(ORDER_HEADERS, []),
         activities: new ListData([]),
