@@ -11,6 +11,7 @@ import Storage, { Keys } from '../Storage';
 import * as actions from './actions';
 import News, { Category } from '../News';
 import { fullDate } from '../utility';
+import { help } from '../help';
 
 export type ChartType = 'bar' | 'candlestick' | 'line';
 export const ORDER_HEADERS = [
@@ -47,6 +48,11 @@ export type ChartDescriptor = {
     activeIndex: IndexData
 }
 
+export type HelpType = {
+    visible: boolean,
+    sections: Option[]
+}
+
 export interface State {
     selectedIndex: IndexData | null,
     indicesList: IndexData[],
@@ -76,7 +82,9 @@ export interface State {
 
     balance: number,
     buyQty: number,
-    sellQty: number
+    sellQty: number,
+
+    help: HelpType
 }
 
 const randomIndices = random.indices(100);
@@ -153,7 +161,7 @@ export const state: State = {
                     {name: '', graphic: 'fas fa-flag', title: 'Add an Activity Report', data: 'activity'},
                     {name: '', graphic: 'far fa-newspaper', title: 'Add a Headlines Report', data: 'headlines'}, 
                     {name: '', graphic: 'far fa-bell', title: 'Add a Notifications Report', data: 'alerts'}],
-    generalButtons: [{name: '', graphic: 'fas fa-question-circle', onClick: () => store.dispatch(actions.handleGeneralButtonClick('help'))}],
+    generalButtons: [{name: '', graphic: 'fas fa-question-circle', onClick: () => store.dispatch(actions.toggleHelp())}],
     reportData: {
         orderHistory: new TableData(ORDER_HEADERS, []),
         activities: new ListData([]),
@@ -171,7 +179,18 @@ export const state: State = {
 
     balance: 10000,
     buyQty: 1,
-    sellQty: 1
+    sellQty: 1,
+
+    help: {
+        visible: false,
+        sections: [
+            {name: 'Overview', data: help.overview, onClick: (section) => store.dispatch(actions.setActiveHelpSection(section.toString())), selected: true},
+            {name: 'Basic Navigation', data: help.basicNavigation, onClick: (section) => store.dispatch(actions.setActiveHelpSection(section.toString()))},
+            {name: 'Exploring Stocks', data: help.exploringStocks, onClick: (section) => store.dispatch(actions.setActiveHelpSection(section.toString()))},
+            {name: 'Buying/Selling Stocks', data: help.buyingSellinStocks, onClick: (section) => store.dispatch(actions.setActiveHelpSection(section.toString()))},
+            {name: 'Customizing Your Workspace', data: help.customizingYourWorkspace, onClick: (section) => store.dispatch(actions.setActiveHelpSection(section.toString()))}
+        ]
+    }
 }
 
 export const store = createStore(main);
