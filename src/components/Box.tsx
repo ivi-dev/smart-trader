@@ -14,7 +14,7 @@ interface BoxProp {
     status?: string,
     menuItems?: Option[],
     secondary?: JSX.Element,
-    selected: boolean,
+    selectedBox: number | null,
     classes?: string,
     tableData?: TableData,
     listData?: ListData,
@@ -88,18 +88,29 @@ const Box: BoxComponent = (prop: BoxProp) => {
             </div>
         }
     }
-    const handleKeyDown = (keyCode: number) => {
+    const handleKeyDown = (keyCode: number, altlKey: boolean) => {
         if (keyCode === 37) {
-            prop.dispatch(actions.moveBoxBack(prop.id));
+            if (prop.selectedBox === prop.id) {
+                if (altlKey) {
+                    prop.dispatch(actions.moveBoxBack(prop.id));
+                }
+            }
         } else if (keyCode === 39) {
-            prop.dispatch(actions.moveBoxForward(prop.id));
+            if (prop.selectedBox === prop.id) {
+                if (altlKey) {
+                    prop.dispatch(actions.moveBoxForward(prop.id));
+                }
+            }
         } else if (keyCode === 27) {
+            if (prop.selectedBox === prop.id) {
+                prop.dispatch(actions.selectBox(prop.id))
+            }
             setMenuVisible(false);
         }
     }
     const [ menuVisible, setMenuVisible ] = useState(false);
     return (
-        <div className={`box col mr-3 mt-1 shadow pb-1 rounded ${prop.classes} ${prop.selected ? 'selected' : null}`} onClick={() => prop.dispatch(actions.selectBox(prop.id))} tabIndex={prop.id} onKeyDown={(e) => handleKeyDown(e.keyCode)}>
+        <div className={`box col mr-3 mt-1 shadow pb-1 rounded ${prop.classes} ${prop.selectedBox === prop.id ? 'selected' : null}`} onClick={() => prop.dispatch(actions.selectBox(prop.id))} tabIndex={prop.id} onKeyDown={(e) => handleKeyDown(e.keyCode, e.altKey)}>
             {prop.menuItems && <Menu items={prop.menuItems} visible={menuVisible} />}
             <div className="row no-gutters header p-2 pl-3 align-items-center">
                 {prop.title}&nbsp;&nbsp;

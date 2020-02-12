@@ -22,16 +22,16 @@ const Reports = (prop: ReportsProp) => {
     prop.boxes.map(box => {
         switch (box.type) {
             case BoxType.ORDER_HISTORY:
-                return <Box key={box.id} id={box.id} title={box.title} status={'No data yet.'} selected={prop.selectedBox === box.id ? true : false}
+                return <Box key={box.id} id={box.id} title={box.title} status={'No data yet.'} selectedBox={prop.selectedBox}
                     tableData={prop.data.orderHistory} dispatch={prop.dispatch}  />
             case BoxType.RECENT_ACTIVIY:
-                return <Box key={box.id} id={box.id} title={box.title} status={'No data yet.'} selected={prop.selectedBox === box.id ? true : false}
+                return <Box key={box.id} id={box.id} title={box.title} status={'No data yet.'} selectedBox={prop.selectedBox}
                     listData={prop.data.activities} dispatch={prop.dispatch}  />
             case BoxType.HEADLINES:
-                return <Box key={box.id} id={box.id} title={box.title} status={'Fetching headlines...'} classes={'headlines'} secondary={<span className="small text-muted">Powered by NewsAPI.com</span>} selected={prop.selectedBox === box.id ? true : false}
+                return <Box key={box.id} id={box.id} title={box.title} status={'Fetching headlines...'} classes={'headlines'} secondary={<span className="small text-muted">Powered by NewsAPI.com</span>} selectedBox={prop.selectedBox}
                     listData={prop.data.headlines} dispatch={prop.dispatch} menuItems={prop.data.headlinesMenuItems} />
             default:
-                return <Box key={box.id} id={box.id} title={box.title} status={'No alerts.'} selected={prop.selectedBox === box.id ? true : false}
+                return <Box key={box.id} id={box.id} title={box.title} status={'No alerts.'} selectedBox={prop.selectedBox}
                     alerts={prop.data.alerts} dispatch={prop.dispatch} />
         }
     });
