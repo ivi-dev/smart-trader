@@ -58,7 +58,7 @@ const Chart = (prop: ChartProp) => {
                     <Selector title={'Type:'} options={prop.chartTypes} selected={prop.type} classes={'ml-auto'} handleSelect={(type) => prop.dispatch(actions.setChartType(type, prop.id))} />
                     <ButtonGroup options={prop.resolutionOptions} active={prop.chartResolution}  classes={`${prop.width === 12 ? 'ml-2' : ''}`} handleSelect={resolution => handleResolutionSelect(resolution.toString(), prop.id, prop.year)} />
                 </div>
-                <div ref={chartBox} className={`row no-gutters col-12 graph mt-4 border ${prop.selected ? 'selected' : null} rounded`} onClick={() => prop.dispatch(actions.selectChart(prop.id))}></div>
+                <div ref={chartBox} className={`row no-gutters col-12 graph border ${prop.selected ? 'selected' : null} rounded`} onClick={() => prop.dispatch(actions.selectChart(prop.id))}></div>
             </section>
 };
 

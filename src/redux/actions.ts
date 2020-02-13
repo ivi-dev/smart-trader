@@ -1,9 +1,10 @@
 import IndexData from '../IndexData';
-import { BoxType } from '../BoxData';
+import BoxData, { BoxType } from '../BoxData';
 import ListData from '../ListData';
 import TableData from '../TableData';
 import AlertData from '../AlertData';
 import { ChartDescriptor } from './store';
+import { isVowel } from '../utility';
 
 export const SELECT_INDEX = 'SELECT_INDEX';
 export const SEARCH_FOR_INDEX = 'SEARCH_FOR_INDEX';
@@ -23,6 +24,7 @@ export const REMOVE_BOX = 'REMOVE_BOX';
 export const SELECT_BOX = 'SELECT_BOX';
 export const MOVE_BOX_BACK = 'MOVE_BOX_BACK';
 export const MOVE_BOX_FORWARD = 'MOVE_BOX_FORWARD';
+export const SET_BOXES = 'SET_BOXES';
 export const DISMISS_ALERT = 'DISMISS_ALERT';
 export const SET_DISPLAYED_ALERTS_LEVEL = 'SET_DISPLAYED_ALERTS_LEVEL';
 export const ADD_ALERT = 'ADD_ALERT';
@@ -50,6 +52,15 @@ export const activityLabels = {
     buy: (amount: number, indexName: string, price: number) => {
         const price_ = (new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'})).format(price);
         return `You bought ${amount} of ${indexName} (-${price_})`
+    },
+    addBox: (boxType: BoxType) => {
+        return `You added a new ${boxType} report`
+    },
+    removeBox: (boxType: BoxType) => {
+        return `You removed ${isVowel(boxType.toString().split('')[0]) ? 'an' : 'a'} ${boxType} report`
+    },
+    moveBox: () => {
+        return 'You moved boxes around'
     }};
 
 export interface Action {
@@ -110,6 +121,11 @@ export const removeChart = (chartId: number) => ({
 export const addBox = (type: BoxType) => ({
     type: ADD_BOX,
     arg: type
+});
+
+export const setBoxes = (boxes: BoxData[]) => ({
+    type: SET_BOXES,
+    arg: boxes
 });
 
 export const removeBox = (id: number) => ({
