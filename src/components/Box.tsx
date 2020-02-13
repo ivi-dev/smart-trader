@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import TableData from '../TableData';
 import ListData from '../ListData';
-import Alert from '../Alert';
+import AlertData from '../AlertData';
 import './Box.css';
 import { Action } from '../redux/actions';
 import * as actions from '../redux/actions';
@@ -18,7 +18,7 @@ interface BoxProp {
     classes?: string,
     tableData?: TableData,
     listData?: ListData,
-    alerts?: Alert[],
+    alerts?: AlertData[],
     dispatch: (action: Action) => void
 }
 
@@ -79,33 +79,55 @@ const Box: BoxComponent = (prop: BoxProp) => {
             </div>
         } else {
             content = <div className="scroll-area mt-2">
-                {prop.alerts.map(alert => 
-                    <div key={alert.id} className="row p-2 pl-2 mx-3 mb-2 no-gutters alert shadow-sm position-relative">
-                        {alert.text}
-                        <i className="fas fa-times position-absolute" onClick={() => prop.dispatch(actions.dismissAlert!(alert.id))}></i>
-                    </div>
-                )}
+                {prop.alerts.map(alert => {
+                    let icon = 'fas fa-info-circle', color = '#0099e6';
+                    switch (alert.level) {
+                        case 'error':
+                            icon = 'fas fa-exclamation-circle';
+                            color = '#ff6600';
+                            break;
+                        case 'warning':
+                            icon = 'fas fa-exclamation-triangle';
+                            color = '#e69900';
+                            break;
+                    }
+                    return (
+                        <div key={alert.id} className="row p-2 pl-3 mx-3 mb-2 no-gutters alert shadow-sm position-relative align-items-center">
+                            <i className={`${icon} pr-3`} style={{color: color}}></i>
+                            {alert.text}
+                            <i className="fas fa-times position-absolute" onClick={(e) => {e.stopPropagation(); prop.dispatch(actions.dismissAlert!(!e.altKey ? alert.id : -1))}}></i>
+                        </div>
+                    )
+                    })}
             </div>
         }
     }
-    const handleKeyDown = (keyCode: number, altlKey: boolean) => {
-        if (keyCode === 37) {
-            if (prop.selectedBox === prop.id) {
-                if (altlKey) {
+    const handleKeyDown = (keyCode: number, altKey: boolean) => {
+        if (prop.selectedBox === prop.id) {
+            if (keyCode === 37) {
+                if (altKey) {
                     prop.dispatch(actions.moveBoxBack(prop.id));
                 }
-            }
-        } else if (keyCode === 39) {
-            if (prop.selectedBox === prop.id) {
-                if (altlKey) {
+            } else if (keyCode === 39) {
+                if (altKey) {
                     prop.dispatch(actions.moveBoxForward(prop.id));
                 }
-            }
-        } else if (keyCode === 27) {
-            if (prop.selectedBox === prop.id) {
+            } else if (keyCode === 27) {
                 prop.dispatch(actions.selectBox(prop.id))
+                setMenuVisible(false);
+            } else if (keyCode === 69) {
+                if (altKey) {
+                    prop.dispatch(actions.addAlert('error'));
+                }
+            } else if (keyCode === 87) {
+                if (altKey) {
+                    prop.dispatch(actions.addAlert('warning'));
+                }
+            } else if (keyCode === 73) {
+                if (altKey) {
+                    prop.dispatch(actions.addAlert('info'));
+                }
             }
-            setMenuVisible(false);
         }
     }
     const [ menuVisible, setMenuVisible ] = useState(false);
