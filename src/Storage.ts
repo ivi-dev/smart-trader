@@ -1,6 +1,6 @@
 import localForage from 'localforage';
 import { ListDataRow } from './ListData';
-import { ORDER_HEADERS } from './redux/store';
+import { ORDER_HEADERS, ChartDescriptor } from './redux/store';
 import TableData, { TableRow } from './TableData';
 import AlertData from './AlertData';
 
@@ -8,7 +8,8 @@ export enum Keys {
     ACTIVITY = 'ACTIVITY',
     ORDERS = 'ORDERS',
     BALANCE = 'BALANCE',
-    ALERTS = 'ALERTS'
+    ALERTS = 'ALERTS',
+    CHARTS = 'CHARTS'
 }
 
 export default class Storage {
@@ -52,7 +53,7 @@ export default class Storage {
                 activities_.push(activity);
                 localForage.setItem(Keys.ACTIVITY, activities_).then(activities => {
                     if (callback) {
-                        callback(activities_);
+                        callback(activities);
                     }
                 });
             }
@@ -63,6 +64,14 @@ export default class Storage {
         localForage.setItem(Keys.ALERTS, alerts_).then(alerts => {
             if (callback) {
                 callback(alerts);
+            }
+        });
+    }
+
+    static charts(charts: ChartDescriptor[], callback?: (charts: ChartDescriptor[]) => void) {
+        localForage.setItem(Keys.CHARTS, charts).then(charts => {
+            if (callback) {
+                callback(charts);
             }
         });
     }

@@ -83,7 +83,7 @@ const recordOrder = (type: 'buy' | 'sell', indexName: string,
     new TableCell(type === 'buy' ? 'BUY' : 'SELL', type === 'buy' ? 'buy' : 'sell')]);
     Storage.order(order, type === 'buy' ? balance - price : balance + price, (data, balance) => {store.dispatch(actions.setOrderHistory(data)); store.dispatch(actions.setBalance(balance))});
 
-    const activity = new ListDataRow(type ==='buy' ? actions.activityLabels.buy(qty, indexName, price) : actions.activityLabels.sell(qty, indexName, price), 'far fa-money-bill-alt', fullDate(date));
+    const activity = new ListDataRow(type ==='buy' ? actions.activityLabels.buy(qty, indexName, price) : actions.activityLabels.sell(qty, indexName, price), `far fa-dollar-sign ${type}`, fullDate(date));
     Storage.activity(activity, activities => store.dispatch(actions.setActivities(new ListData(activities))));
     
     return { price };
@@ -92,6 +92,10 @@ const recordOrder = (type: 'buy' | 'sell', indexName: string,
 const recordAlerts = (alerts: AlertData[]) => {
     Storage.alerts(alerts, alerts => store.dispatch(actions.setAlerts(alerts)));
 }
+
+const recordCharts = (charts: ChartDescriptor[]) => {
+    Storage.charts(charts, charts => store.dispatch(actions.setCharts(charts)));
+};
 
 export const main = (state = initialState, action: Action) => {
     switch (action.type) {
@@ -134,7 +138,7 @@ export const main = (state = initialState, action: Action) => {
             return Object.assign({}, state, {charts: charts2});    
         case actions.SET_CHART_RESOLUTION:
             const resolutionArg = action.arg as {resolution: string, chartId: number, 
-                year: number};
+                year: number | string};
             const formatted = formatIndexHistory(state.chartDataSourceArchive.find(entry => String(entry.source) === String(resolutionArg.year))!.data, resolutionArg.resolution);
             const charts3 = state.charts.slice();
             for (let index = 0; index < charts3.length; index++) {
@@ -144,7 +148,8 @@ export const main = (state = initialState, action: Action) => {
                     break;
                 }
             }
-            return Object.assign({}, state, {charts: charts3});
+            recordCharts(charts3);
+            return state;
         case actions.ADD_CHART:
             const addChartArg = action.arg as {chartId: number};
             const charts4 = state.charts.slice();
@@ -156,13 +161,17 @@ export const main = (state = initialState, action: Action) => {
                 }
             }
             copy.id = getLatestChartId(state.charts) + 1;
-            return Object.assign({}, state, {charts: state.charts.concat([copy])});    
+            recordCharts(state.charts.concat([copy]));
+            return state;    
         case actions.REMOVE_CHART:
             const removeChartArg = action.arg as {chartId: number};
-            return state.charts.length !== 1 ? Object.assign({}, state, {charts: state.charts.filter(chart => chart.id !== removeChartArg.chartId)}) : state; 
+            recordCharts(state.charts.filter(chart => chart.id !== removeChartArg.chartId));
+            return state;
         case actions.SELECT_CHART:
             const id = action.arg as number;
-            return Object.assign({}, state, {selectedChart: state.selectedChart === id ? null : id});   
+            return Object.assign({}, state, {selectedChart: state.selectedChart === id ? null : id});
+        case actions.SET_CHARTS:
+            return Object.assign({}, state, {charts: action.arg as ChartDescriptor[]});   
         case actions.ADD_BOX:
             let boxTitle = BoxData.getTitle(action.arg as BoxType);
             return Object.assign({}, state, {boxes: state.boxes.concat([new BoxData(getLatestBoxId(state.boxes) + 1, boxTitle, action.arg as BoxType)])}, {selectedBox: null});    

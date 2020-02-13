@@ -3,6 +3,7 @@ import { BoxType } from '../BoxData';
 import ListData from '../ListData';
 import TableData from '../TableData';
 import AlertData from '../AlertData';
+import { ChartDescriptor } from './store';
 
 export const SELECT_INDEX = 'SELECT_INDEX';
 export const SEARCH_FOR_INDEX = 'SEARCH_FOR_INDEX';
@@ -12,6 +13,7 @@ export const REMOVE_FROM_WATCHLIST = 'REMOVE_FROM_WATCHLIST';
 export const SET_CHART_TYPE = 'SET_CHART_TYPE';
 export const SET_CHART_YEAR = 'SET_CHART_SOURCE';
 export const SET_CHART_RESOLUTION = 'SET_CHART_RESOLUTION';
+export const SET_CHARTS = 'SET_CHARTS';
 
 export const ADD_CHART = 'ADD_CHART';
 export const REMOVE_CHART = 'REMOVE_CHART';
@@ -85,7 +87,7 @@ export const setChartYear = (year: string | number, chartId: number) => ({
     arg: { year: year, chartId: chartId }
 });
 
-export const setChartResolution = (resolution: string, chartId: number, year: number) => ({
+export const setChartResolution = (resolution: string, chartId: number, year: number | string) => ({
     type: SET_CHART_RESOLUTION,
     arg: { resolution: resolution, chartId: chartId, year: year }
 });
@@ -198,4 +200,9 @@ export const addAlert = (level: string) => ({
 export const setAlerts = (alerts: AlertData[]) => ({
     type: SET_ALERTS,
     arg: alerts
+});
+
+export const setCharts = (charts: ChartDescriptor[]) => ({
+    type: SET_CHARTS,
+    arg: charts
 });

@@ -44,7 +44,7 @@ export type ReportData = {
 export type ChartDescriptor = {
     id: number,
     type: ChartType,
-    source: number,
+    source: number | string,
     resolution: string,
     data: ChartData,
     activeIndex: IndexData
@@ -131,6 +131,24 @@ Storage.get(Keys.ALERTS).then(alerts => {
         store.dispatch(actions.setAlerts([]));
     }
 });
+
+
+Storage.get(Keys.CHARTS).then(charts => {
+    if (charts) {
+        store.dispatch(actions.setCharts(charts as ChartDescriptor[]));
+    } else {
+        store.dispatch(actions.setCharts([
+            {
+                id: 0,
+                type: 'line',
+                source: 'Intraday',
+                resolution: '1d',
+                activeIndex: randomIndices[0],
+                data: history.archive.find(entry => entry.source === 2019)!.data
+            }
+        ]));
+    }
+})
 
 export const state: State = {
     selectedIndex: randomIndices[0],
