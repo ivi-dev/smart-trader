@@ -134,6 +134,18 @@
     transition: 250ms;
 }
 
+.box .data-row i {
+    font-size: 150%;
+}
+
+.box .data-row i.sell {
+    color: rgb(46, 136, 51) !important;
+}
+
+.box .data-row i.buy {
+    color: rgb(219, 112, 62) !important;
+}
+
 .box.headlines .data-row {
     animation: rotate-in 500ms forwards;
 }

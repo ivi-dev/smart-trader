@@ -63,11 +63,14 @@ const Box: BoxComponent = (prop: BoxProp) => {
             content = <div className="scroll-area">
                 {prop.listData.items.map((item, index) => 
                 <div key={index} className="row data-row no-gutters px-3 py-2 border-bottom">
-                    <div className="row no-gutters col-12">
-                        {item.main}
-                    </div>
-                    <div className="row secondary no-gutters col-12">
-                        {item.secondary && item.secondary}
+                    {item.graphic && <i className={`row no-gutters col-auto ${item.graphic} align-items-center`}></i>}
+                    <div className="col">
+                        <div className="row no-gutters col-12">
+                            {item.main}
+                        </div>
+                        <div className="row secondary no-gutters col-12">
+                            {item.secondary}
+                        </div>
                     </div>
                 </div>)}
             </div>;
