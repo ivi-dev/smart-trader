@@ -91,8 +91,8 @@ const App = (prop: AppProp) => {
       <Column classes={`col-10 vh-100 main-area ${prop.help.visible ? 'faded' : null}`}>
         <Row classes={'px-4 border-bottom status-bar'}>
           <Text content={'Smart Trader'} classes={'h5 font-weight-light mt-2'} />
-          <Text content={'v0.1'} classes={'ml-2 h6 position-relative small'} style={{'top': '3px'}} />
-          <Text content={'alpha'} classes={'ml-1 h6 position-relative text-warning'} style={{top: '0px', fontSize: '65%'}} />
+          <Text content={'v1.0'} classes={'ml-2 h6 position-relative small'} style={{'top': '3px'}} />
+          {/* <Text content={'alpha'} classes={'ml-1 h6 position-relative text-warning'} style={{top: '0px', fontSize: '65%'}} /> */}
           <Text content={'Balance:'} classes={'ml-auto mr-2 text-muted small'} style={{top: '2px'}} />
           <Text content={`${(new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'})).format(prop.balance)}`} style={{fontSize: '120%'}} classes={`mr-4 ${prop.balance < 0 ? 'text-danger' : ''}`} />
 
