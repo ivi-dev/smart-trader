@@ -3,7 +3,7 @@
 }
 
 .chart .graph {
-    height: 89%;
+    height: 75%;
     border-color: transparent !important;
     border-width: 3px !important;
     transition: 500ms;
