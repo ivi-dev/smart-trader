@@ -14,7 +14,7 @@
 }
 
 @keyframes skew-out {
-    from { transform: skew(20deg, 20deg); }
+    from { transform: skew(10deg, 10deg); }
     to { transform: skew(0deg, 0deg); }
 }
 
@@ -135,7 +135,7 @@
 }
 
 .box .data-row i {
-    font-size: 150%;
+    font-size: 140%;
 }
 
 .box .data-row i.sell {
@@ -169,7 +169,7 @@
     border-color: transparent;
     opacity: 0.8;
     transition: 250ms;
-    animation: skew-out 250ms forwards;
+    animation: skew-out 500ms forwards;
 }
 
 .box .alert:hover {
