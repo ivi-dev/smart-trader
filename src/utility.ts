@@ -1,4 +1,5 @@
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const vowels = ['a', 'e', 'i', 'o', 'u'];
 
 export const capitalize = (word: string) => {
     const split = word.split('');
@@ -31,4 +32,8 @@ export const time = (date: Date, separator: string = ':') => {
     seconds = date.getMinutes();
     const hours_ = hours < 10 ? `0${hours}` : hours, minutes_ = minutes < 10 ? `0${minutes}` : minutes, seconds_ = seconds < 10 ? `0${seconds}` : seconds;
     return `${hours_}${separator}${minutes_}${separator}${seconds_}`;
+}
+
+export const isVowel = (letter: string) => {
+    return vowels.includes(letter.toLowerCase());
 }
