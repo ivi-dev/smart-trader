@@ -143,12 +143,23 @@ Storage.get(Keys.CHARTS).then(charts => {
                 type: 'line',
                 source: 'Intraday',
                 resolution: '1d',
-                activeIndex: randomIndices[0],
-                data: history.archive.find(entry => entry.source === 2019)!.data
+                activeIndex: new IndexData(0, '---', 0, 0, 0, 0, 0, 0),
+                data: history.archive.find(entry => entry.source === 'Intraday')!.data
             }
         ]));
     }
-})
+});
+
+Storage.get(Keys.BOXES).then(boxes => {
+    if (boxes) {
+        store.dispatch(actions.setBoxes(boxes as Array<BoxData>));
+    } else {
+        store.dispatch(actions.setBoxes([new BoxData(0, 'Order History', BoxType.ORDER_HISTORY),
+        new BoxData(1, 'Recent Activity', BoxType.RECENT_ACTIVIY),
+        new BoxData(2, 'Latest Headlines', BoxType.HEADLINES),
+        new BoxData(3, 'Notifications', BoxType.ALERTS)]));
+    }
+});
 
 export const state: State = {
     selectedIndex: randomIndices[0],
@@ -182,10 +193,10 @@ export const state: State = {
         {
             id: 0,
             type: 'line',
-            source: 2019,
+            source: 'Intraday',
             resolution: '1d',
-            activeIndex: randomIndices[0],
-            data: history.archive.find(entry => entry.source === 2019)!.data
+            activeIndex: new IndexData(0, '---', 0, 0, 0, 0, 0, 0),
+            data: history.archive.find(entry => entry.source === 'Intraday')!.data
         }
     ],
     selectedChart: null,
@@ -210,12 +221,7 @@ export const state: State = {
         displayedAlertsLevel: 'all',
         alerts: []
     },
-    boxes: [
-        new BoxData(0, 'Order History', BoxType.ORDER_HISTORY),
-        new BoxData(1, 'Recent Activity', BoxType.RECENT_ACTIVIY),
-        new BoxData(2, 'Latest Headlines', BoxType.HEADLINES),
-        new BoxData(3, 'Notifications', BoxType.ALERTS)
-    ],
+    boxes: [],
     selectedBox: null,
 
     balance: 0,

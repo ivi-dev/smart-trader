@@ -52,6 +52,14 @@ const getLatestBoxId = (boxList: BoxData[]) => {
     return boxList.length !== 0 ? boxList[boxList.length - 1].id : 0;
 }
 
+const getBoxType = (boxes: BoxData[], id: number) => {
+    for (const box of boxes) {
+        if (box.id === id) {
+            return box.type;
+        }
+    }
+}
+
 const getLatestAlertId = (alertList: AlertData[]) => {
     return alertList.length !== 0 ? alertList[alertList.length - 1].id : 0;
 }
@@ -66,7 +74,7 @@ const getTargetIndex = (charts: ChartDescriptor[], id: number | null) => {
     } else {
         for (const chart of charts) {
             if (chart.id === id) {
-                return chart.activeIndex;
+                return chart.activeIndex.name !== '---' ? chart.activeIndex : null;
             }
         }
     }
@@ -74,7 +82,6 @@ const getTargetIndex = (charts: ChartDescriptor[], id: number | null) => {
 
 const recordOrder = (type: 'buy' | 'sell', indexName: string, 
     price: number, qty: number, balance: number) => {
-    const date = new Date();
 
     const order = new TableRow([new TableCell(time(new Date())),
     new TableCell(indexName.toUpperCase()),
@@ -83,10 +90,14 @@ const recordOrder = (type: 'buy' | 'sell', indexName: string,
     new TableCell(type === 'buy' ? 'BUY' : 'SELL', type === 'buy' ? 'buy' : 'sell')]);
     Storage.order(order, type === 'buy' ? balance - price : balance + price, (data, balance) => {store.dispatch(actions.setOrderHistory(data)); store.dispatch(actions.setBalance(balance))});
 
-    const activity = new ListDataRow(type ==='buy' ? actions.activityLabels.buy(qty, indexName, price) : actions.activityLabels.sell(qty, indexName, price), `far fa-dollar-sign ${type}`, fullDate(date));
+    const activity = new ListDataRow(type ==='buy' ? actions.activityLabels.buy(qty, indexName, price) : actions.activityLabels.sell(qty, indexName, price), `far fa-dollar-sign ${type}`, fullDate(new Date()));
     Storage.activity(activity, activities => store.dispatch(actions.setActivities(new ListData(activities))));
     
     return { price };
+}
+
+const recordActivity = (activity: ListDataRow) => {
+    Storage.activity(activity, activities => store.dispatch(actions.setActivities(new ListData(activities))));
 }
 
 const recordAlerts = (alerts: AlertData[]) => {
@@ -96,6 +107,10 @@ const recordAlerts = (alerts: AlertData[]) => {
 const recordCharts = (charts: ChartDescriptor[]) => {
     Storage.charts(charts, charts => store.dispatch(actions.setCharts(charts)));
 };
+
+const recordBoxes = (boxes: BoxData[]) => {
+    Storage.boxes(boxes, boxes => store.dispatch(actions.setBoxes(boxes)));
+}
 
 export const main = (state = initialState, action: Action) => {
     switch (action.type) {
@@ -173,10 +188,18 @@ export const main = (state = initialState, action: Action) => {
         case actions.SET_CHARTS:
             return Object.assign({}, state, {charts: action.arg as ChartDescriptor[]});   
         case actions.ADD_BOX:
-            let boxTitle = BoxData.getTitle(action.arg as BoxType);
-            return Object.assign({}, state, {boxes: state.boxes.concat([new BoxData(getLatestBoxId(state.boxes) + 1, boxTitle, action.arg as BoxType)])}, {selectedBox: null});    
+            const boxType = action.arg as BoxType;
+            let boxTitle = BoxData.getTitle(boxType);
+            recordActivity(new ListDataRow(actions.activityLabels.addBox(boxType), 'far fa-square', fullDate(new Date())));
+            recordBoxes(state.boxes.concat([new BoxData(getLatestBoxId(state.boxes) + 1, boxTitle, boxType)]));
+            return Object.assign({}, state, {selectedBox: null});
+        case actions.SET_BOXES:
+            return Object.assign({}, state, {boxes: action.arg as Array<BoxData>});
         case actions.REMOVE_BOX:
-            return Object.assign({}, state, {boxes: state.boxes.filter(box => box.id !== action.arg as number)});    
+            recordActivity(new ListDataRow(actions.activityLabels.removeBox(getBoxType(state.boxes, action.arg as number)!), 'far fa-square', fullDate(new Date())));
+            const boxes = state.boxes.filter(box => box.id !== action.arg as number);
+            recordBoxes(boxes);
+            return Object.assign({}, state, {selectedBox: null});    
         case actions.SELECT_BOX:
             const id1 = action.arg as number;
             return Object.assign({}, state, {selectedBox: state.selectedBox === id1 ? null : id1});
@@ -193,6 +216,7 @@ export const main = (state = initialState, action: Action) => {
                     break;
                 }
             }
+            recordBoxes(boxes_);
             return Object.assign({}, state, {boxes: boxes_});
         case actions.MOVE_BOX_FORWARD:
             const id3 = action.arg as number;
@@ -207,7 +231,8 @@ export const main = (state = initialState, action: Action) => {
                     break;
                 }
             }
-            return Object.assign({}, state, {boxes: boxes_2});
+            recordBoxes(boxes_2);
+            return state;
         case actions.DISMISS_ALERT:
             const alertId_ = action.arg as number;
             if (alertId_ === -1) {

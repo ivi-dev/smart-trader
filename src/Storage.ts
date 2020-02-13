@@ -3,13 +3,15 @@ import { ListDataRow } from './ListData';
 import { ORDER_HEADERS, ChartDescriptor } from './redux/store';
 import TableData, { TableRow } from './TableData';
 import AlertData from './AlertData';
+import BoxData from './BoxData';
 
 export enum Keys {
     ACTIVITY = 'ACTIVITY',
     ORDERS = 'ORDERS',
     BALANCE = 'BALANCE',
     ALERTS = 'ALERTS',
-    CHARTS = 'CHARTS'
+    CHARTS = 'CHARTS',
+    BOXES = 'BOXES'
 }
 
 export default class Storage {
@@ -74,6 +76,14 @@ export default class Storage {
                 callback(charts);
             }
         });
+    }
+
+    static boxes(boxes: BoxData[], callback?: (boxes: BoxData[]) => void) {
+        localForage.setItem(Keys.BOXES, boxes).then(boxes => {
+            if (callback) {
+                callback(boxes);
+            }
+        })
     }
 
     static get(key: Keys) {
