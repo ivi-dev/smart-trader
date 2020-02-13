@@ -73,7 +73,7 @@ test('renders a non-selected box with a title and a close button', () => {
                                                  title={title} 
                                                  tableData={new TableData([new TableCell('')], 
                                                              [new TableRow([new TableCell('')])])} 
-                                                 selectedBox={0}
+                                                 selectedBox={null}
                                                  dispatch={(action: Action) => {}} />);
 
     const box = container.querySelector('.box');
@@ -121,7 +121,7 @@ test('renders a box with a single-row-item list data', () => {
     const dataRows = container.querySelectorAll('.data-row');
     expect(dataRows).toHaveLength(4);
     for (let index = 0; index < dataRows.length; index++) {
-        expect(dataRows[index].children[0].innerHTML).toBe(listItems[index]);
+        expect(dataRows[index].children[0].children[0].innerHTML).toBe(listItems[index]);
     }
 });
 
@@ -132,8 +132,8 @@ test('renders a box with a dual-row-item list data', () => {
     const dataRows = container.querySelectorAll('.data-row');
     expect(dataRows).toHaveLength(4);
     for (let index = 0; index < dataRows.length; index++) {
-        expect(dataRows[index].children[0].innerHTML).toBe(mainListItems[index]);
-        expect(dataRows[index].children[1].innerHTML).toBe(secondaryListItems[index]);
+        expect(dataRows[index].children[0].children[0].innerHTML).toBe(mainListItems[index]);
+        expect(dataRows[index].querySelectorAll('.row')[1].innerHTML).toBe(secondaryListItems[index]);
     }
 });
 

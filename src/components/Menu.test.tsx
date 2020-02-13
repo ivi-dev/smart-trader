@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import Menu from './Menu';
 
-const items = ['Item 1', 'Item 2'];
+const items = [{name: 'Item 1'}, {name: 'Item 2'}];
 const renderMenu = (visible?: boolean) => {
     return render(<Menu items={items} visible={visible} />);
 }
