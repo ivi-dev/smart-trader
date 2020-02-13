@@ -2,32 +2,38 @@ import localForage from 'localforage';
 import { ListDataRow } from './ListData';
 import { ORDER_HEADERS } from './redux/store';
 import TableData, { TableRow } from './TableData';
+import AlertData from './AlertData';
 
 export enum Keys {
     ACTIVITY = 'ACTIVITY',
-    ORDERS = 'ORDERS'
+    ORDERS = 'ORDERS',
+    BALANCE = 'BALANCE',
+    ALERTS = 'ALERTS'
 }
 
 export default class Storage {
-    static order(row: TableRow, callback?: (arg: any) => void) {
+    static order(row: TableRow, balance: number, 
+        callback?: (data: TableData, balance: number) => void) {
         localForage.getItem(Keys.ORDERS).then(orders => {
             let orders_: TableRow[] = [];
             if (orders === null) {
-                localForage.setItem(Keys.ORDERS, [row]).then(() => {
-                    if (callback) {
-                        localForage.getItem(Keys.ORDERS).then(orders => {
-                            callback(new TableData(ORDER_HEADERS, 
-                                orders as Array<TableRow>));
-                        })
-                    }
+                localForage.setItem(Keys.ORDERS, [row]).then(orders_ => {
+                    localForage.setItem(Keys.BALANCE, balance).then(balance => {
+                        if (callback) {
+                            callback(new TableData(ORDER_HEADERS, orders_), balance);
+                        }
+                    });
                 });
             } else {
                 orders_ = (orders as Array<TableRow>).slice();
                 orders_.push(row);
-                localForage.setItem(Keys.ORDERS, orders_).then();
-            }
-            if (callback) {
-                callback(new TableData(ORDER_HEADERS, orders_));
+                localForage.setItem(Keys.ORDERS, orders_).then(orders_ => {
+                    localForage.setItem(Keys.BALANCE, balance).then(balance => {
+                        if (callback) {
+                            callback(new TableData(ORDER_HEADERS, orders_), balance);
+                        }
+                    });
+                });
             }
         });
     }
@@ -36,11 +42,9 @@ export default class Storage {
         localForage.getItem(Keys.ACTIVITY).then(activities => {
             let activities_: ListDataRow[] = [];
             if (activities === null) {
-                localForage.setItem(Keys.ACTIVITY, [activity]).then(() => {
+                localForage.setItem(Keys.ACTIVITY, [activity]).then(activities => {
                     if (callback) {
-                        localForage.getItem(Keys.ACTIVITY).then(activities => {
-                            callback(activities);
-                        })
+                        callback(activities);
                     }
                 });
             } else {
@@ -50,6 +54,14 @@ export default class Storage {
             }
             if (callback) {
                 callback(activities_);
+            }
+        });
+    }
+
+    static alerts(alerts_: AlertData[], callback?: (alerts: AlertData[]) => void) {
+        localForage.setItem(Keys.ALERTS, alerts_).then(alerts => {
+            if (callback) {
+                callback(alerts);
             }
         });
     }

@@ -8,6 +8,7 @@ import TableData, { TableRow, TableCell } from '../TableData';
 import ListData, { ListDataRow } from '../ListData';
 import { fullDate, time } from '../utility';
 import Storage from '../Storage';
+import AlertData, { AlertLevel } from '../AlertData';
 
 const formatIndexHistory = (history: ChartData, format: string) => {
     const formatter = (history: ChartData, chunk: number) => {
@@ -51,6 +52,10 @@ const getLatestBoxId = (boxList: BoxData[]) => {
     return boxList.length !== 0 ? boxList[boxList.length - 1].id : 0;
 }
 
+const getLatestAlertId = (alertList: AlertData[]) => {
+    return alertList.length !== 0 ? alertList[alertList.length - 1].id : 0;
+}
+
 const getLatestChartId = (chartList: ChartDescriptor[]) => {
     return chartList.length !== 0 ? chartList[chartList.length - 1].id : 0;
 }
@@ -68,7 +73,7 @@ const getTargetIndex = (charts: ChartDescriptor[], id: number | null) => {
 }
 
 const recordOrder = (type: 'buy' | 'sell', indexName: string, 
-    price: number, qty: number) => {
+    price: number, qty: number, balance: number) => {
     const date = new Date();
 
     const order = new TableRow([new TableCell(time(new Date())),
@@ -76,12 +81,17 @@ const recordOrder = (type: 'buy' | 'sell', indexName: string,
     new TableCell(price.toString()),
     new TableCell(qty.toString()),
     new TableCell(type === 'buy' ? 'BUY' : 'SELL', type === 'buy' ? 'buy' : 'sell')]);
-    Storage.order(order, (data) => store.dispatch(actions.setOrderHistory(data)));
+    const balance_ = type === 'buy' ? balance - price : balance + price;
+    Storage.order(order, type === 'buy' ? balance - price : balance + price, (data, balance) => {store.dispatch(actions.setOrderHistory(data)); store.dispatch(actions.setBalance(balance))});
 
     const activity = new ListDataRow(type ==='buy' ? actions.activityLabels.buy(qty, indexName, price) : actions.activityLabels.sell(qty, indexName, price), 'far fa-money-bill-alt', fullDate(date));
-    Storage.activity(activity, (activities) => store.dispatch(actions.setActivities(new ListData(activities))));
+    Storage.activity(activity, activities => store.dispatch(actions.setActivities(new ListData(activities))));
     
     return { price };
+}
+
+const recordAlerts = (alerts: AlertData[]) => {
+    Storage.alerts(alerts, alerts => store.dispatch(actions.setAlerts(alerts)));
 }
 
 export const main = (state = initialState, action: Action) => {
@@ -191,29 +201,35 @@ export const main = (state = initialState, action: Action) => {
             }
             return Object.assign({}, state, {boxes: boxes_2});
         case actions.DISMISS_ALERT:
-            return Object.assign({}, state, {reportData: {...state.reportData, alerts: state.reportData.alerts.filter(alert => alert.id !== action.arg as number)}})
+            const alertId_ = action.arg as number;
+            if (alertId_ === -1) {
+                recordAlerts([]);
+            } else {
+                recordAlerts(state.reportData.alerts.filter(alert => alert.id !== alertId_));
+            }
+            return state;
+        case actions.SET_DISPLAYED_ALERTS_LEVEL:
+            return Object.assign({}, state, {displayedAlertsLevel: action.arg as string});
+        case actions.ADD_ALERT:
+            recordAlerts(state.reportData.alerts.concat([new AlertData(getLatestAlertId(state.reportData.alerts) + 1, 'Lorem ipsum', action.arg as AlertLevel)]));
+            return state;
+        case actions.SET_ALERTS:
+            return Object.assign({}, state, {reportData: {...state.reportData, alerts: action.arg as AlertData[]}});
         case actions.BUY:
             if ((action.arg as number) !== 0) {
                 let index = getTargetIndex(state.charts.slice(), state.selectedChart);
                 if (index !== null) {
-                    const { price: spent } = recordOrder('buy', index!.name, index!.current * state.buyQty, state.buyQty);
-                    return Object.assign({}, state, {balance: state.balance - spent});
-                } else {
-                    return state;
+                    recordOrder('buy', index!.name, index!.current * state.buyQty, state.buyQty, state.balance);
                 }
-            } else {
                 return state;
             }
         case actions.SELL:
             if ((action.arg as number) !== 0) {
                 let index2 = getTargetIndex(state.charts.slice(), state.selectedChart);
                 if (index2 !== null) {
-                    const { price: earned } = recordOrder('sell', index2!.name, index2!.current * state.sellQty, state.buyQty);
-                    return Object.assign({}, state, {balance: state.balance + earned});
-                } else {
-                    return state;
+                    recordOrder('sell', index2!.name, index2!.current * state.sellQty, state.buyQty, state.balance);
+                    return Object.assign({}, state);
                 }
-            } else {
                 return state;
             }
         case actions.SET_BUY_QTY:
@@ -233,6 +249,8 @@ export const main = (state = initialState, action: Action) => {
             const sections = state.help.sections.slice();
             sections.forEach(section => {if (section.name === action.arg as string) {section.selected = true} else {delete section.selected}});
             return Object.assign({}, state, {help: {...state.help, sections: sections}});
+        case actions.SET_BALANCE:
+            return Object.assign({}, state, {balance: action.arg as number});
         default:
             return state;
     }
