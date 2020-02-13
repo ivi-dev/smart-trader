@@ -81,7 +81,6 @@ const recordOrder = (type: 'buy' | 'sell', indexName: string,
     new TableCell(price.toString()),
     new TableCell(qty.toString()),
     new TableCell(type === 'buy' ? 'BUY' : 'SELL', type === 'buy' ? 'buy' : 'sell')]);
-    const balance_ = type === 'buy' ? balance - price : balance + price;
     Storage.order(order, type === 'buy' ? balance - price : balance + price, (data, balance) => {store.dispatch(actions.setOrderHistory(data)); store.dispatch(actions.setBalance(balance))});
 
     const activity = new ListDataRow(type ==='buy' ? actions.activityLabels.buy(qty, indexName, price) : actions.activityLabels.sell(qty, indexName, price), 'far fa-money-bill-alt', fullDate(date));
@@ -221,17 +220,16 @@ export const main = (state = initialState, action: Action) => {
                 if (index !== null) {
                     recordOrder('buy', index!.name, index!.current * state.buyQty, state.buyQty, state.balance);
                 }
-                return state;
             }
+            return state;
         case actions.SELL:
             if ((action.arg as number) !== 0) {
                 let index2 = getTargetIndex(state.charts.slice(), state.selectedChart);
                 if (index2 !== null) {
                     recordOrder('sell', index2!.name, index2!.current * state.sellQty, state.buyQty, state.balance);
-                    return Object.assign({}, state);
                 }
-                return state;
             }
+            return state;
         case actions.SET_BUY_QTY:
             return Object.assign({}, state, {buyQty: action.arg as number});
         case actions.SET_SELL_QTY:
