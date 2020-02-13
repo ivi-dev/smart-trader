@@ -5,7 +5,7 @@ import * as random from '../randomizer';
 import ChartData from '../ChartData';
 import TableData, { TableCell, TableRow } from '../TableData';
 import ListData, { ListDataRow } from '../ListData';
-import Alert from '../Alert';
+import AlertData from '../AlertData';
 import BoxData, { BoxType } from '../BoxData';
 import Storage, { Keys } from '../Storage';
 import * as actions from './actions';
@@ -36,7 +36,9 @@ export type ReportData = {
     activities: ListData,
     headlines: ListData,
     headlinesMenuItems: Option[],
-    alerts: Alert[]
+    alertDisplayOptions: Option[],
+    displayedAlertsLevel: DisplayedAlertsLevel,
+    alerts: AlertData[]
 }
 
 export type ChartDescriptor = {
@@ -52,6 +54,8 @@ export type HelpType = {
     visible: boolean,
     sections: Option[]
 }
+
+export type DisplayedAlertsLevel = 'all' | 'error' | 'warning' | 'info';
 
 export interface State {
     selectedIndex: IndexData | null,
@@ -104,6 +108,14 @@ Storage.get(Keys.ACTIVITY).then(rows => {
     }
 });
 
+Storage.get(Keys.BALANCE).then(balance => { 
+    if (balance) {
+        store.dispatch(actions.setBalance(balance as number));
+    } else {
+        store.dispatch(actions.setBalance(10000));
+    }
+});
+
 const fetchHeadlines = (category: Category) =>
     News.headlines(category, articles => {
         const headlines: ListDataRow[] = [];
@@ -114,7 +126,13 @@ fetchHeadlines('business');
 
 const randomAlerts = random.alerts(0);
 
-
+Storage.get(Keys.ALERTS).then(alerts => {
+    if (alerts) {
+        store.dispatch(actions.setAlerts(alerts as AlertData[]));
+    } else {
+        store.dispatch(actions.setAlerts([]));
+    }
+});
 
 export const state: State = {
     selectedIndex: randomIndices[0],
@@ -156,7 +174,7 @@ export const state: State = {
     ],
     selectedChart: null,
     buyButtons: [{name: 'Buy', onClick: () => store.dispatch(actions.buy())}],
-    sellButtons: [{name: 'Sell', onClick: () => store.dispatch(actions.buy())}],
+    sellButtons: [{name: 'Sell', onClick: () => store.dispatch(actions.sell())}],
     reportButtons: [{name: '', graphic: 'fas fa-history', title: 'Add a History Report', data: 'history', onClick: () => store.dispatch(actions.addBox(BoxData.getBoxType('history')))},
                     {name: '', graphic: 'fas fa-flag', title: 'Add an Activity Report', data: 'activity', onClick: () => store.dispatch(actions.addBox(BoxData.getBoxType('activity')))},
                     {name: '', graphic: 'far fa-newspaper', title: 'Add a Headlines Report', data: 'headlines', onClick: () => store.dispatch(actions.addBox(BoxData.getBoxType('headlines')))}, 
@@ -167,6 +185,13 @@ export const state: State = {
         activities: new ListData([]),
         headlines: new ListData([]),
         headlinesMenuItems: [{name: 'business', onClick: (category) => fetchHeadlines(category as Category)}, {name: 'entertainment', onClick: (category) => fetchHeadlines(category as Category)}, {name: 'general', onClick: (category) => fetchHeadlines(category as Category)}, {name: 'health', onClick: (category) => fetchHeadlines(category as Category)}, {name: 'science', onClick: (category) => fetchHeadlines(category as Category)}, {name: 'sports', onClick: (category) => fetchHeadlines(category as Category)}, {name: 'technology', onClick: (category) => fetchHeadlines(category as Category)}],
+        alertDisplayOptions: [
+            {name: 'all', onClick: () => store.dispatch(actions.setDisplayedAlertsLevel('all'))},
+            {name: 'info', onClick: () => store.dispatch(actions.setDisplayedAlertsLevel('info'))},
+            {name: 'warning', onClick: () => store.dispatch(actions.setDisplayedAlertsLevel('warning'))},
+            {name: 'level', onClick: () => store.dispatch(actions.setDisplayedAlertsLevel('level'))}
+        ],
+        displayedAlertsLevel: 'all',
         alerts: randomAlerts
     },
     boxes: [
@@ -177,7 +202,7 @@ export const state: State = {
     ],
     selectedBox: null,
 
-    balance: 10000,
+    balance: 0,
     buyQty: 1,
     sellQty: 1,
 
