@@ -4,6 +4,7 @@ import BoxData, { BoxType } from '../BoxData';
 import Box from './Box';
 import { ReportData } from '../redux/store';
 import { Action } from '../redux/actions';
+import AlertData from '../AlertData';
 
 interface ReportsProp {
     data: ReportData,
@@ -31,8 +32,12 @@ const Reports = (prop: ReportsProp) => {
                 return <Box key={box.id} id={box.id} title={box.title} status={'Fetching headlines...'} classes={'headlines'} secondary={<span className="small text-muted">Powered by NewsAPI.com</span>} selectedBox={prop.selectedBox}
                     listData={prop.data.headlines} dispatch={prop.dispatch} menuItems={prop.data.headlinesMenuItems} />
             default:
+                let alerts = prop.data.alerts;
+                if (prop.data.displayedAlertsLevel !== 'all') {
+                    alerts = prop.data.alerts.slice().filter(alert => alert.level === prop.data.displayedAlertsLevel);
+                }
                 return <Box key={box.id} id={box.id} title={box.title} status={'No alerts.'} selectedBox={prop.selectedBox}
-                    alerts={prop.data.alerts} dispatch={prop.dispatch} />
+                    alerts={alerts} dispatch={prop.dispatch} menuItems={prop.data.alertDisplayOptions} />
         }
     });
     return (
