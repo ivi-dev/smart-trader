@@ -3,7 +3,7 @@ import ChartData, { ChartDataEntry } from './ChartData';
 import TableData, { TableRow, TableCell } from './TableData';
 import ListData, { ListDataRow } from './ListData';
 import { formatDate } from './utility';
-import Alert from './Alert';
+import AlertData from './AlertData';
 import { ORDER_HEADERS } from './redux/store';
 
 export const number = (min: number, max: number) => {
@@ -115,9 +115,9 @@ export const headlines = (num = 15) => {
 }
 
 export const alerts = (num = 20) => {
-    let list: Alert[] = [];
+    let list: AlertData[] = [];
     for (let index = 0; index < num; index++) {
-        list.push(new Alert(index, 'Lorem ipsum'));
+        list.push(new AlertData(index, 'Lorem ipsum'));
     }
     return list;
 }
