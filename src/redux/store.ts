@@ -124,8 +124,6 @@ const fetchHeadlines = (category: Category) =>
     }, error => store.dispatch(actions.setHeadlines(new ListData([new ListDataRow('An error occurred while trying get the latest headlines.')]))));
 fetchHeadlines('business');
 
-const randomAlerts = random.alerts(0);
-
 Storage.get(Keys.ALERTS).then(alerts => {
     if (alerts) {
         store.dispatch(actions.setAlerts(alerts as AlertData[]));
@@ -192,7 +190,7 @@ export const state: State = {
             {name: 'level', onClick: () => store.dispatch(actions.setDisplayedAlertsLevel('level'))}
         ],
         displayedAlertsLevel: 'all',
-        alerts: randomAlerts
+        alerts: []
     },
     boxes: [
         new BoxData(0, 'Order History', BoxType.ORDER_HISTORY),
