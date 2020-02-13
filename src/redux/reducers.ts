@@ -29,7 +29,12 @@ const formatIndexHistory = (history: ChartData, format: string) => {
                 high += history.entries[index2].high;
                 low += history.entries[index2].low;
                 if (index2 === endIndex - 1) {
-                    formattedData.entries.push(new ChartDataEntry(history.entries[index2].time, Number((open / entries).toFixed(2)), Number((close / entries).toFixed(2)), Number((high / entries).toFixed(2)), Number((low / entries).toFixed(2))));
+                    formattedData.entries.push(new ChartDataEntry(
+                        history.entries[index2].time, 
+                        Number((open / entries).toFixed(2)), 
+                        Number((close / entries).toFixed(2)), 
+                        Number((high / entries).toFixed(2)), 
+                        Number((low / entries).toFixed(2))));
                 }
                 entries++;
             }

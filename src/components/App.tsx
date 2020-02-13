@@ -19,7 +19,7 @@ import Column from './Column';
 import Input from './Input';
 import Help from './Help';
 
-interface AppProp {
+type AppProp = {
   selectedIndex: IndexData | null,
   indicesList: IndexData[],
   searchResultsList: IndexData[],
@@ -92,7 +92,6 @@ const App = (prop: AppProp) => {
         <Row classes={'px-4 border-bottom status-bar'}>
           <Text content={'Smart Trader'} classes={'h5 font-weight-light mt-2'} />
           <Text content={'v1.0'} classes={'ml-2 h6 position-relative small'} style={{'top': '3px'}} />
-          {/* <Text content={'alpha'} classes={'ml-1 h6 position-relative text-warning'} style={{top: '0px', fontSize: '65%'}} /> */}
           <Text content={'Balance:'} classes={'ml-auto mr-2 text-muted small'} style={{top: '2px'}} />
           <Text content={`${(new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'})).format(prop.balance)}`} style={{fontSize: '120%'}} classes={`mr-4 ${prop.balance < 0 ? 'text-danger' : ''}`} />
 
@@ -103,7 +102,6 @@ const App = (prop: AppProp) => {
           <ButtonGroup options={prop.sellButtons} classes={'my-3 sell-buttons'} btnClasses={'single'} />
 
           <ButtonGroup options={prop.reportButtons} classes={'ml-4 my-3'} />
-
           <ButtonGroup options={prop.generalButtons} classes={'ml-2 my-3'} />
         </Row>
         <Row classes={'chart overflow-auto'} style={{'height': '52vh'}}>

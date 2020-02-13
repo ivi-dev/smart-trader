@@ -1,7 +1,7 @@
 import React from 'react';
 import './Button.css';
 
-interface ButtonProp {
+type ButtonProp = {
     title?: string,
     graphic?: string,
     onClick: () => void,

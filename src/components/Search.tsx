@@ -8,14 +8,13 @@ type SearchProp = {
     dispatch: (action: Action) => void
 }
 
-export interface SearchComponent {
-    (prop: SearchProp): JSX.Element;
-}
-
-const Search: SearchComponent = (prop: SearchProp) =>
+const Search = (prop: SearchProp) =>
     <section id="search" className="mb-4 mt-2">
         <input type="search" className="col-12" 
-            placeholder={prop.placeholder} onKeyUp={(e) => {prop.dispatch(actions.searchForIndex((e.target as HTMLInputElement).value))}} />
+            placeholder={prop.placeholder} 
+            onKeyUp={(e) => {
+                prop.dispatch(actions.searchForIndex(
+                    (e.target as HTMLInputElement).value))}} />
         <i className="fas fa-search position-absolute"></i>
     </section>
 

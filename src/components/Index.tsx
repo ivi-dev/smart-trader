@@ -2,9 +2,10 @@ import React from 'react';
 import IndexData from '../IndexData';
 import './Index.css';
 
-interface IndexProp {
+type IndexProp = {
     data: IndexData,
-    handleClick: (altKey: boolean, data: IndexData) => void
+    handleClick: (altKey: boolean, 
+        data: IndexData) => void
 }
 
 const Index = (prop: IndexProp) => {

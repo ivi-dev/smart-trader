@@ -7,6 +7,9 @@ type TextProp = {
 }
 
 const Text = (prop: TextProp) =>
-    <span className={prop.classes} style={prop.style}>{prop.content}</span>
+    <span className={prop.classes} 
+          style={prop.style}>
+              {prop.content}
+    </span>
 
 export default Text;

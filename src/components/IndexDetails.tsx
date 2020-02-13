@@ -2,7 +2,7 @@ import React from 'react';
 import './IndexDetails.css';
 import IndexData from '../IndexData';
 
-interface IndexDetailsProp {
+type IndexDetailsProp = {
     data: IndexData | null
 }
 
@@ -15,7 +15,10 @@ const IndexDetails = (prop: IndexDetailsProp) =>
         </div>
         <div className="current pr-3 text-center">
             <div className="title">CURRENT</div>
-            <div className={`value ${prop.data && (prop.data?.current < prop.data?.open) ? 'negative' : 'positive'}`}>{prop.data?.current || 'xxx'}</div>
+            <div className={`value ${prop.data && (prop.data?.current < 
+                prop.data?.open) ? 'negative' : 'positive'}`}>
+                    {prop.data?.current || 'xxx'}
+            </div>
         </div>
     </div>
 

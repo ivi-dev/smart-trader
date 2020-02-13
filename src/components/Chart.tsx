@@ -12,7 +12,7 @@ import * as actions from '../redux/actions';
 import Button from './Button';
 import IndexDetails from './IndexDetails';
 
-interface ChartProp {
+type ChartProp = {
     id: number,
     type: ChartType,
     width: number,

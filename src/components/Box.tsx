@@ -9,13 +9,13 @@ import { Option } from '../redux/store';
 import Menu from './Menu';
 import { capitalize } from '../utility';
 
-interface BoxProp {
+type BoxProp = {
     id: number,
     title: string,
+    selectedBox: number | null,
     status?: string,
     menuItems?: Option[],
     secondary?: JSX.Element,
-    selectedBox: number | null,
     classes?: string,
     tableData?: TableData,
     listTitle?: string,
@@ -24,11 +24,7 @@ interface BoxProp {
     dispatch: (action: Action) => void
 }
 
-export interface BoxComponent {
-    (prop: BoxProp): JSX.Element;
-}
-
-const Box: BoxComponent = (prop: BoxProp) => {
+const Box = (prop: BoxProp) => {
     let content = <div className="empty-label text-muted text-center col-12 mt-5">{prop.status}</div>;
     if (prop.tableData) {
         if (prop.tableData?.rows.length === 0) {

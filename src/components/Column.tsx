@@ -1,7 +1,7 @@
 import React from 'react';
 import './Column.css';
 
-interface ColumnProp {
+type ColumnProp = {
     classes?: string,
     children?: {}
 }

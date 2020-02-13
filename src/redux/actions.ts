@@ -46,24 +46,27 @@ export const SET_BALANCE = 'SET_BALANCE';
 
 export const activityLabels = {
     sell: (amount: number, indexName: string, price: number) => {
-        const price_ = (new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'})).format(price);
+        const price_ = (new Intl.NumberFormat(
+            'en-US', {style: 'currency', currency: 'USD'})).format(price);
         return `You sold ${amount} of ${indexName} (+${price_})`;
     },
     buy: (amount: number, indexName: string, price: number) => {
-        const price_ = (new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'})).format(price);
+        const price_ = (new Intl.NumberFormat(
+            'en-US', {style: 'currency', currency: 'USD'})).format(price);
         return `You bought ${amount} of ${indexName} (-${price_})`
     },
     addBox: (boxType: BoxType) => {
         return `You added a new ${boxType} report`
     },
     removeBox: (boxType: BoxType) => {
-        return `You removed ${isVowel(boxType.toString().split('')[0]) ? 'an' : 'a'} ${boxType} report`
+        return `You removed ${isVowel(boxType.toString().split('')[0]) ?
+         'an' : 'a'} ${boxType} report`
     },
     moveBox: () => {
         return 'You moved boxes around'
     }};
 
-export interface Action {
+export type Action = {
     type: string,
     arg: any
 }
