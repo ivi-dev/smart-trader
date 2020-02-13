@@ -7,6 +7,7 @@ import { Action } from '../redux/actions';
 import * as actions from '../redux/actions';
 import { Option } from '../redux/store';
 import Menu from './Menu';
+import { capitalize } from '../utility';
 
 interface BoxProp {
     id: number,
@@ -17,6 +18,7 @@ interface BoxProp {
     selectedBox: number | null,
     classes?: string,
     tableData?: TableData,
+    listTitle?: string,
     listData?: ListData,
     alerts?: AlertData[],
     dispatch: (action: Action) => void
@@ -60,9 +62,10 @@ const Box: BoxComponent = (prop: BoxProp) => {
                       <div className="empty-label text-muted text-center col-12 mt-5">{prop.status}</div>
                   </div>;
         } else {
-            content = <div className="scroll-area">
+            content = <div className={`scroll-area ${prop.listTitle ? 'lower' : null}`}>
+                {prop.listTitle && <div className="row no-gutters p-2 pl-4 list-title position-absolute col-12">{capitalize(prop.listTitle)}</div>}
                 {prop.listData.items.map((item, index) => 
-                <div key={index} className="row data-row no-gutters px-3 py-2 border-bottom">
+                <div key={index} className="row data-row position-relative no-gutters px-3 py-2 border-bottom">
                     {item.graphic && <i className={`row no-gutters col-auto ${item.graphic} align-items-center`}></i>}
                     <div className="col">
                         <div className="row no-gutters col-12">

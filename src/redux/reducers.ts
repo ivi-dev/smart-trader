@@ -273,7 +273,8 @@ export const main = (state = initialState, action: Action) => {
         case actions.SET_ACTIVITIES:
             return Object.assign({}, state, {reportData: {...state.reportData, activities: (action.arg as ListData)}});
         case actions.SET_HEADLINES:
-            return Object.assign({}, state, {reportData: {...state.reportData, headlines: (action.arg as ListData)}});
+            const { headlines, category } = action.arg as { headlines: ListData, category: string };
+            return Object.assign({}, state, {reportData: {...state.reportData, headlines: headlines, headlinesTitle: category}});
         case actions.TOGGLE_HELP:
             const option = action.arg as string
             return Object.assign({}, state, {help: {...state.help, visible: option === 'close' ? false : true}});

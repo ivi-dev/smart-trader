@@ -2,7 +2,7 @@ import { createStore } from 'redux';
 import { main } from './reducers';
 import IndexData from '../IndexData';
 import * as random from '../randomizer';
-import ChartData from '../ChartData';
+import ChartData, { ChartDataEntry } from '../ChartData';
 import TableData, { TableCell, TableRow } from '../TableData';
 import ListData, { ListDataRow } from '../ListData';
 import AlertData from '../AlertData';
@@ -35,6 +35,7 @@ export type ReportData = {
     orderHistory: TableData,
     activities: ListData,
     headlines: ListData,
+    headlinesTitle: string,
     headlinesMenuItems: Option[],
     alertDisplayOptions: Option[],
     displayedAlertsLevel: DisplayedAlertsLevel,
@@ -83,6 +84,7 @@ export interface State {
     reportData: ReportData,
     boxes: BoxData[],
     selectedBox: number | null,
+    menusVisible: boolean,
 
     balance: number,
     buyQty: number,
@@ -116,14 +118,6 @@ Storage.get(Keys.BALANCE).then(balance => {
     }
 });
 
-const fetchHeadlines = (category: Category) =>
-    News.headlines(category, articles => {
-        const headlines: ListDataRow[] = [];
-        articles.forEach(article => headlines.push(new ListDataRow(article.title, undefined, `${article.author} @ ${fullDate(new Date(article.publishedAt))}`)));
-        store.dispatch(actions.setHeadlines(new ListData(headlines)));
-    }, error => store.dispatch(actions.setHeadlines(new ListData([new ListDataRow('An error occurred while trying get the latest headlines.')]))));
-fetchHeadlines('business');
-
 Storage.get(Keys.ALERTS).then(alerts => {
     if (alerts) {
         store.dispatch(actions.setAlerts(alerts as AlertData[]));
@@ -131,7 +125,6 @@ Storage.get(Keys.ALERTS).then(alerts => {
         store.dispatch(actions.setAlerts([]));
     }
 });
-
 
 Storage.get(Keys.CHARTS).then(charts => {
     if (charts) {
@@ -144,11 +137,19 @@ Storage.get(Keys.CHARTS).then(charts => {
                 source: 'Intraday',
                 resolution: '1d',
                 activeIndex: new IndexData(0, '---', 0, 0, 0, 0, 0, 0),
-                data: history.archive.find(entry => entry.source === 'Intraday')!.data
+                data: new ChartData([new ChartDataEntry('2020-01-01', 0, 0, 0, 0)])
             }
         ]));
     }
 });
+
+const fetchHeadlines = (category: Category) =>
+    News.headlines(category, articles => {
+        const headlines: ListDataRow[] = [];
+        articles.forEach(article => headlines.push(new ListDataRow(article.title, undefined, `${article.author} @ ${fullDate(new Date(article.publishedAt))}`)));
+        store.dispatch(actions.setHeadlines(new ListData(headlines), category));
+    }, () => store.dispatch(actions.setHeadlines(new ListData([new ListDataRow('An error occurred while trying get the latest headlines.')]), category)));
+fetchHeadlines('business');
 
 Storage.get(Keys.BOXES).then(boxes => {
     if (boxes) {
@@ -211,7 +212,16 @@ export const state: State = {
         orderHistory: new TableData(ORDER_HEADERS, []),
         activities: new ListData([]),
         headlines: new ListData([]),
-        headlinesMenuItems: [{name: 'business', onClick: (category) => fetchHeadlines(category as Category)}, {name: 'entertainment', onClick: (category) => fetchHeadlines(category as Category)}, {name: 'general', onClick: (category) => fetchHeadlines(category as Category)}, {name: 'health', onClick: (category) => fetchHeadlines(category as Category)}, {name: 'science', onClick: (category) => fetchHeadlines(category as Category)}, {name: 'sports', onClick: (category) => fetchHeadlines(category as Category)}, {name: 'technology', onClick: (category) => fetchHeadlines(category as Category)}],
+        headlinesTitle: 'Business',
+        headlinesMenuItems: [
+            {name: 'business', onClick: (category) => fetchHeadlines(category as Category)}, 
+            {name: 'entertainment', onClick: (category) => fetchHeadlines(category as Category)}, 
+            {name: 'general', onClick: (category) => fetchHeadlines(category as Category)}, 
+            {name: 'health', onClick: (category) => fetchHeadlines(category as Category)}, 
+            {name: 'science', onClick: (category) => fetchHeadlines(category as Category)}, 
+            {name: 'sports', onClick: (category) => fetchHeadlines(category as Category)}, 
+            {name: 'technology', onClick: (category) => fetchHeadlines(category as Category)}
+        ],
         alertDisplayOptions: [
             {name: 'all', onClick: () => store.dispatch(actions.setDisplayedAlertsLevel('all'))},
             {name: 'info', onClick: () => store.dispatch(actions.setDisplayedAlertsLevel('info'))},
@@ -223,6 +233,7 @@ export const state: State = {
     },
     boxes: [],
     selectedBox: null,
+    menusVisible: false,
 
     balance: 0,
     buyQty: 1,

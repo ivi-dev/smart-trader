@@ -183,9 +183,9 @@ export const setActivities = (activity: ListData) => ({
     arg: activity
 });
 
-export const setHeadlines = (headlines: ListData) => ({
+export const setHeadlines = (headlines: ListData, category: string) => ({
     type: SET_HEADLINES,
-    arg: headlines
+    arg: { headlines, category }
 });
 
 export const toggleHelp = (option: 'open' | 'close') => ({
