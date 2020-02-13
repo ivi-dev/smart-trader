@@ -1,6 +1,6 @@
 export enum BoxType {
-    ORDER_HISTORY = 'Order History',
-    RECENT_ACTIVIY = 'Recent Activity',
+    ORDER_HISTORY = 'Orders',
+    RECENT_ACTIVIY = 'Activities',
     HEADLINES = 'Headlines',
     ALERTS = 'Notifications'
 }
