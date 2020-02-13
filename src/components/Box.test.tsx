@@ -4,7 +4,7 @@ import Box from './Box';
 import TableData, { TableCell, TableRow } from '../TableData';
 import { Action } from '../redux/actions';
 import ListData, { ListDataRow } from '../ListData';
-import Alert from '../Alert';
+import AlertData from '../AlertData';
 import * as actions from '../redux/actions';
 
 const alerts_ = ['Alert 1', 'Alert 2', 'Alert 3', 'Alert 4'];
@@ -24,7 +24,7 @@ const renderTableBox = (headerContent: string[], cellsContent: string[]) => {
     return render(<Box id={0} 
                        title={title} 
                        tableData={new TableData(headers, [row])} 
-                       selected={false}
+                       selectedBox={0}
                        dispatch={(action: Action) => {}} />);
 }
 
@@ -37,7 +37,7 @@ const renderSingleRowListBox = (listItems: string[]) => {
     return render(<Box id={0} 
                        title={'List Box'} 
                        listData={listData} 
-                       selected={false}
+                       selectedBox={0}
                        dispatch={(action: Action) => {}} />);
 }
 
@@ -51,19 +51,19 @@ const renderMultiRowListBox = (mainListItems: string[],
     return render(<Box id={0} 
                        title={'List Box'} 
                        listData={listData} 
-                       selected={false}
+                       selectedBox={0}
                        dispatch={(action: Action) => {}} />);
 }
 
 const renderAlertBox = (id = 0) => {
-    const alerts: Alert[] = [];
+    const alerts: AlertData[] = [];
     for (let index = 0; index < alerts_.length; index++) {
-        alerts.push(new Alert(index, alerts_[index]));
+        alerts.push(new AlertData(index, alerts_[index]));
     }
     return render(<Box id={id} 
                        title={'Alerts Box'} 
                        alerts={alerts} 
-                       selected={false}
+                       selectedBox={0}
                        dispatch={mockDispatch} />);
 }
 
@@ -73,7 +73,7 @@ test('renders a non-selected box with a title and a close button', () => {
                                                  title={title} 
                                                  tableData={new TableData([new TableCell('')], 
                                                              [new TableRow([new TableCell('')])])} 
-                                                 selected={false}
+                                                 selectedBox={0}
                                                  dispatch={(action: Action) => {}} />);
 
     const box = container.querySelector('.box');
@@ -89,7 +89,7 @@ test('renders a selected box', () => {
                                       title={title} 
                                       tableData={new TableData([new TableCell('')], 
                                                   [new TableRow([new TableCell('')])])} 
-                                      selected={true}
+                                      selectedBox={0}
                                       dispatch={(action: Action) => {}} />);
 
     expect(container.querySelector('.box')?.classList.contains('selected')).toBe(true);
