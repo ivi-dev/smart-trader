@@ -13,6 +13,11 @@
     to { transform: rotateX(0deg); }
 }
 
+@keyframes skew-out {
+    from { transform: skew(20deg, 20deg); }
+    to { transform: skew(0deg, 0deg); }
+}
+
 .box {
     background-color: rgb(32, 39, 58);
     height: 98%;
@@ -152,6 +157,7 @@
     border-color: transparent;
     opacity: 0.8;
     transition: 250ms;
+    animation: skew-out 250ms forwards;
 }
 
 .box .alert:hover {
@@ -162,4 +168,9 @@
     right: 15px;
     top: 35%;
     transition: 250ms;
+}
+
+.box .alert i:not(.fas.fa-times) {
+    font-size: 90%;
+    width: 25px;
 }
