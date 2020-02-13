@@ -65,7 +65,7 @@ const Box: BoxComponent = (prop: BoxProp) => {
             content = <div className={`scroll-area ${prop.listTitle ? 'lower' : null}`}>
                 {prop.listTitle && <div className="row no-gutters p-2 pl-4 list-title position-absolute col-12">{capitalize(prop.listTitle)}</div>}
                 {prop.listData.items.map((item, index) => 
-                <div key={index} className="row data-row position-relative no-gutters px-3 py-2 border-bottom">
+                <a key={index} className="row data-row text-decoration-none position-relative no-gutters px-3 py-2 border-bottom" href={item.href} target="_blank" onClick={(e) => {if (item.href) {e.stopPropagation();}}}>
                     {item.graphic && <i className={`row no-gutters col-auto ${item.graphic} align-items-center`}></i>}
                     <div className="col">
                         <div className="row no-gutters col-12">
@@ -75,7 +75,7 @@ const Box: BoxComponent = (prop: BoxProp) => {
                             {item.secondary}
                         </div>
                     </div>
-                </div>)}
+                </a>)}
             </div>;
         }
     } else if (prop.alerts) {

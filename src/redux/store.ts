@@ -146,7 +146,7 @@ Storage.get(Keys.CHARTS).then(charts => {
 const fetchHeadlines = (category: Category) =>
     News.headlines(category, articles => {
         const headlines: ListDataRow[] = [];
-        articles.forEach(article => headlines.push(new ListDataRow(article.title, undefined, `${article.author} @ ${fullDate(new Date(article.publishedAt))}`)));
+        articles.forEach(article => headlines.push(new ListDataRow(article.title, undefined, `${article.author} @ ${fullDate(new Date(article.publishedAt))}`, article.url)));
         store.dispatch(actions.setHeadlines(new ListData(headlines), category));
     }, () => store.dispatch(actions.setHeadlines(new ListData([new ListDataRow('An error occurred while trying get the latest headlines.')]), category)));
 fetchHeadlines('business');
