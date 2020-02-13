@@ -50,10 +50,11 @@ export default class Storage {
             } else {
                 activities_ = (activities as Array<ListDataRow>).slice();
                 activities_.push(activity);
-                localForage.setItem(Keys.ACTIVITY, activities_);
-            }
-            if (callback) {
-                callback(activities_);
+                localForage.setItem(Keys.ACTIVITY, activities_).then(activities => {
+                    if (callback) {
+                        callback(activities_);
+                    }
+                });
             }
         });
     }
