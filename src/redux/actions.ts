@@ -2,6 +2,7 @@ import IndexData from '../IndexData';
 import { BoxType } from '../BoxData';
 import ListData from '../ListData';
 import TableData from '../TableData';
+import AlertData from '../AlertData';
 
 export const SELECT_INDEX = 'SELECT_INDEX';
 export const SEARCH_FOR_INDEX = 'SEARCH_FOR_INDEX';
@@ -21,6 +22,9 @@ export const SELECT_BOX = 'SELECT_BOX';
 export const MOVE_BOX_BACK = 'MOVE_BOX_BACK';
 export const MOVE_BOX_FORWARD = 'MOVE_BOX_FORWARD';
 export const DISMISS_ALERT = 'DISMISS_ALERT';
+export const SET_DISPLAYED_ALERTS_LEVEL = 'SET_DISPLAYED_ALERTS_LEVEL';
+export const ADD_ALERT = 'ADD_ALERT';
+export const SET_ALERTS = 'SET_ALERTS';
 
 export const BUY = 'BUY';
 export const SELL = 'SELL';
@@ -34,6 +38,7 @@ export const SET_HEADLINES = 'SET_HEADLINES';
 export const TOGGLE_HELP = 'TOGGLE_HELP';
 
 export const SET_ACTIVE_HELP_SECTION = 'SET_ACTIVE_HELP_SECTION';
+export const SET_BALANCE = 'SET_BALANCE';
 
 export const activityLabels = {
     sell: (amount: number, indexName: string, price: number) => {
@@ -170,7 +175,27 @@ export const toggleHelp = (option: 'open' | 'close') => ({
     arg: option
 });
 
-export const setActiveHelpSection = (section: string) =>({
+export const setActiveHelpSection = (section: string) => ({
     type: SET_ACTIVE_HELP_SECTION,
     arg: section
+});
+
+export const setBalance = (balance: number) => ({
+    type: SET_BALANCE,
+    arg: balance
+});
+
+export const setDisplayedAlertsLevel = (level: string) => ({
+    type: SET_DISPLAYED_ALERTS_LEVEL,
+    arg: level
+});
+
+export const addAlert = (level: string) => ({
+    type: ADD_ALERT,
+    arg: level
+});
+
+export const setAlerts = (alerts: AlertData[]) => ({
+    type: SET_ALERTS,
+    arg: alerts
 });
