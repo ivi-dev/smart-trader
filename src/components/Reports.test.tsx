@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import Reports from './Reports';
 import TableData, { TableCell, TableRow } from '../TableData';
 import ListData, { ListDataRow } from '../ListData';
-import Alert from '../Alert';
+import AlertData from '../AlertData';
 import { Action } from '../redux/actions';
 import BoxData from '../BoxData';
 import { BoxType } from '../BoxData';
@@ -30,9 +30,10 @@ test('render a section with report boxes', () => {
     const headlinesRow = new ListDataRow('Item');
     const headlines = new ListData([headlinesRow]);
 
-    const alerts = [new Alert(0, 'Alert')];
+    const alerts = [new AlertData(0, 'Alert')];
 
-    const data = {orderHistory, activities, headlines, alerts};
+    const data = {orderHistory, activities, headlines, headlinesMenuItems: 
+        [{name: 'Item 1'}, {name: 'Item 2'}], alerts};
 
     const boxes = [new BoxData(0, 'Box 1', BoxType.ORDER_HISTORY)];
     const { container } = render(<Reports data={data} 
