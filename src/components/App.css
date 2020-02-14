@@ -11,6 +11,26 @@
   color: rgb(255, 255, 255);
 }
 
+@keyframes slide-in {
+  from { transform: translateX(100px); }
+  to { transform: translateX(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes rotate-in {
+  from { transform: rotateX(90deg); }
+  to { transform: rotateX(0deg); }
+}
+
+@keyframes skew-out {
+  from { transform: skew(10deg, 10deg); }
+  to { transform: skew(0deg, 0deg); }
+}
+
 .main-area {
   background-color: rgb(30, 35, 49);
 }
