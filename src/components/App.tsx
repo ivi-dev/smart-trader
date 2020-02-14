@@ -29,6 +29,7 @@ type AppProp = {
   watchListSearchResultsList: StockData[],
   watchList: StockData[],
   exchanges: Option[],
+  stockIndexOptions: Option[],
   selectedExchange: {name: string, code: string},
 
   chartType: ChartType,
@@ -76,7 +77,6 @@ const App = (prop: AppProp) => {
             dispatch={prop.dispatch} />
 
       <Column classes={`col-2 p-2 vh-100 side-panel ${prop.help.visible ? 'faded' : null}`}>
-        {alphabet.concat(digits).map((letter, index) => <Button key={index} title={letter} classes={`mr-2 mb-2 ${letter === prop.stockStartLetter ? 'active' : null}`} style={{width: '25px', height: '25px'}} onClick={() => prop.dispatch(actions.selectStockStartLetter(letter))} />)}
         <StocksList title='Market' 
                     status='Fetching stocks...' 
                     listType='symbolsList' 
@@ -98,11 +98,16 @@ const App = (prop: AppProp) => {
           <Text content={'v1.0'} 
                 classes={'ml-2 h6 position-relative small'} 
                 style={{'top': '3px'}} />
-                <Selector title='Exchanges:'
-                  options={prop.exchanges} 
-                  selected={prop.selectedExchange.name}
-                  handleSelect={value => prop.dispatch(actions.selectExchange(value))} 
-                  classes='ml-4' />
+          <Selector title='Exchange:'
+                    options={prop.exchanges} 
+                    selected={prop.selectedExchange.name}
+                    handleSelect={value => prop.dispatch(actions.selectExchange(value))} 
+                    classes='ml-4' />
+          <Selector title='Stock Index:'
+                    options={prop.stockIndexOptions} 
+                    selected={prop.stockStartLetter}
+                    handleSelect={value => prop.dispatch(actions.selectStockStartLetter(value))} 
+                    classes='ml-4' />
           <Text content={'Balance:'} 
                 classes={'mr-2 ml-auto text-muted small'} 
                 style={{top: '2px'}} />
@@ -167,6 +172,7 @@ function mapStateToProps(state: State) {
     watchListSearchResultsList: state.watchListSearchResultsList,
     watchList: state.watchList,
     exchanges: state.exchanges,
+    stockIndexOptions: state.stockIndexOptions,
     selectedExchange: state.selectedExchange,
 
     chartType: state.chartType,
