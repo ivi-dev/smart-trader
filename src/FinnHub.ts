@@ -32,4 +32,14 @@ export default class FinnHub {
             }
         });
     }
+
+    static track(symbol: string, onData: (data: {p: number, t: number}) => void) {
+        const socket = new WebSocket(`wss://ws.finnhub.io?token=${config.config.finnHubAPIKey}`);
+        socket.addEventListener('open', event => {
+            socket.send(JSON.stringify({'type':'subscribe', 'symbol': symbol}));
+        });
+        socket.addEventListener('message', event => {
+            onData(JSON.parse(event.data).data[0]);
+        });
+    }
 }
