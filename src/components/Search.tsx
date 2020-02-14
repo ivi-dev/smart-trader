@@ -1,21 +1,25 @@
-import React from 'react';
+import React, { useEffect, RefObject } from 'react';
 import './Search.css';
 import { Action } from '../redux/actions';
-import * as actions from '../redux/actions';
 
 type SearchProp = {
-    placeholder: string,
-    dispatch: (action: Action) => void
+    placeholder?: string,
+    classes?: string,
+    style?: {},
+    onKeyUp: (value: string) => void
 }
 
-const Search = (prop: SearchProp) =>
-    <section id="search" className="mb-4 mt-2">
-        <input type="search" className="col-12" 
+const Search = (prop: SearchProp) => {
+    let inputRef: RefObject<HTMLInputElement> = React.createRef();
+    return (
+    <section className={`search position-relative ${prop.classes}`} style={prop.style}>
+        <input ref={inputRef} type="search" className="col-12" 
             placeholder={prop.placeholder} 
             onKeyUp={(e) => {
-                prop.dispatch(actions.searchForIndex(
-                    (e.target as HTMLInputElement).value))}} />
-        <i className="fas fa-search position-absolute"></i>
+                prop.onKeyUp((e.target as HTMLInputElement).value)}} />
+        <i className="fas fa-search position-absolute" onClick={() => {inputRef.current?.focus()}}></i>
     </section>
+    )
+}
 
 export default Search;
