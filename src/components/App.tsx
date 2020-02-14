@@ -68,7 +68,7 @@ const App = (prop: AppProp) => {
     <>
       <Help sections={prop.help.sections} active={getActiveHelpSection().name.toString()} content={getActiveHelpSection().data!} visible={prop.help.visible} dispatch={prop.dispatch} />
       <Column classes={`col-2 p-2 vh-100 side-panel ${prop.help.visible ? 'faded' : null}`}>
-        <Selector title={'Exchanges'} options={prop.exchanges} selected={prop.selectedExchange.name} flush={true} handleSelect={value => prop.dispatch(actions.setSelectedExchange(value))} classes='small mb-3' />
+        <Selector title={'Exchanges'} options={prop.exchanges} selected={prop.selectedExchange.name} flush={true} handleSelect={value => prop.dispatch(actions.selectExchange(value))} classes='small mb-3' />
         <StocksList title='Market' status='Fetching stocks...' listType='symbolsList' data={prop.marketSearchResultsList.length === 0 ? prop.indicesList : prop.marketSearchResultsList} dispatch={prop.dispatch} onSearch={value => prop.dispatch(actions.searchForIndex(value))} />
         <StocksList title='Watchlist' status='Empty' listType='watchlist' dispatch={prop.dispatch} data={prop.watchListSearchResultsList.length === 0 ? prop.watchList : prop.watchListSearchResultsList} onSearch={value => prop.dispatch(actions.searchWatchlist(value))} />
       </Column>
