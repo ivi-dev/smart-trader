@@ -117,16 +117,12 @@ Storage.get(Keys.ACTIVITY).then(rows => {
 Storage.get(Keys.BALANCE).then(balance => { 
     if (balance) {
         store.dispatch(actions.setBalance(balance as number));
-    } else {
-        store.dispatch(actions.setBalance(10000));
     }
 });
 
 Storage.get(Keys.ALERTS).then(alerts => {
     if (alerts) {
         store.dispatch(actions.setAlerts(alerts as AlertData[]));
-    } else {
-        store.dispatch(actions.setAlerts([]));
     }
 });
 
@@ -147,6 +143,18 @@ Storage.get(Keys.CHARTS).then(charts => {
     }
 });
 
+Storage.get(Keys.BOXES).then(boxes => {
+    if (boxes) {
+        store.dispatch(actions.setBoxes(boxes as Array<BoxData>));
+    }
+});
+
+Storage.get(Keys.WATCHLIST).then(watchlist => {
+    if (watchlist) {
+        store.dispatch(actions.setWatchList(watchlist as Array<StockData>));
+    }
+});
+
 const fetchHeadlines = (category: Category) =>
     News.headlines(category, articles => {
         const headlines: ListDataRow[] = [];
@@ -164,17 +172,6 @@ export const fetchStocks = (exchange: string) => {
     FinnHub.listStocks(exchange, list => store.dispatch(actions.setStocksList(list)));
 }
 fetchStocks('US');
-
-Storage.get(Keys.BOXES).then(boxes => {
-    if (boxes) {
-        store.dispatch(actions.setBoxes(boxes as Array<BoxData>));
-    } else {
-        store.dispatch(actions.setBoxes([new BoxData(0, 'Order History', BoxType.ORDER_HISTORY),
-        new BoxData(1, 'Recent Activity', BoxType.RECENT_ACTIVIY),
-        new BoxData(2, 'Latest Headlines', BoxType.HEADLINES),
-        new BoxData(3, 'Notifications', BoxType.ALERTS)]));
-    }
-});
 
 export const state: State = {
     selectedIndex: randomIndices[0],

@@ -13,6 +13,7 @@ export const SEARCH_FOR_INDEX = 'SEARCH_FOR_INDEX';
 export const SEARCH_WATCHLIST = 'SEARCH_WATCHLIST';
 export const ADD_TO_WATCHLIST = 'ADD_TO_WATCHLIST';
 export const REMOVE_FROM_WATCHLIST = 'REMOVE_FROM_WATCHLIST';
+export const SET_WATCHLIST = 'SET_WATCHLIST';
 export const SET_EXCHANGES = 'SET_EXCHANGES';
 export const SET_SELECTED_EXCHANGE = 'SET_SELECTED_EXCHANGE';
 
@@ -249,4 +250,9 @@ export const setExchanges = (list: Option[]) => ({
 export const setSelectedExchange = (name: string) => ({
     type: SET_SELECTED_EXCHANGE,
     arg: name
+});
+
+export const setWatchList = (watchList: StockData[]) => ({
+    type: SET_WATCHLIST,
+    arg: watchList
 });

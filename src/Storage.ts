@@ -4,6 +4,7 @@ import { ORDER_HEADERS, ChartDescriptor } from './redux/store';
 import TableData, { TableRow } from './TableData';
 import AlertData from './AlertData';
 import BoxData from './BoxData';
+import StockData from './StockData';
 
 export enum Keys {
     ACTIVITY = 'ACTIVITY',
@@ -11,7 +12,8 @@ export enum Keys {
     BALANCE = 'BALANCE',
     ALERTS = 'ALERTS',
     CHARTS = 'CHARTS',
-    BOXES = 'BOXES'
+    BOXES = 'BOXES',
+    WATCHLIST = 'WATCHLIST',
 }
 
 export default class Storage {
@@ -82,6 +84,14 @@ export default class Storage {
         localForage.setItem(Keys.BOXES, boxes).then(boxes => {
             if (callback) {
                 callback(boxes);
+            }
+        })
+    }
+
+    static watchList(watchList: StockData[], callback?: (watchList: StockData[]) => void) {
+        localForage.setItem(Keys.WATCHLIST, watchList).then(watchList => {
+            if (callback) {
+                callback(watchList);
             }
         })
     }

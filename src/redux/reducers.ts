@@ -118,6 +118,10 @@ const recordBoxes = (boxes: BoxData[]) => {
     Storage.boxes(boxes, boxes => store.dispatch(actions.setBoxes(boxes)));
 }
 
+const recordWatchlist = (watchList: StockData[]) => {
+    Storage.watchList(watchList, watchList => store.dispatch(actions.setWatchList(watchList)));
+}
+
 export const main = (state = initialState, action: Action) => {
     switch (action.type) {
         case actions.SET_STOCKS_LIST:
@@ -136,7 +140,12 @@ export const main = (state = initialState, action: Action) => {
         case actions.SEARCH_WATCHLIST:
             return Object.assign({}, state, {watchListSearchResultsList: state.watchList.filter(index => index.name.toLowerCase().includes(action.arg.toLowerCase() as string))});    
         case actions.ADD_TO_WATCHLIST:
-            return !state.watchList.find(item => item.name === (action.arg as StockData).name) ? Object.assign({}, state, {watchList: state.watchList.concat([action.arg as StockData])}) : state;    
+            if (!state.watchList.find(item => item.name === (action.arg as StockData).name)) {
+                recordWatchlist(state.watchList.concat([action.arg as StockData]));
+            }
+            return state;    
+        case actions.SET_WATCHLIST:
+            return Object.assign({}, state, {watchList: action.arg as StockData[]}); 
         case actions.SET_EXCHANGES:
             return Object.assign({}, state, {exchanges:  action.arg as Option[]}); 
         case actions.SET_SELECTED_EXCHANGE:
@@ -151,7 +160,8 @@ export const main = (state = initialState, action: Action) => {
             fetchStocks(exch);
             return Object.assign({}, state, {selectedExchange: exchange});   
         case actions.REMOVE_FROM_WATCHLIST:
-            return Object.assign({}, state, {watchList: state.watchList.filter(index => index !== (action.arg as StockData))});    
+            recordWatchlist(state.watchList.filter(index => index !== (action.arg as StockData)));
+            return state;    
         case actions.SET_CHART_TYPE:
             const chartTypeArg = action.arg as { chartType: string, chartId: number };
             const charts1 = state.charts.slice();
