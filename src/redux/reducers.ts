@@ -10,6 +10,7 @@ import { fullDate, time } from '../utility';
 import Storage from '../Storage';
 import AlertData, { AlertLevel } from '../AlertData';
 import { Option } from './store';
+import FinnHub from '../FinnHub';
 
 const formatIndexHistory = (history: ChartData, format: string) => {
     const formatter = (history: ChartData, chunk: number) => {
@@ -122,19 +123,27 @@ const recordWatchlist = (watchList: StockData[]) => {
     Storage.watchList(watchList, watchList => store.dispatch(actions.setWatchList(watchList)));
 }
 
+const recordSelectedExchange = (exchange: {name: string, code: string}) => {
+    Storage.exchange(exchange, exchange => store.dispatch(actions.setSelectedExchange(exchange.name)));
+}
+
 export const main = (state = initialState, action: Action) => {
     switch (action.type) {
         case actions.SET_STOCKS_LIST:
             return Object.assign({}, state, {stocksList: action.arg as Array<StockData>});
-        case actions.SELECT_INDEX:
+        case actions.SELECT_STOCK:
             const charts5 = state.charts.slice();
+            const stockData = action.arg as StockData;
             for (const chart of charts5) {
                 if (chart.id === state.selectedChart) {
-                    chart.activeIndex = action.arg as StockData;
+                    chart.activeIndex = stockData;
+                    chart.data = state.chartDataSourceArchive[0].data
                     break;
                 }
             }
-            return Object.assign({}, state, {charts: charts5});
+            recordCharts(charts5);
+            FinnHub.track(stockData.name);
+            return state;
         case actions.SEARCH_FOR_INDEX:
             return Object.assign({}, state, {marketSearchResultsList: state.stocksList.filter(index => index.name.toLowerCase().includes(action.arg.toLowerCase() as string))});    
         case actions.SEARCH_WATCHLIST:
@@ -147,18 +156,22 @@ export const main = (state = initialState, action: Action) => {
         case actions.SET_WATCHLIST:
             return Object.assign({}, state, {watchList: action.arg as StockData[]}); 
         case actions.SET_EXCHANGES:
-            return Object.assign({}, state, {exchanges:  action.arg as Option[]}); 
-        case actions.SET_SELECTED_EXCHANGE:
+            return Object.assign({}, state, {exchanges:  action.arg as Option[]});
+        case actions.SELECT_EXCHANGE:
             const exchange = action.arg as string;
-            let exch = '';
+            let exch = '', exch_ = {name: '', code: ''};
             for (const exchange_ of state.exchanges) {
                 if (exchange_.name === exchange) {
                     exch = exchange_.data!.toString();
+                    exch_ = {name: exchange_.name, code: exchange_.data!};
                     break;
                 }
             }
             fetchStocks(exch);
-            return Object.assign({}, state, {selectedExchange: exchange});   
+            recordSelectedExchange(exch_);
+            return state;
+        case actions.SET_SELECTED_EXCHANGE:
+            return Object.assign({}, state, {selectedExchange: {name: action.arg as string}});   
         case actions.REMOVE_FROM_WATCHLIST:
             recordWatchlist(state.watchList.filter(index => index !== (action.arg as StockData)));
             return state;    

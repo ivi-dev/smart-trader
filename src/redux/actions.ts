@@ -8,13 +8,14 @@ import { isVowel } from '../utility';
 import { Option } from './store';
 
 export const SET_STOCKS_LIST = 'SET_STOCKS_LIST';
-export const SELECT_INDEX = 'SELECT_INDEX';
+export const SELECT_STOCK = 'SELECT_INDEX';
 export const SEARCH_FOR_INDEX = 'SEARCH_FOR_INDEX';
 export const SEARCH_WATCHLIST = 'SEARCH_WATCHLIST';
 export const ADD_TO_WATCHLIST = 'ADD_TO_WATCHLIST';
 export const REMOVE_FROM_WATCHLIST = 'REMOVE_FROM_WATCHLIST';
 export const SET_WATCHLIST = 'SET_WATCHLIST';
 export const SET_EXCHANGES = 'SET_EXCHANGES';
+export const SELECT_EXCHANGE = 'SELECT_EXCHANGE';
 export const SET_SELECTED_EXCHANGE = 'SET_SELECTED_EXCHANGE';
 
 export const SET_CHART_TYPE = 'SET_CHART_TYPE';
@@ -83,7 +84,7 @@ export const setStocksList = (list: StockData[]) => ({
 });
 
 export const selectIndex = (index: StockData) => ({
-    type: SELECT_INDEX,
+    type: SELECT_STOCK,
     arg: index
 });
 
@@ -245,6 +246,11 @@ export const setCharts = (charts: ChartDescriptor[]) => ({
 export const setExchanges = (list: Option[]) => ({
     type: SET_EXCHANGES,
     arg: list
+});
+
+export const selectExchange = (exchange: string) => ({
+    type: SELECT_EXCHANGE,
+    arg: exchange
 });
 
 export const setSelectedExchange = (name: string) => ({

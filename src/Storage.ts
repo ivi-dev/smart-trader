@@ -14,6 +14,7 @@ export enum Keys {
     CHARTS = 'CHARTS',
     BOXES = 'BOXES',
     WATCHLIST = 'WATCHLIST',
+    EXCHANGE = 'EXCHANGE'
 }
 
 export default class Storage {
@@ -92,6 +93,14 @@ export default class Storage {
         localForage.setItem(Keys.WATCHLIST, watchList).then(watchList => {
             if (callback) {
                 callback(watchList);
+            }
+        })
+    }
+
+    static exchange(exchange: {name: string, code: string}, callback?: (exchange: {name: string, code: string}) => void) {
+        localForage.setItem(Keys.EXCHANGE, exchange).then(exchange => {
+            if (callback) {
+                callback(exchange);
             }
         })
     }

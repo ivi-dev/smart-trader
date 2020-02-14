@@ -68,6 +68,8 @@ export interface State {
     exchanges: Option[],
     selectedExchange: {name: string, code: string},
 
+    socket: WebSocket | undefined,
+
     chartType: ChartType,
     chartOptions: any,
     chartTypes: Option[],
@@ -168,10 +170,22 @@ const fetchExchanges = () => {
 }
 fetchExchanges();
 
-export const fetchStocks = (exchange: string) => {
-    FinnHub.listStocks(exchange, list => store.dispatch(actions.setStocksList(list)));
+const fetchSelectedExchange = () => {
+    Storage.get(Keys.EXCHANGE).then(exchange => {
+        if (exchange) {
+            const exchange_ = exchange as {name: string, code: string};
+            fetchStocks(exchange_.code);
+            store.dispatch(actions.setSelectedExchange(exchange_.name))
+        } else {
+            fetchStocks('US');
+        }
+    });
 }
-fetchStocks('US');
+fetchSelectedExchange();
+
+export const fetchStocks = (exchange: string) => {
+    FinnHub.listStocks(exchange, list => {store.dispatch(actions.setStocksList(list))});
+}
 
 export const state: State = {
     selectedIndex: randomIndices[0],
@@ -181,6 +195,8 @@ export const state: State = {
     watchList: [],
     exchanges: [],
     selectedExchange: {name: '', code: ''},
+
+    socket: undefined,
 
     chartType: 'line',
     chartOptions: {
