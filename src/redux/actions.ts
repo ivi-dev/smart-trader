@@ -1,15 +1,20 @@
-import IndexData from '../IndexData';
+import StockData from '../StockData';
 import BoxData, { BoxType } from '../BoxData';
 import ListData from '../ListData';
 import TableData from '../TableData';
 import AlertData from '../AlertData';
 import { ChartDescriptor } from './store';
 import { isVowel } from '../utility';
+import { Option } from './store';
 
+export const SET_STOCKS_LIST = 'SET_STOCKS_LIST';
 export const SELECT_INDEX = 'SELECT_INDEX';
 export const SEARCH_FOR_INDEX = 'SEARCH_FOR_INDEX';
+export const SEARCH_WATCHLIST = 'SEARCH_WATCHLIST';
 export const ADD_TO_WATCHLIST = 'ADD_TO_WATCHLIST';
 export const REMOVE_FROM_WATCHLIST = 'REMOVE_FROM_WATCHLIST';
+export const SET_EXCHANGES = 'SET_EXCHANGES';
+export const SET_SELECTED_EXCHANGE = 'SET_SELECTED_EXCHANGE';
 
 export const SET_CHART_TYPE = 'SET_CHART_TYPE';
 export const SET_CHART_YEAR = 'SET_CHART_SOURCE';
@@ -71,7 +76,12 @@ export type Action = {
     arg: any
 }
 
-export const selectIndex = (index: IndexData) => ({
+export const setStocksList = (list: StockData[]) => ({
+    type: SET_STOCKS_LIST,
+    arg: list
+});
+
+export const selectIndex = (index: StockData) => ({
     type: SELECT_INDEX,
     arg: index
 });
@@ -81,12 +91,17 @@ export const searchForIndex = (name: string) => ({
     arg: name
 });
 
-export const addToWatchlist = (indexData: IndexData) => ({
+export const searchWatchlist = (name: string) => ({
+    type: SEARCH_WATCHLIST,
+    arg: name
+});
+
+export const addToWatchlist = (indexData: StockData) => ({
     type: ADD_TO_WATCHLIST,
     arg: indexData
 });
 
-export const removeFromWatchlist = (indexData: IndexData) => ({
+export const removeFromWatchlist = (indexData: StockData) => ({
     type: REMOVE_FROM_WATCHLIST,
     arg: indexData
 });
@@ -224,4 +239,14 @@ export const setAlerts = (alerts: AlertData[]) => ({
 export const setCharts = (charts: ChartDescriptor[]) => ({
     type: SET_CHARTS,
     arg: charts
+});
+
+export const setExchanges = (list: Option[]) => ({
+    type: SET_EXCHANGES,
+    arg: list
+});
+
+export const setSelectedExchange = (name: string) => ({
+    type: SET_SELECTED_EXCHANGE,
+    arg: name
 });

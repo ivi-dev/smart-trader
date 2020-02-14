@@ -1,6 +1,6 @@
 import * as actions from './actions';
-import { state as initialState, ChartType, ChartDescriptor, store } from './store';
-import IndexData from '../IndexData';
+import { state as initialState, ChartType, ChartDescriptor, store, fetchStocks } from './store';
+import StockData from '../StockData';
 import { Action } from './actions';
 import ChartData, { ChartDataEntry } from '../ChartData';
 import BoxData, { BoxType } from '../BoxData';
@@ -9,6 +9,7 @@ import ListData, { ListDataRow } from '../ListData';
 import { fullDate, time } from '../utility';
 import Storage from '../Storage';
 import AlertData, { AlertLevel } from '../AlertData';
+import { Option } from './store';
 
 const formatIndexHistory = (history: ChartData, format: string) => {
     const formatter = (history: ChartData, chunk: number) => {
@@ -119,21 +120,38 @@ const recordBoxes = (boxes: BoxData[]) => {
 
 export const main = (state = initialState, action: Action) => {
     switch (action.type) {
+        case actions.SET_STOCKS_LIST:
+            return Object.assign({}, state, {stocksList: action.arg as Array<StockData>});
         case actions.SELECT_INDEX:
             const charts5 = state.charts.slice();
             for (const chart of charts5) {
                 if (chart.id === state.selectedChart) {
-                    chart.activeIndex = action.arg as IndexData;
+                    chart.activeIndex = action.arg as StockData;
                     break;
                 }
             }
             return Object.assign({}, state, {charts: charts5});
         case actions.SEARCH_FOR_INDEX:
-            return Object.assign({}, state, {searchResultsList: state.indicesList.filter(index => index.name.toLowerCase().includes(action.arg.toLowerCase() as string))});    
+            return Object.assign({}, state, {marketSearchResultsList: state.stocksList.filter(index => index.name.toLowerCase().includes(action.arg.toLowerCase() as string))});    
+        case actions.SEARCH_WATCHLIST:
+            return Object.assign({}, state, {watchListSearchResultsList: state.watchList.filter(index => index.name.toLowerCase().includes(action.arg.toLowerCase() as string))});    
         case actions.ADD_TO_WATCHLIST:
-            return !state.watchList.find(item => item.name === (action.arg as IndexData).name) ? Object.assign({}, state, {watchList: state.watchList.concat([action.arg as IndexData])}) : state;    
+            return !state.watchList.find(item => item.name === (action.arg as StockData).name) ? Object.assign({}, state, {watchList: state.watchList.concat([action.arg as StockData])}) : state;    
+        case actions.SET_EXCHANGES:
+            return Object.assign({}, state, {exchanges:  action.arg as Option[]}); 
+        case actions.SET_SELECTED_EXCHANGE:
+            const exchange = action.arg as string;
+            let exch = '';
+            for (const exchange_ of state.exchanges) {
+                if (exchange_.name === exchange) {
+                    exch = exchange_.data!.toString();
+                    break;
+                }
+            }
+            fetchStocks(exch);
+            return Object.assign({}, state, {selectedExchange: exchange});   
         case actions.REMOVE_FROM_WATCHLIST:
-            return Object.assign({}, state, {watchList: state.watchList.filter(index => index !== (action.arg as IndexData))});    
+            return Object.assign({}, state, {watchList: state.watchList.filter(index => index !== (action.arg as StockData))});    
         case actions.SET_CHART_TYPE:
             const chartTypeArg = action.arg as { chartType: string, chartId: number };
             const charts1 = state.charts.slice();

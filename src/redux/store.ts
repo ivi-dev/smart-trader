@@ -1,6 +1,6 @@
 import { createStore } from 'redux';
 import { main } from './reducers';
-import IndexData from '../IndexData';
+import StockData from '../StockData';
 import * as random from '../randomizer';
 import ChartData, { ChartDataEntry } from '../ChartData';
 import TableData, { TableCell, TableRow } from '../TableData';
@@ -12,6 +12,7 @@ import * as actions from './actions';
 import News, { Category } from '../News';
 import { fullDate } from '../utility';
 import { help } from '../help';
+import FinnHub from '../FinnHub';
 
 export type ChartType = 'bar' | 'candlestick' | 'line';
 export const ORDER_HEADERS = [
@@ -48,7 +49,7 @@ export type ChartDescriptor = {
     source: number | string,
     resolution: string,
     data: ChartData,
-    activeIndex: IndexData
+    activeIndex: StockData
 }
 
 export type HelpType = {
@@ -59,10 +60,13 @@ export type HelpType = {
 export type DisplayedAlertsLevel = 'all' | 'error' | 'warning' | 'info';
 
 export interface State {
-    selectedIndex: IndexData | null,
-    indicesList: IndexData[],
-    searchResultsList: IndexData[],
-    watchList: IndexData[],
+    selectedIndex: StockData | null,
+    stocksList: StockData[],
+    marketSearchResultsList: StockData[],
+    watchListSearchResultsList: StockData[],
+    watchList: StockData[],
+    exchanges: Option[],
+    selectedExchange: {name: string, code: string},
 
     chartType: ChartType,
     chartOptions: any,
@@ -136,7 +140,7 @@ Storage.get(Keys.CHARTS).then(charts => {
                 type: 'line',
                 source: 'Intraday',
                 resolution: '1d',
-                activeIndex: new IndexData(0, '---', 0, 0, 0, 0, 0, 0),
+                activeIndex: new StockData(0, '---', 0, 0, 0, 0, 0, 0),
                 data: new ChartData([new ChartDataEntry('2020-01-01', 0, 0, 0, 0)])
             }
         ]));
@@ -151,6 +155,16 @@ const fetchHeadlines = (category: Category) =>
     }, () => store.dispatch(actions.setHeadlines(new ListData([new ListDataRow('An error occurred while trying get the latest headlines.')]), category)));
 fetchHeadlines('business');
 
+const fetchExchanges = () => {
+    FinnHub.listExchanges(list => store.dispatch(actions.setExchanges(list)));
+}
+fetchExchanges();
+
+export const fetchStocks = (exchange: string) => {
+    FinnHub.listStocks(exchange, list => store.dispatch(actions.setStocksList(list)));
+}
+fetchStocks('US');
+
 Storage.get(Keys.BOXES).then(boxes => {
     if (boxes) {
         store.dispatch(actions.setBoxes(boxes as Array<BoxData>));
@@ -164,9 +178,12 @@ Storage.get(Keys.BOXES).then(boxes => {
 
 export const state: State = {
     selectedIndex: randomIndices[0],
-    indicesList: randomIndices,
-    searchResultsList: [],
+    stocksList: [],
+    marketSearchResultsList: [],
+    watchListSearchResultsList: [],
     watchList: [],
+    exchanges: [],
+    selectedExchange: {name: '', code: ''},
 
     chartType: 'line',
     chartOptions: {
@@ -196,7 +213,7 @@ export const state: State = {
             type: 'line',
             source: 'Intraday',
             resolution: '1d',
-            activeIndex: new IndexData(0, '---', 0, 0, 0, 0, 0, 0),
+            activeIndex: new StockData(0, '---', 0, 0, 0, 0, 0, 0),
             data: history.archive.find(entry => entry.source === 'Intraday')!.data
         }
     ],

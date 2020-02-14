@@ -1,4 +1,4 @@
-import IndexData from './IndexData';
+import StockData from './StockData';
 import ChartData, { ChartDataEntry } from './ChartData';
 import TableData, { TableRow, TableCell } from './TableData';
 import ListData, { ListDataRow } from './ListData';
@@ -26,8 +26,8 @@ export const sign = () => {
     return signs[number(0, signs.length - 1)];
 }
 
-export const indices = (num: number, list?: IndexData[] | undefined) => {
-    let indices: IndexData[] = [];
+export const indices = (num: number, list?: StockData[] | undefined) => {
+    let indices: StockData[] = [];
     if(!list) {
         for (let index = 0; index < num; index++) {
             const name = indexName();
@@ -37,14 +37,14 @@ export const indices = (num: number, list?: IndexData[] | undefined) => {
             const high = Math.round(open + open * 0.3), low = Math.round(open - open * 0.3);
             const current = number(0, (high - low)) + low;
             let trend = open - current;
-            indices.push(new IndexData(index, name, Number(`${open}.${number(10, 99)}`), Number(`${close.toFixed(0)}.${number(10, 99)}`), Number(`${high}.${number(10, 99)}`), Number(`${low}.${number(10, 99)}`), Number(`${current}.${number(10, 99)}`), Number(`${trend}.${number(10, 99)}`)));
+            indices.push(new StockData(index, name, Number(`${open}.${number(10, 99)}`), Number(`${close.toFixed(0)}.${number(10, 99)}`), Number(`${high}.${number(10, 99)}`), Number(`${low}.${number(10, 99)}`), Number(`${current}.${number(10, 99)}`), Number(`${trend}.${number(10, 99)}`)));
         }
         return indices;
     } else {
         if(num >= list.length) {
             throw new Error('The number of requested indices should be less than the length of the provided IndexData list');
         }
-        let indices: IndexData[] = [];
+        let indices: StockData[] = [];
         let list_ = list.slice();
         for (let index = 0; index < num; index++) {
             indices.push(list_.splice(number(0, list_.length - 1), 1)[0]);
