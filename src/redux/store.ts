@@ -44,12 +44,9 @@ export type ReportData = {
 }
 
 export type ChartDescriptor = {
-    id: number,
-    type: ChartType,
-    source: number | string,
-    resolution: string,
-    data: ChartData,
-    activeIndex: StockData
+    data: ChartData | null,
+    stock: StockData | null,
+    options: {}
 }
 
 export type HelpType = {
@@ -72,19 +69,7 @@ export interface State {
     selectedExchange: {name: string, code: string},
 
     socket: WebSocket | undefined,
-
-    chartType: ChartType,
-    chartOptions: any,
-    chartTypes: Option[],
-    chartDataSource: number | string,
-    dataSources: Option[],
-    chartDataSourceArchive: {source: number | string, 
-                             data: ChartData}[],
-    resolutionOptions: Option[],
-    chartResolution: string,
-    indexHistory: ChartData,
-    charts: ChartDescriptor[],
-    selectedChart: number | null,
+    chart: ChartDescriptor,
 
     buyButtons: Option[],
     sellButtons: Option[],
@@ -131,22 +116,22 @@ Storage.get(Keys.ALERTS).then(alerts => {
     }
 });
 
-Storage.get(Keys.CHARTS).then(charts => {
-    if (charts) {
-        store.dispatch(actions.setCharts(charts as ChartDescriptor[]));
-    } else {
-        store.dispatch(actions.setCharts([
-            {
-                id: 0,
-                type: 'line',
-                source: 'Intraday',
-                resolution: '1d',
-                activeIndex: new StockData(0, '---', 0, 0, 0, 0, 0, 0),
-                data: new ChartData([new ChartDataEntry('2020-01-01', 0, 0, 0, 0)])
-            }
-        ]));
-    }
-});
+// Storage.get(Keys.CHARTS).then(charts => {
+//     if (charts) {
+//         store.dispatch(actions.setCharts(charts as ChartDescriptor[]));
+//     } else {
+//         store.dispatch(actions.setCharts([
+//             {
+//                 id: 0,
+//                 type: 'line',
+//                 source: 'Intraday',
+//                 resolution: '1d',
+//                 activeIndex: new StockData(0, '---', 0, 0, 0, 0, 0, 0),
+//                 data: new ChartData([new ChartDataEntry('2020-01-01', 0, 0, 0, 0)])
+//             }
+//         ]));
+//     }
+// });
 
 Storage.get(Keys.BOXES).then(boxes => {
     if (boxes) {
@@ -209,40 +194,24 @@ export const state: State = {
     selectedExchange: {name: '', code: ''},
 
     socket: undefined,
-
-    chartType: 'line',
-    chartOptions: {
-        priceScale: {borderVisible: false},
-        layout: {
-            backgroundColor: 'transparent',
-            textColor: 'rgba(255, 255, 255, 0.2)',
-            fontSize: 14
-        },
-        grid: {
-            vertLines: {color: 'rgba(255, 255, 255, 0.2)'},
-            horzLines: {color: 'rgba(255, 255, 255, 0.2)'}
-        },
-        timeScale: {fixLeftEdge: true}
-    },
-    chartTypes: [{name: 'line', selected: true}, {name: 'candlestick'}, {name: 'bar'}],
-    chartDataSource: history.archive[0].source,
-    dataSources: history.years,
-    chartDataSourceArchive: history.archive,
-    resolutionOptions: [{name: '1d', selected: true, onClick: () => store.dispatch(actions.setChartResolution('1d', 0, 0))}, {name: '1w', onClick: () => store.dispatch(actions.setChartResolution('1w', 0, 0))}, 
-                        {name: '1m', onClick: () => store.dispatch(actions.setChartResolution('1m', 0, 0))}, {name: '1q', onClick: () => store.dispatch(actions.setChartResolution('1q', 0, 0))}],
-    chartResolution: '1d',
-    indexHistory: history.archive[0].data,
-    charts: [
-        {
-            id: 0,
-            type: 'line',
-            source: 'Intraday',
-            resolution: '1d',
-            activeIndex: new StockData(0, '---', 0, 0, 0, 0, 0, 0),
-            data: history.archive.find(entry => entry.source === 'Intraday')!.data
+    chart: {
+        stock: null,
+        data: null,
+        options: {
+            priceScale: {borderVisible: false},
+            layout: {
+                backgroundColor: 'transparent',
+                textColor: 'rgba(255, 255, 255, 0.2)',
+                fontSize: 14
+            },
+            grid: {
+                vertLines: {color: 'rgba(255, 255, 255, 0.2)'},
+                horzLines: {color: 'rgba(255, 255, 255, 0.2)'}
+            },
+            timeScale: {fixLeftEdge: true}
         }
-    ],
-    selectedChart: null,
+    },
+
     buyButtons: [{name: 'Buy', onClick: () => store.dispatch(actions.buy())}],
     sellButtons: [{name: 'Sell', onClick: () => store.dispatch(actions.sell())}],
     reportButtons: [{name: '', graphic: 'fas fa-history', title: 'Add a History Report', data: 'history', onClick: () => store.dispatch(actions.addBox(BoxData.getBoxType('history')))},

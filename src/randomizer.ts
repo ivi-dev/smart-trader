@@ -62,7 +62,7 @@ export const indexHistory = (year: number | string = (new Date().getFullYear() -
             highest = number(10, 150), lowest = Math.round(highest - highest * 0.2), 
             close = number(0, (highest - lowest)) + lowest;
             const month = index < 10 ? `0${index}` : index, date = index2 < 10 ? `0${index2}` : index2;
-            history.entries.push(new ChartDataEntry(`${year}-${month}-${date}`, Number(`${open}.${number(0, 99)}`), Number(`${close}.${number(0, 99)}`), Number(`${highest}.${number(0, 99)}`), Number(`${lowest}.${number(0, 99)}`)));
+            history.entries.push(new ChartDataEntry(`${year}-${month}-${date}`, Number(`${open}.${number(0, 99)}`)));
         }
     }
     return history;

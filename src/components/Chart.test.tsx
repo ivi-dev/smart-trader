@@ -38,7 +38,7 @@ const renderChart = () => {
                          width={12} 
                          options={otions} 
                          data={data} 
-                         activeIndex={activeIndex} 
+                         stock={activeIndex} 
                          dataSources={dataSources} 
                          year={dataSources[0].name} 
                          resolutionOptions={resolutionOptions} 

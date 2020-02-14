@@ -26,17 +26,14 @@ const formatIndexHistory = (history: ChartData, format: string) => {
                 if (!history.entries[index2]) {
                     break;
                 }
-                open += history.entries[index2].open;
-                close += history.entries[index2].close;
-                high += history.entries[index2].high;
-                low += history.entries[index2].low;
+                // open += history.entries[index2].open;
+                // close += history.entries[index2].close;
+                // high += history.entries[index2].high;
+                // low += history.entries[index2].low;
                 if (index2 === endIndex - 1) {
                     formattedData.entries.push(new ChartDataEntry(
                         history.entries[index2].time, 
-                        Number((open / entries).toFixed(2)), 
-                        Number((close / entries).toFixed(2)), 
-                        Number((high / entries).toFixed(2)), 
-                        Number((low / entries).toFixed(2))));
+                        Number((open / entries).toFixed(2))));
                 }
                 entries++;
             }
@@ -71,21 +68,21 @@ const getLatestAlertId = (alertList: AlertData[]) => {
     return alertList.length !== 0 ? alertList[alertList.length - 1].id : 0;
 }
 
-const getLatestChartId = (chartList: ChartDescriptor[]) => {
-    return chartList.length !== 0 ? chartList[chartList.length - 1].id : 0;
-}
+// const getLatestChartId = (chartList: ChartDescriptor[]) => {
+//     return chartList.length !== 0 ? chartList[chartList.length - 1].id : 0;
+// }
 
-const getTargetIndex = (charts: ChartDescriptor[], id: number | null) => {
-    if (id === null) {
-        return null;
-    } else {
-        for (const chart of charts) {
-            if (chart.id === id) {
-                return chart.activeIndex.name !== '---' ? chart.activeIndex : null;
-            }
-        }
-    }
-}
+// const getTargetIndex = (charts: ChartDescriptor[], id: number | null) => {
+//     if (id === null) {
+//         return null;
+//     } else {
+//         for (const chart of charts) {
+//             if (chart.id === id) {
+//                 return chart.stock.name !== '---' ? chart.stock : null;
+//             }
+//         }
+//     }
+// }
 
 const recordOrder = (type: 'buy' | 'sell', indexName: string, 
     price: number, qty: number, balance: number) => {
@@ -138,18 +135,31 @@ export const main = (state = initialState, action: Action) => {
             return Object.assign({}, state, {allStocksList: stocksList}, 
                 {stocksList: stocksList.filter(stock => stock.name.toLowerCase().startsWith(state.stockStartLetter.toLowerCase()))});
         case actions.SELECT_STOCK:
-            const charts5 = state.charts.slice();
             const stockData = action.arg as StockData;
-            for (const chart of charts5) {
-                if (chart.id === state.selectedChart) {
-                    chart.activeIndex = stockData;
-                    chart.data = state.chartDataSourceArchive[0].data
-                    break;
+            // for (const chart of charts5) {
+            //     if (chart.id === state.selectedChart) {
+            //         chart.activeIndex = stockData;
+            //         chart.data = state.chartDataSourceArchive[0].data
+            //         break;
+            //     }
+            // }
+            // recordCharts(charts5);
+            FinnHub.track(stockData.name, data_ => {
+                let data = Object.assign({}, state.chart.data);
+                console.log(data)
+                const date = new Date(data_.t);
+                const time = `${date.getFullYear()}-${date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1}-${date.getDate()}`;
+                if (Object.keys(data).length === 0) {
+                    data = new ChartData([new ChartDataEntry(time, data_.p)]);
+                } else {
+                    data.entries.push(new ChartDataEntry(time, data_.p));
                 }
-            }
-            recordCharts(charts5);
-            FinnHub.track(stockData.name, (data) => console.log(new Date(data.t)));
+                store.dispatch(actions.setChartData(data));
+            });
             return state;
+        case actions.SET_CHART_DATA:
+            // console.log(action.arg)
+            return Object.assign({}, state, {chart: {...state.chart, data: action.arg as ChartData}});
         case actions.SEARCH_FOR_INDEX:
             return Object.assign({}, state, {marketSearchResultsList: state.stocksList.filter(index => index.name.toLowerCase().includes(action.arg.toLowerCase() as string))});    
         case actions.SEARCH_WATCHLIST:
@@ -180,63 +190,7 @@ export const main = (state = initialState, action: Action) => {
             return Object.assign({}, state, {selectedExchange: {name: action.arg as string}});   
         case actions.REMOVE_FROM_WATCHLIST:
             recordWatchlist(state.watchList.filter(index => index !== (action.arg as StockData)));
-            return state;    
-        case actions.SET_CHART_TYPE:
-            const chartTypeArg = action.arg as { chartType: string, chartId: number };
-            const charts1 = state.charts.slice();
-            for (let index = 0; index < charts1.length; index++) {
-                if (charts1[index].id === chartTypeArg.chartId) {
-                    charts1[index].type = chartTypeArg.chartType as ChartType;
-                    break;
-                }
-            }
-            return Object.assign({}, state, {charts: charts1});    
-        case actions.SET_CHART_YEAR:
-            const yearArg = action.arg as {year: number, chartId: number};
-            const source = yearArg.year, chart = state.charts.find(chart => chart.id === yearArg.chartId), data = formatIndexHistory(state.chartDataSourceArchive.find(entry => String(entry.source) === String(source))!.data, chart!.resolution);
-            const charts2 = state.charts.slice();
-            for (let index = 0; index < charts2.length; index++) {
-                if (charts2[index].id === yearArg.chartId) {
-                    charts2[index].data = data;
-                    charts2[index].source = source;
-                    break;
-                }
-            }
-            return Object.assign({}, state, {charts: charts2});    
-        case actions.SET_CHART_RESOLUTION:
-            const resolutionArg = action.arg as {resolution: string, chartId: number, 
-                year: number | string};
-            const formatted = formatIndexHistory(state.chartDataSourceArchive.find(entry => String(entry.source) === String(resolutionArg.year))!.data, resolutionArg.resolution);
-            const charts3 = state.charts.slice();
-            for (let index = 0; index < charts3.length; index++) {
-                if (charts3[index].id === resolutionArg.chartId) {
-                    charts3[index].data = formatted;
-                    charts3[index].resolution = resolutionArg.resolution;
-                    break;
-                }
-            }
-            recordCharts(charts3);
             return state;
-        case actions.ADD_CHART:
-            const addChartArg = action.arg as {chartId: number};
-            const charts4 = state.charts.slice();
-            let copy = {} as ChartDescriptor;
-            for (let index = 0; index < charts4.length; index++) {
-                if (charts4[index].id === addChartArg.chartId) {
-                    copy = Object.assign({}, charts4[index]);
-                    break;
-                }
-            }
-            copy.id = getLatestChartId(state.charts) + 1;
-            recordCharts(state.charts.concat([copy]));
-            return state;    
-        case actions.REMOVE_CHART:
-            const removeChartArg = action.arg as {chartId: number};
-            recordCharts(state.charts.filter(chart => chart.id !== removeChartArg.chartId));
-            return state;
-        case actions.SELECT_CHART:
-            const id = action.arg as number;
-            return Object.assign({}, state, {selectedChart: state.selectedChart === id ? null : id});
         case actions.SET_CHARTS:
             return Object.assign({}, state, {charts: action.arg as ChartDescriptor[]});   
         case actions.ADD_BOX:
@@ -302,17 +256,17 @@ export const main = (state = initialState, action: Action) => {
             return Object.assign({}, state, {reportData: {...state.reportData, alerts: action.arg as AlertData[]}});
         case actions.BUY:
             if ((action.arg as number) !== 0) {
-                let index = getTargetIndex(state.charts.slice(), state.selectedChart);
-                if (index !== null) {
-                    recordOrder('buy', index!.name, index!.current * state.buyQty, state.buyQty, state.balance);
+                let stockBuy = state.chart.stock;
+                if (stockBuy !== null) {
+                    recordOrder('buy', stockBuy!.name, stockBuy!.current * state.buyQty, state.buyQty, state.balance);
                 }
             }
             return state;
         case actions.SELL:
             if ((action.arg as number) !== 0) {
-                let index2 = getTargetIndex(state.charts.slice(), state.selectedChart);
-                if (index2 !== null) {
-                    recordOrder('sell', index2!.name, index2!.current * state.sellQty, state.buyQty, state.balance);
+                let stockSell = state.chart.stock;
+                if (stockSell !== null) {
+                    recordOrder('sell', stockSell!.name, stockSell!.current * state.sellQty, state.buyQty, state.balance);
                 }
             }
             return state;

@@ -32,16 +32,7 @@ type AppProp = {
   stockIndexOptions: Option[],
   selectedExchange: {name: string, code: string},
 
-  chartType: ChartType,
-  chartOptions: any,
-  chartTypes: Option[],
-  dataSources: Option[],
-  chartDataSource: number | string,
-  resolutionOptions: Option[],
-  chartResolution: string,
-  indexHistory: ChartData,
-  charts: ChartDescriptor[],
-  selectedChart: number | null,
+  chart: ChartDescriptor,
 
   buyButtons: Option[],
   sellButtons: Option[],
@@ -139,20 +130,7 @@ const App = (prop: AppProp) => {
           <ButtonGroup options={prop.generalButtons} classes={'ml-2 my-3'} />
         </Row>
         <Row classes={'chart overflow-auto'} style={{'height': '52vh'}}>
-          {prop.charts.map(chart => <Chart key={chart.id} 
-                                           id={chart.id} 
-                                           type={chart.type} 
-                                           width={prop.charts.length === 1 ? 12 : 6} 
-                                           options={prop.chartOptions} 
-                                           data={chart.data} 
-                                           activeIndex={chart.activeIndex} 
-                                           dataSources={prop.dataSources} 
-                                           year={chart.source} 
-                                           dispatch={prop.dispatch} resolutionOptions={prop.resolutionOptions} 
-                                           chartResolution={chart.resolution} 
-                                           chartTypes={prop.chartTypes} 
-                                           chartType={prop.chartType} 
-                                           selected={prop.selectedChart === chart.id ? true : false} />)}
+          <Chart data={prop.chart} dispatch={prop.dispatch} />
         </Row>
         <Reports boxes={prop.boxes} 
                  selectedBox={prop.selectedBox} 
@@ -175,16 +153,7 @@ function mapStateToProps(state: State) {
     stockIndexOptions: state.stockIndexOptions,
     selectedExchange: state.selectedExchange,
 
-    chartType: state.chartType,
-    chartOptions: state.chartOptions,
-    chartTypes: state.chartTypes,
-    dataSources: state.dataSources,
-    chartDataSource: state.chartDataSource,
-    resolutionOptions: state.resolutionOptions,
-    chartResolution: state.chartResolution,
-    indexHistory: state.indexHistory,
-    charts: state.charts,
-    selectedChart: state.selectedChart,
+    chart: state.chart,
 
     buyButtons: state.buyButtons,
     sellButtons: state.sellButtons,

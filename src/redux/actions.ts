@@ -6,6 +6,7 @@ import AlertData from '../AlertData';
 import { ChartDescriptor } from './store';
 import { isVowel } from '../utility';
 import { Option } from './store';
+import ChartData from '../ChartData';
 
 export const SET_STOCKS_LIST = 'SET_STOCKS_LIST';
 export const SELECT_STOCK = 'SELECT_INDEX';
@@ -53,6 +54,8 @@ export const SET_BALANCE = 'SET_BALANCE';
 
 export const SELECT_STOCK_START_LETTER = 'SELECT_STOCK_START_LETTER';
 export const SET_STOCK_START_LETTER = 'SET_STOCK_START_LETTER';
+
+export const SET_CHART_DATA = 'SET_CHART_DATA';
 
 export const activityLabels = {
     sell: (amount: number, indexName: string, price: number) => {
@@ -274,4 +277,9 @@ export const selectStockStartLetter = (letter: string) => ({
 export const setStockStartLetter = (letter: string) => ({
     type: SET_STOCK_START_LETTER,
     arg: letter
+});
+
+export const setChartData = (data: ChartData) => ({
+    type: SET_CHART_DATA,
+    arg: data
 });
