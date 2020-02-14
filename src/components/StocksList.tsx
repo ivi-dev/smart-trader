@@ -22,13 +22,13 @@ const StocksList = (prop: StocksListProp) => {
                 if (altKey) {
                     prop.dispatch!(actions.addToWatchlist(data));
                 } else {
-                    prop.dispatch!(actions.selectIndex(data));
+                    prop.dispatch!(actions.selectStock(data));
                 }
             } else {
                 if (altKey) {
                     prop.dispatch!(actions.removeFromWatchlist(data));
                 } else {
-                    prop.dispatch!(actions.selectIndex(data));
+                    prop.dispatch!(actions.selectStock(data));
                 }
             }
         }
