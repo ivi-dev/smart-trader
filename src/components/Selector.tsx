@@ -7,6 +7,7 @@ type SelectorProp = {
     title: string,
     options: Option[],
     selected: string | number,
+    flush?: boolean,
     sortOrder?: 'asc' | 'desc',
     classes?: string,
     handleSelect: (value: string, ...other: any[]) => void
@@ -26,11 +27,12 @@ const Selector = (prop: SelectorProp) => {
         });
     }
     return (
-        <div className={`row no-gutters align-items-center col-auto selector ${prop.classes}`}>
+        <div className={`row no-gutters align-items-center 
+            col-auto selector ${prop.classes}`}>
             <div className="col-auto title">
                 {prop.title}
             </div>
-            <select className="col-auto ml-2" 
+            <select className={`col-auto ${!prop.flush ? 'ml-2' : null}`} 
                     onChange={(e) => {prop.handleSelect(
                         (e.target as HTMLSelectElement).value)}} 
                     value={prop.selected}>
