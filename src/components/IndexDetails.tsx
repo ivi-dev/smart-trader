@@ -1,9 +1,9 @@
 import React from 'react';
 import './IndexDetails.css';
-import IndexData from '../IndexData';
+import StockData from '../StockData';
 
 type IndexDetailsProp = {
-    data: IndexData | null
+    data: StockData | null
 }
 
 const IndexDetails = (prop: IndexDetailsProp) =>

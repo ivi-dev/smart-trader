@@ -1,7 +1,7 @@
 import React, { useEffect, RefObject } from 'react';
 import ChartData from '../ChartData';
 import { createChart } from 'lightweight-charts';
-import IndexData from '../IndexData';
+import StockData from '../StockData';
 import { Option } from '../redux/store';
 import { ChartType } from '../redux/store';
 import './Chart.css';
@@ -22,7 +22,7 @@ type ChartProp = {
     year: number | string,
     resolutionOptions: Option[],
     chartResolution: string,
-    activeIndex: IndexData,
+    activeIndex: StockData,
     chartTypes: Option[],
     chartType: string,
     selected: boolean,
