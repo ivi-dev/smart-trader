@@ -51,6 +51,9 @@ export const TOGGLE_HELP = 'TOGGLE_HELP';
 export const SET_ACTIVE_HELP_SECTION = 'SET_ACTIVE_HELP_SECTION';
 export const SET_BALANCE = 'SET_BALANCE';
 
+export const SELECT_STOCK_START_LETTER = 'SELECT_STOCK_START_LETTER';
+export const SET_STOCK_START_LETTER = 'SET_STOCK_START_LETTER';
+
 export const activityLabels = {
     sell: (amount: number, indexName: string, price: number) => {
         const price_ = (new Intl.NumberFormat(
@@ -261,4 +264,14 @@ export const setSelectedExchange = (name: string) => ({
 export const setWatchList = (watchList: StockData[]) => ({
     type: SET_WATCHLIST,
     arg: watchList
+});
+
+export const selectStockStartLetter = (letter: string) => ({
+    type: SELECT_STOCK_START_LETTER,
+    arg: letter
+});
+
+export const setStockStartLetter = (letter: string) => ({
+    type: SET_STOCK_START_LETTER,
+    arg: letter
 });

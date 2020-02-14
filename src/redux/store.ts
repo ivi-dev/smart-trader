@@ -61,7 +61,9 @@ export type DisplayedAlertsLevel = 'all' | 'error' | 'warning' | 'info';
 
 export interface State {
     selectedIndex: StockData | null,
+    allStocksList: StockData[],
     stocksList: StockData[],
+    stockStartLetter: string,
     marketSearchResultsList: StockData[],
     watchListSearchResultsList: StockData[],
     watchList: StockData[],
@@ -157,6 +159,12 @@ Storage.get(Keys.WATCHLIST).then(watchlist => {
     }
 });
 
+Storage.get(Keys.START_LETTER).then(letter => {
+    if (letter) {
+        store.dispatch(actions.setStockStartLetter(letter as string));
+    }
+});
+
 const fetchHeadlines = (category: Category) =>
     News.headlines(category, articles => {
         const headlines: ListDataRow[] = [];
@@ -189,7 +197,9 @@ export const fetchStocks = (exchange: string) => {
 
 export const state: State = {
     selectedIndex: randomIndices[0],
+    allStocksList: [],
     stocksList: [],
+    stockStartLetter: 'a',
     marketSearchResultsList: [],
     watchListSearchResultsList: [],
     watchList: [],

@@ -127,10 +127,16 @@ const recordSelectedExchange = (exchange: {name: string, code: string}) => {
     Storage.exchange(exchange, exchange => store.dispatch(actions.setSelectedExchange(exchange.name)));
 }
 
+const recordStockStartLetter = (letter: string) => {
+    Storage.startLetter(letter, letter => store.dispatch(actions.setStockStartLetter(letter)));
+}
+
 export const main = (state = initialState, action: Action) => {
     switch (action.type) {
         case actions.SET_STOCKS_LIST:
-            return Object.assign({}, state, {stocksList: action.arg as Array<StockData>});
+            const stocksList = action.arg as Array<StockData>;
+            return Object.assign({}, state, {allStocksList: stocksList}, 
+                {stocksList: stocksList.filter(stock => stock.name.toLowerCase().startsWith(state.stockStartLetter.toLowerCase()))});
         case actions.SELECT_STOCK:
             const charts5 = state.charts.slice();
             const stockData = action.arg as StockData;
@@ -330,6 +336,13 @@ export const main = (state = initialState, action: Action) => {
             return Object.assign({}, state, {help: {...state.help, sections: sections}});
         case actions.SET_BALANCE:
             return Object.assign({}, state, {balance: action.arg as number});
+        case actions.SELECT_STOCK_START_LETTER:
+            const letter = action.arg as string;
+            let stocks = state.allStocksList.filter(stock => stock.name.toLowerCase().startsWith(letter.toLowerCase()));
+            recordStockStartLetter(letter);
+            return Object.assign({}, state, {stocksList: stocks});
+        case actions.SET_STOCK_START_LETTER:
+            return Object.assign({}, state, {stockStartLetter: action.arg as string});
         default:
             return state;
     }
