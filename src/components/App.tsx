@@ -76,7 +76,7 @@ const App = (prop: AppProp) => {
             dispatch={prop.dispatch} />
 
       <Column classes={`col-2 p-2 vh-100 side-panel ${prop.help.visible ? 'faded' : null}`}>
-        {alphabet.map((letter, index) => <Button key={index} title={letter} classes={`mr-2 mb-2 ${letter === prop.stockStartLetter ? 'active' : null}`} style={{width: '25px', height: '25px'}} onClick={() => prop.dispatch(actions.selectStockStartLetter(letter))} />)}
+        {alphabet.concat(digits).map((letter, index) => <Button key={index} title={letter} classes={`mr-2 mb-2 ${letter === prop.stockStartLetter ? 'active' : null}`} style={{width: '25px', height: '25px'}} onClick={() => prop.dispatch(actions.selectStockStartLetter(letter))} />)}
         <StocksList title='Market' 
                     status='Fetching stocks...' 
                     listType='symbolsList' 
