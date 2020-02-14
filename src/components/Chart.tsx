@@ -51,8 +51,8 @@ const Chart = (prop: ChartProp) => {
         prop.dispatch(actions.setChartResolution(resolution, chartId, source));
     return <section className={`row col-${prop.width} no-gutters px-4 chart align-items-start`}>
                 <div className="row justify-content-between align-items-center no-gutters col-12">
-                    <Selector title={'Source:'} options={prop.dataSources} sortOrder={'desc'} selected={prop.year} handleSelect={(year) => prop.dispatch(actions.setChartYear(year, prop.id))} />
-                    <Button graphic={'fas fa-plus'} classes={'ml-3'} onClick={() => prop.dispatch(actions.addChart(prop.id))} />
+                    {/* <Selector title={'Source:'} options={prop.dataSources} sortOrder={'desc'} selected={prop.year} handleSelect={(year) => prop.dispatch(actions.setChartYear(year, prop.id))} /> */}
+                    <Button graphic={'fas fa-plus'} classes={'ml-1'} onClick={() => prop.dispatch(actions.addChart(prop.id))} />
                     <Button graphic={'fas fa-trash'} classes={'ml-2 mr-4 danger'} onClick={() => prop.dispatch(actions.removeChart(prop.id))} />
                     <IndexDetails data={prop.activeIndex} />
                     <Selector title={'Type:'} options={prop.chartTypes} selected={prop.type} classes={'ml-auto'} handleSelect={(type) => prop.dispatch(actions.setChartType(type, prop.id))} />
