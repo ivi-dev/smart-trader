@@ -1,7 +1,13 @@
 .btn.single {
     border-color: rgba(255, 255, 255, 0.3) !important;
     color: rgba(255, 255, 255, 0.5) !important;
-    font-size: 65% !important;
+    font-size: 65%;
+}
+
+.btn.single.active {
+    background-color: rgba(83, 189, 231, 0.171) !important;
+    color: rgb(70, 159, 233) !important;
+    border-color: rgb(70, 159, 233) !important;
 }
 
 .btn.single:hover {
