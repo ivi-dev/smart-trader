@@ -148,7 +148,7 @@ export const main = (state = initialState, action: Action) => {
                 }
             }
             recordCharts(charts5);
-            FinnHub.track(stockData.name);
+            FinnHub.track(stockData.name, (data) => console.log(new Date(data.t)));
             return state;
         case actions.SEARCH_FOR_INDEX:
             return Object.assign({}, state, {marketSearchResultsList: state.stocksList.filter(index => index.name.toLowerCase().includes(action.arg.toLowerCase() as string))});    
