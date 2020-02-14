@@ -10,7 +10,7 @@ import BoxData, { BoxType } from '../BoxData';
 import Storage, { Keys } from '../Storage';
 import * as actions from './actions';
 import News, { Category } from '../News';
-import { fullDate } from '../utility';
+import { fullDate, alphabet, digits } from '../utility';
 import { help } from '../help';
 import FinnHub from '../FinnHub';
 
@@ -68,6 +68,7 @@ export interface State {
     watchListSearchResultsList: StockData[],
     watchList: StockData[],
     exchanges: Option[],
+    stockIndexOptions: Option[],
     selectedExchange: {name: string, code: string},
 
     socket: WebSocket | undefined,
@@ -204,6 +205,7 @@ export const state: State = {
     watchListSearchResultsList: [],
     watchList: [],
     exchanges: [],
+    stockIndexOptions: alphabet.concat(digits).map(character => ({name: character})),
     selectedExchange: {name: '', code: ''},
 
     socket: undefined,
