@@ -1,13 +1,12 @@
 import React from 'react';
 import './App.css';
-import Search from './Search';
-import IndicesList  from './IndicesList';
+import StocksList  from './StocksList';
 import { Option, ChartDescriptor, HelpType } from '../redux/store';
 import Chart from './Chart';
 import Reports from './Reports';
 import { State, ReportData, ChartType } from '../redux/store';
 import { connect } from 'react-redux';
-import IndexData from '../IndexData';
+import StockData from '../StockData';
 import { Action } from '../redux/actions';
 import * as actions from '../redux/actions';
 import ButtonGroup from './ButtonGroup';
@@ -18,12 +17,16 @@ import Text from './Text';
 import Column from './Column';
 import Input from './Input';
 import Help from './Help';
+import Selector from './Selector';
 
 type AppProp = {
-  selectedIndex: IndexData | null,
-  indicesList: IndexData[],
-  searchResultsList: IndexData[],
-  watchList: IndexData[],
+  selectedIndex: StockData | null,
+  indicesList: StockData[],
+  marketSearchResultsList: StockData[],
+  watchListSearchResultsList: StockData[],
+  watchList: StockData[],
+  exchanges: Option[],
+  selectedExchange: {name: string, code: string},
 
   chartType: ChartType,
   chartOptions: any,
@@ -47,30 +50,12 @@ type AppProp = {
   buyQty: number,
   sellQty: number,
 
-  help: HelpType
+  help: HelpType,
 
   dispatch: (action: Action) => void
 }
 
 const App = (prop: AppProp) => {
-  const handleIndicesListClick = (altKey: boolean, data: IndexData) => {
-      if (prop.dispatch) {
-          if (altKey) {
-              prop.dispatch!(actions.addToWatchlist(data));
-          } else {
-              prop.dispatch!(actions.selectIndex(data));
-          }
-      }
-  }
-  const handleWatchlistClick = (altKey: boolean, data: IndexData) => {
-      if (prop.dispatch) {
-        if (altKey) {
-            prop.dispatch!(actions.removeFromWatchlist(data));
-        } else {
-            prop.dispatch!(actions.selectIndex(data));
-        }
-      }
-  }
   const getActiveHelpSection = () => {
     for (const section of prop.help.sections) {
       if (section.selected) {
@@ -83,10 +68,9 @@ const App = (prop: AppProp) => {
     <>
       <Help sections={prop.help.sections} active={getActiveHelpSection().name.toString()} content={getActiveHelpSection().data!} visible={prop.help.visible} dispatch={prop.dispatch} />
       <Column classes={`col-2 p-2 vh-100 side-panel ${prop.help.visible ? 'faded' : null}`}>
-        <Search placeholder="Search for indices" dispatch={prop.dispatch} />
-        <IndicesList data={prop.searchResultsList.length === 0 ? prop.indicesList : prop.searchResultsList} 
-        handleClick={(altKey, data) => {handleIndicesListClick(altKey, data)}} />
-        <IndicesList title={'Watchlist'} data={prop.watchList} handleClick={(altKey, data) => {handleWatchlistClick(altKey, data)}} />
+        <Selector title={'Exchanges'} options={prop.exchanges} selected={prop.selectedExchange.name} flush={true} handleSelect={value => prop.dispatch(actions.setSelectedExchange(value))} classes='small mb-3' />
+        <StocksList title='Market' status='Fetching stocks...' listType='symbolsList' data={prop.marketSearchResultsList.length === 0 ? prop.indicesList : prop.marketSearchResultsList} dispatch={prop.dispatch} onSearch={value => prop.dispatch(actions.searchForIndex(value))} />
+        <StocksList title='Watchlist' status='Empty' listType='watchlist' dispatch={prop.dispatch} data={prop.watchListSearchResultsList.length === 0 ? prop.watchList : prop.watchListSearchResultsList} onSearch={value => prop.dispatch(actions.searchWatchlist(value))} />
       </Column>
       <Column classes={`col-10 vh-100 main-area ${prop.help.visible ? 'faded' : null}`}>
         <Row classes={'px-4 border-bottom status-bar'}>
@@ -116,9 +100,12 @@ const App = (prop: AppProp) => {
 function mapStateToProps(state: State) {
   return { 
     selectedIndex: state.selectedIndex,
-    indicesList: state.indicesList,
-    searchResultsList: state.searchResultsList,
+    indicesList: state.stocksList,
+    marketSearchResultsList: state.marketSearchResultsList,
+    watchListSearchResultsList: state.watchListSearchResultsList,
     watchList: state.watchList,
+    exchanges: state.exchanges,
+    selectedExchange: state.selectedExchange,
 
     chartType: state.chartType,
     chartOptions: state.chartOptions,
