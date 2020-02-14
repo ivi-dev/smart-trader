@@ -9,7 +9,7 @@ import * as actions from '../redux/actions';
 type StocksListProp = {
     title?: string,
     status?: string,
-    listType: 'symbolsList' | 'watchlist',
+    listType: 'symbolsList' | 'watchList',
     data: StockData[],
     dispatch: (action: Action) => void,
     onSearch: (value: string) => void
