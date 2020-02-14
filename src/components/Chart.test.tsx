@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import ChartData, { ChartDataEntry } from '../ChartData';
-import IndexData from '../IndexData';
+import StockData from '../StockData';
 import { Action } from '../redux/actions';
 import Chart from './Chart';
 import * as actions from '../redux/actions';
@@ -23,7 +23,7 @@ const otions = {
 };
 const id = 0;
 const data = new ChartData([new ChartDataEntry('2019-01-01', 1, 0.5, 1.2, 0.2)]);
-const activeIndex = new IndexData(0, 'ABC', 1, 0.5, 1.2, 0.2, 1.1, 2);
+const activeIndex = new StockData(0, 'ABC', 1, 0.5, 1.2, 0.2, 1.1, 2);
 const dataSources = [{name: 2019, selected: true}, {name: 2018}];
 const resolutionOptions = [{name: '1d'}, {name: '1w'}];
 const resolution = '1d';
