@@ -1,28 +1,30 @@
-#search {
+.search {
     border-color: rgba(255, 255, 255, 0.2) !important;
 }
 
-#search input[type=search] {
+.search input[type=search] {
     background-color: transparent;
     border: none;
     color: rgba(255, 255, 255, 0.8);
     opacity: 0.5;
+    text-align: right;
     transition: 250ms;
 }
 
-#search i {
-    font-size: 90%;
-    right: 15px;
-    top: 23px;
+.search i {
+    font-size: 75%;
+    right: 5px;
+    top: 6px;
     color: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
     transition: 250ms;
 }
 
-#search input[type=search]:focus {
+.search input[type=search]:focus {
     outline: none;
     opacity: 1;
 }
 
-#search input[type=search]:focus + i {
-    opacity: 0;
+.search input[type=search]:focus + i {
+   color: white;
 }
