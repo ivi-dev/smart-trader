@@ -16,7 +16,7 @@ type StocksListProp = {
 }
 
 const StocksList = (prop: StocksListProp) => {
-    const handleIndicesListClick = (altKey: boolean, data: StockData, listType: string) => {
+    const handleStockListClick = (altKey: boolean, data: StockData, listType: string) => {
         if (prop.dispatch) {
             if (listType === 'symbolsList') {
                 if (altKey) {
@@ -53,7 +53,7 @@ const StocksList = (prop: StocksListProp) => {
                 <Stock key={index.id} 
                        data={index} 
                        handleClick={(altKey, data) => 
-                       {handleIndicesListClick(altKey, data, prop.listType)}} />)}
+                       {handleStockListClick(altKey, data, prop.listType)}} />)}
             </section>
         </>
     )
