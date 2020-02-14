@@ -86,7 +86,7 @@ export const setStocksList = (list: StockData[]) => ({
     arg: list
 });
 
-export const selectIndex = (index: StockData) => ({
+export const selectStock = (index: StockData) => ({
     type: SELECT_STOCK,
     arg: index
 });
