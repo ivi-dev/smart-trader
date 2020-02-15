@@ -1,29 +1,41 @@
-.index-details {
+.stock-details {
     border-color: rgba(255, 255, 255, 0.2) !important
 }
 
-.index-details.border-right {
-    border-color: rgba(255, 255, 255, 0.2) !important;
+.stock-details .stat.border-right {
+    border-right: 1px solid rgba(255, 255, 255, 0.2) !important;
 }
 
-.index-details .name {
+.stock-details .name {
     font-size: 150%;
+    text-shadow: 1px 1px 0 rgb(0, 0, 0);
 }
 
-.index-details .open, 
-.index-details .current {
-    font-size: 60%;
+.stock-details .company-name {
+    font-size: 90%;
+    text-shadow: 1px 1px 0 rgb(0, 0, 0);
 }
 
-.index-details .negative {
+.stock-details .current {
+    font-size: 140%;
+}
+
+.stock-details .title {
+    font-size: 70%;
+}
+
+.stock-details .value {
+    font-size: 90%;
+}
+
+.trend {
+    font-size: 120%;
+}
+
+.stock-details .negative {
     color: rgb(240, 116, 102);
 }
 
-.index-details .positive {
+.stock-details .positive {
     color: rgb(66, 207, 113);
-}
-
-.index-details .title {
-    color: rgba(225, 255, 255, 0.4);
-    font-size: 90%;
 }
