@@ -19,7 +19,7 @@ export const formatDate = (date: Date) => {
 export const fullDate = (date: Date, separator: string = '/') => {
     const hours = date.getHours(),
     minutes = date.getMinutes(),
-    seconds = date.getMinutes();
+    seconds = date.getSeconds();
     const hours_ = hours < 10 ? `0${hours}` : hours, minutes_ = minutes < 10 ? `0${minutes}` : minutes, seconds_ = seconds < 10 ? `0${seconds}` : seconds;
     return `${date.getFullYear()}${separator}${months[date.getMonth()]}${separator}${date.getDate()} ${hours_}:${minutes_}:${seconds_}`;
 }
@@ -31,7 +31,7 @@ export const shortDate = (date: Date, separator: string = '/') => {
 export const time = (date: Date, separator: string = ':') => {
     const hours = date.getHours(),
     minutes = date.getMinutes(),
-    seconds = date.getMinutes();
+    seconds = date.getSeconds();
     const hours_ = hours < 10 ? `0${hours}` : hours, minutes_ = minutes < 10 ? `0${minutes}` : minutes, seconds_ = seconds < 10 ? `0${seconds}` : seconds;
     return `${hours_}${separator}${minutes_}${separator}${seconds_}`;
 }
