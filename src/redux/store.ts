@@ -43,10 +43,18 @@ export type ReportData = {
     alerts: AlertData[]
 }
 
+export type ChartOptions = {
+    chart: {},
+    grid: {},
+    xaxis: {},
+    stroke: {},
+    noData: {},
+    series: {data: {x: string, y: number}[]}[]
+}
+
 export type ChartDescriptor = {
-    data: ChartData | null,
     stock: StockData | null,
-    options: {}
+    options: ChartOptions
 }
 
 export type HelpType = {
@@ -57,7 +65,6 @@ export type HelpType = {
 export type DisplayedAlertsLevel = 'all' | 'error' | 'warning' | 'info';
 
 export interface State {
-    selectedIndex: StockData | null,
     allStocksList: StockData[],
     stocksList: StockData[],
     stockStartLetter: string,
@@ -68,7 +75,8 @@ export interface State {
     stockIndexOptions: Option[],
     selectedExchange: {name: string, code: string},
 
-    socket: WebSocket | undefined,
+    tracker: WebSocket | number | null,
+    simulateTracker: boolean,
     chart: ChartDescriptor,
 
     buyButtons: Option[],
@@ -87,51 +95,29 @@ export interface State {
     help: HelpType
 }
 
-const randomIndices = random.indices(100);
-const history = random.indexHistories();
-
 Storage.get(Keys.ORDERS).then(orders => { 
     if (orders) {
-        store.dispatch(actions.setOrderHistory(
-            new TableData(ORDER_HEADERS, (orders as Array<TableRow>))));
+        store.dispatch(actions.setOrderHistory(orders as TableData));
     }
 });
 
-Storage.get(Keys.ACTIVITY).then(rows => { 
-    if (rows) {
-        store.dispatch(actions.setActivities(
-            new ListData(rows as Array<ListDataRow>)));
+Storage.get(Keys.ACTIVITY).then(activity => { 
+    if (activity) {
+        store.dispatch(actions.updateActivities(activity as ListData));
     }
 });
 
 Storage.get(Keys.BALANCE).then(balance => { 
     if (balance) {
-        store.dispatch(actions.setBalance(balance as number));
+        store.dispatch(actions.updateBalance(balance as number));
     }
 });
 
 Storage.get(Keys.ALERTS).then(alerts => {
     if (alerts) {
-        store.dispatch(actions.setAlerts(alerts as AlertData[]));
+        store.dispatch(actions.updateAlerts(alerts as AlertData[]));
     }
 });
-
-// Storage.get(Keys.CHARTS).then(charts => {
-//     if (charts) {
-//         store.dispatch(actions.setCharts(charts as ChartDescriptor[]));
-//     } else {
-//         store.dispatch(actions.setCharts([
-//             {
-//                 id: 0,
-//                 type: 'line',
-//                 source: 'Intraday',
-//                 resolution: '1d',
-//                 activeIndex: new StockData(0, '---', 0, 0, 0, 0, 0, 0),
-//                 data: new ChartData([new ChartDataEntry('2020-01-01', 0, 0, 0, 0)])
-//             }
-//         ]));
-//     }
-// });
 
 Storage.get(Keys.BOXES).then(boxes => {
     if (boxes) {
@@ -141,7 +127,7 @@ Storage.get(Keys.BOXES).then(boxes => {
 
 Storage.get(Keys.WATCHLIST).then(watchlist => {
     if (watchlist) {
-        store.dispatch(actions.setWatchList(watchlist as Array<StockData>));
+        store.dispatch(actions.updateWatchList(watchlist as Array<StockData>));
     }
 });
 
@@ -151,16 +137,22 @@ Storage.get(Keys.START_LETTER).then(letter => {
     }
 });
 
+Storage.get(Keys.TRACKER_MODE).then(mode => {
+    if (mode !== null) {
+        store.dispatch(actions.setTrackerMode(mode as boolean));
+    }
+});
+
 const fetchHeadlines = (category: Category) =>
     News.headlines(category, articles => {
         const headlines: ListDataRow[] = [];
         articles.forEach(article => headlines.push(new ListDataRow(article.title, undefined, `${article.author} @ ${fullDate(new Date(article.publishedAt))}`, article.url)));
-        store.dispatch(actions.setHeadlines(new ListData(headlines), category));
-    }, () => store.dispatch(actions.setHeadlines(new ListData([new ListDataRow('An error occurred while trying get the latest headlines.')]), category)));
+        store.dispatch(actions.updateHeadlines(new ListData(headlines), category));
+    }, () => store.dispatch(actions.updateHeadlines(new ListData([new ListDataRow('An error occurred while trying get the latest headlines.')]), category)));
 fetchHeadlines('business');
 
 const fetchExchanges = () => {
-    FinnHub.listExchanges(list => store.dispatch(actions.setExchanges(list)));
+    FinnHub.listExchanges(list => store.dispatch(actions.updateExchanges(list)));
 }
 fetchExchanges();
 
@@ -169,7 +161,7 @@ const fetchSelectedExchange = () => {
         if (exchange) {
             const exchange_ = exchange as {name: string, code: string};
             fetchStocks(exchange_.code);
-            store.dispatch(actions.setSelectedExchange(exchange_.name))
+            store.dispatch(actions.updateSelectedExchange(exchange_.name))
         } else {
             fetchStocks('US');
         }
@@ -182,34 +174,57 @@ export const fetchStocks = (exchange: string) => {
 }
 
 export const state: State = {
-    selectedIndex: randomIndices[0],
     allStocksList: [],
     stocksList: [],
     stockStartLetter: 'a',
     marketSearchResultsList: [],
     watchListSearchResultsList: [],
     watchList: [],
-    exchanges: [],
-    stockIndexOptions: alphabet.concat(digits).map(character => ({name: character})),
-    selectedExchange: {name: '', code: ''},
 
-    socket: undefined,
+    exchanges: [],
+    selectedExchange: {name: '', code: ''},
+    stockIndexOptions: alphabet.concat(digits).map(
+        character => ({name: character})),
+
+    tracker: null,
+    simulateTracker: true,
+
     chart: {
         stock: null,
-        data: null,
         options: {
-            priceScale: {borderVisible: false},
-            layout: {
-                backgroundColor: 'transparent',
-                textColor: 'rgba(255, 255, 255, 0.2)',
-                fontSize: 14
+            chart: {
+              type: 'line',
+              width: '100%',
+              height: '90%',
+              foreColor: 'rgba(255, 255, 255, 0.5)',
+              animations: {
+                  enabled: false
+              }
+            },
+            stroke: {
+                width: 1
             },
             grid: {
-                vertLines: {color: 'rgba(255, 255, 255, 0.2)'},
-                horzLines: {color: 'rgba(255, 255, 255, 0.2)'}
+                borderColor: 'rgba(255, 255, 255, 0.2)'
             },
-            timeScale: {fixLeftEdge: true}
-        }
+            xaxis: {
+                axisBorder: {
+                    show: false
+                },
+                axisTicks: {
+                    show: false
+                }
+            },
+            noData: {
+                text: 'No data yet.',
+                style: {
+                    fontSize: '20px'
+                }
+            },
+            series: [{
+                data: []
+            }]
+          }
     },
 
     buyButtons: [{name: 'Buy', onClick: () => store.dispatch(actions.buy())}],
@@ -246,7 +261,7 @@ export const state: State = {
     selectedBox: null,
     menusVisible: false,
 
-    balance: 0,
+    balance: 10000,
     buyQty: 1,
     sellQty: 1,
 

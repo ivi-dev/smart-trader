@@ -3,7 +3,7 @@ import BoxData, { BoxType } from '../BoxData';
 import ListData from '../ListData';
 import TableData from '../TableData';
 import AlertData from '../AlertData';
-import { ChartDescriptor } from './store';
+import { ChartDescriptor, ChartOptions } from './store';
 import { isVowel } from '../utility';
 import { Option } from './store';
 import ChartData from '../ChartData';
@@ -14,15 +14,14 @@ export const SEARCH_FOR_INDEX = 'SEARCH_FOR_INDEX';
 export const SEARCH_WATCHLIST = 'SEARCH_WATCHLIST';
 export const ADD_TO_WATCHLIST = 'ADD_TO_WATCHLIST';
 export const REMOVE_FROM_WATCHLIST = 'REMOVE_FROM_WATCHLIST';
-export const SET_WATCHLIST = 'SET_WATCHLIST';
-export const SET_EXCHANGES = 'SET_EXCHANGES';
+export const UPDATE_WATCHLIST = 'UPDATE_WATCHLIST';
+export const UPDATE_EXCHANGES = 'UPDATE_EXCHANGES';
 export const SELECT_EXCHANGE = 'SELECT_EXCHANGE';
-export const SET_SELECTED_EXCHANGE = 'SET_SELECTED_EXCHANGE';
+export const UPDATE_SELECTED_EXCHANGE = 'UPDATE_SELECTED_EXCHANGE';
 
 export const SET_CHART_TYPE = 'SET_CHART_TYPE';
 export const SET_CHART_YEAR = 'SET_CHART_SOURCE';
 export const SET_CHART_RESOLUTION = 'SET_CHART_RESOLUTION';
-export const SET_CHARTS = 'SET_CHARTS';
 
 export const ADD_CHART = 'ADD_CHART';
 export const REMOVE_CHART = 'REMOVE_CHART';
@@ -36,7 +35,7 @@ export const SET_BOXES = 'SET_BOXES';
 export const DISMISS_ALERT = 'DISMISS_ALERT';
 export const SET_DISPLAYED_ALERTS_LEVEL = 'SET_DISPLAYED_ALERTS_LEVEL';
 export const ADD_ALERT = 'ADD_ALERT';
-export const SET_ALERTS = 'SET_ALERTS';
+export const UPDATE_ALERTS = 'UPDATE_ALERTS';
 
 export const BUY = 'BUY';
 export const SELL = 'SELL';
@@ -44,18 +43,21 @@ export const SET_BUY_QTY = 'SET_BUY_QTY';
 export const SET_SELL_QTY = 'SET_SELL_QTY';
 
 export const SET_ORDER_HISTORY = 'SET_ORDER_HISTORY';
-export const SET_ACTIVITIES = 'ADD_ACTIVITY';
-export const SET_HEADLINES = 'SET_HEADLINES';
+export const UPDATE_ACTIVITIES = 'UPDATE_ACTIVITIES';
+export const UPDATE_HEADLINES = 'UPDATE_HEADLINES';
 
 export const TOGGLE_HELP = 'TOGGLE_HELP';
 
 export const SET_ACTIVE_HELP_SECTION = 'SET_ACTIVE_HELP_SECTION';
-export const SET_BALANCE = 'SET_BALANCE';
+export const UPDATE_BALANCE = 'UPDATE_BALANCE';
 
 export const SELECT_STOCK_START_LETTER = 'SELECT_STOCK_START_LETTER';
 export const SET_STOCK_START_LETTER = 'SET_STOCK_START_LETTER';
 
-export const SET_CHART_DATA = 'SET_CHART_DATA';
+export const UPDATE_CHART_OPTIONS = 'SET_CHART_DATA';
+export const TOGGLE_TRACKER = 'TOGGLE_TRACKER';
+export const SWITCH_TRACKER_MODE = 'SWITCH_TRACKER_MODE';
+export const SET_TRACKER_MODE = 'SET_TRACKER_MODE';
 
 export const activityLabels = {
     sell: (amount: number, indexName: string, price: number) => {
@@ -204,13 +206,13 @@ export const setOrderHistory = (history: TableData) => ({
     arg: history
 });
 
-export const setActivities = (activity: ListData) => ({
-    type: SET_ACTIVITIES,
+export const updateActivities = (activity: ListData) => ({
+    type: UPDATE_ACTIVITIES,
     arg: activity
 });
 
-export const setHeadlines = (headlines: ListData, category: string) => ({
-    type: SET_HEADLINES,
+export const updateHeadlines = (headlines: ListData, category: string) => ({
+    type: UPDATE_HEADLINES,
     arg: { headlines, category }
 });
 
@@ -224,8 +226,8 @@ export const setActiveHelpSection = (section: string) => ({
     arg: section
 });
 
-export const setBalance = (balance: number) => ({
-    type: SET_BALANCE,
+export const updateBalance = (balance: number) => ({
+    type: UPDATE_BALANCE,
     arg: balance
 });
 
@@ -239,18 +241,13 @@ export const addAlert = (level: string) => ({
     arg: level
 });
 
-export const setAlerts = (alerts: AlertData[]) => ({
-    type: SET_ALERTS,
+export const updateAlerts = (alerts: AlertData[]) => ({
+    type: UPDATE_ALERTS,
     arg: alerts
 });
 
-export const setCharts = (charts: ChartDescriptor[]) => ({
-    type: SET_CHARTS,
-    arg: charts
-});
-
-export const setExchanges = (list: Option[]) => ({
-    type: SET_EXCHANGES,
+export const updateExchanges = (list: Option[]) => ({
+    type: UPDATE_EXCHANGES,
     arg: list
 });
 
@@ -259,13 +256,13 @@ export const selectExchange = (exchange: string) => ({
     arg: exchange
 });
 
-export const setSelectedExchange = (name: string) => ({
-    type: SET_SELECTED_EXCHANGE,
+export const updateSelectedExchange = (name: string) => ({
+    type: UPDATE_SELECTED_EXCHANGE,
     arg: name
 });
 
-export const setWatchList = (watchList: StockData[]) => ({
-    type: SET_WATCHLIST,
+export const updateWatchList = (watchList: StockData[]) => ({
+    type: UPDATE_WATCHLIST,
     arg: watchList
 });
 
@@ -279,7 +276,22 @@ export const setStockStartLetter = (letter: string) => ({
     arg: letter
 });
 
-export const setChartData = (data: ChartData) => ({
-    type: SET_CHART_DATA,
-    arg: data
+export const updateChartOptions = (options: ChartOptions) => ({
+    type: UPDATE_CHART_OPTIONS,
+    arg: options
+});
+
+export const toggleStopTracker = () => ({
+    type: TOGGLE_TRACKER,
+    arg: null
+});
+
+export const switchTrackerMode = () => ({
+    type: SWITCH_TRACKER_MODE,
+    arg: null
+});
+
+export const setTrackerMode = (mode: boolean) => ({
+    type: SET_TRACKER_MODE,
+    arg: mode
 });
