@@ -127,7 +127,7 @@ const App = (prop: AppProp) => {
           <ButtonGroup options={prop.reportButtons} classes={'ml-4 my-3'} />
           <ButtonGroup options={prop.generalButtons} classes={'ml-2 my-3'} />
         </Row>
-        <Row classes={'chart overflow-auto'} style={{'height': '52vh'}}>
+        <Row>
           <Chart data={prop.chart} 
                  tracker={prop.tracker}
                  trackerMode={prop.simulateTracker ? 'simulated' : 'live'} 
