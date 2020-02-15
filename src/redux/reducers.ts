@@ -12,6 +12,7 @@ import AlertData, { AlertLevel } from '../AlertData';
 import { Option } from './store';
 import { number } from '../randomizer';
 import FinnHub from '../FinnHub';
+import CompanyProfile from '../CompanyProfile';
 
 const getLatestBoxId = (boxList: BoxData[]) => {
     return boxList.length !== 0 ? boxList[boxList.length - 1].id : 0;
@@ -84,17 +85,31 @@ export const main = (state = initialState, action: Action) => {
                 tracker_ = setInterval(() => {
                     chartOptions.series[0].data.push({x: time(new Date()), y: number(50, 100)});
                     store.dispatch(actions.updateChartOptions(chartOptions));
-                }, 1000);
+                }, 2000);
             } else {
                 tracker_ = FinnHub.startTrack(stock.name, data_ => {
                     chartOptions.series[0].data.push({x: time(new Date(data_.t)), y: data_.p});
                     store.dispatch(actions.updateChartOptions(chartOptions));
                 });
             }
+            FinnHub.quote(stock.name, quote => {
+                store.dispatch(actions.updateStock(new StockData(stock.id, 
+                    stock.name, quote.o, 0, quote.h, quote.l, 
+                    quote.c, quote.pc - quote.c, stock.companyName)));
+            });
+            FinnHub.companyProfile(stock.name, profile => {
+                store.dispatch(actions.updateCompanyProfile(profile));
+            });
             return Object.assign({}, state, {tracker: tracker_}, 
                 {chart: {...state.chart, stock: stock}});
 
-        case actions.SEARCH_FOR_INDEX:
+        case actions.UPDATE_COMPANY_PROFILE:
+            return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, profile: action.arg as CompanyProfile}}})
+
+        case actions.UPDATE_STOCK:
+            return Object.assign({}, state, {chart: {...state.chart, stock: action.arg as StockData}});
+
+        case actions.SEARCH_FOR_STOCK:
             return Object.assign({}, state, {marketSearchResultsList: 
                 state.stocksList.filter(index => 
                     index.name.toLowerCase().includes(action.arg.toLowerCase() as string))});   
@@ -213,7 +228,7 @@ export const main = (state = initialState, action: Action) => {
                         let options = Object.assign({}, state.chart.options);
                         options.series[0].data.push({x: time(new Date()), y: number(50, 100)});
                         store.dispatch(actions.updateChartOptions(options));
-                    }, 1000);
+                    }, 2000);
                 }
             } else {
                 if (state.tracker) {
@@ -348,6 +363,11 @@ export const main = (state = initialState, action: Action) => {
             const sections = state.help.sections.slice();
             sections.forEach(section => {if (section.name === action.arg as string) {section.selected = true} else {delete section.selected}});
             return Object.assign({}, state, {help: {...state.help, sections: sections}});
+
+        case actions.SET_ACTIVE_COMPANY_SECTION:
+            const sections_ = state.chart.company.sections.slice();
+            sections_.forEach(section => {if (section.name === action.arg as string) {section.selected = true} else {delete section.selected}});
+            return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, sections: sections_}}});
 
         case actions.UPDATE_BALANCE:
             return Object.assign({}, state, {balance: action.arg as number});

@@ -4,6 +4,7 @@ import './Chart.css';
 import { Action } from '../redux/actions';
 import StockDetails from './StockDetails';
 import { ChartDescriptor } from '../redux/store';
+import * as actions from '../redux/actions';
 
 type ChartProp = {
     data: ChartDescriptor,
@@ -17,6 +18,13 @@ const Chart = (prop: ChartProp) => {
         for (let i = 0; i < container.childNodes.length; i++) {
             container.removeChild(container.childNodes[i]);
         }
+    }
+    const companyProfile = () => {
+        const data: [string, string][] = [];
+        for (let [key, value] of Object.entries(prop.data.company.profile)) {
+            data.push([key, value]);
+        }
+        return data;
     }
     const chartBox: RefObject<HTMLDivElement> = React.createRef();
 
@@ -34,7 +42,24 @@ const Chart = (prop: ChartProp) => {
                               trackerMode={prop.trackerMode}
                               dispatch={prop.dispatch} />
             </div>
-            <div ref={chartBox} className={`row no-gutters col-12 graph border rounded`}></div>
+            <div ref={chartBox} className="col-9 graph border rounded"></div>
+
+            <div className="company-info col-3 px-4 border-left">
+                <div className="row no-gutters">
+                    {prop.data.company.sections.map((section, index) => 
+                        <a key={index} href="/" className={`tab col-auto px-2 mb-2 mr-2 test-reset text-decoration-none rounded ${section.selected ? 'active' : null}`} 
+                        onClick={e => {e.preventDefault(); prop.dispatch(actions.setActiveCompanySection(section.name.toString()))}}>
+                            {section.name}
+                        </a>
+                    )}
+                </div>
+                
+                <div className="content no-gutters py-3">
+                    {companyProfile().map(entry => 
+                    <div className="row no-gutters"><span className="text-muted">{entry[0]}:</span>&nbsp;&nbsp;
+                    <span className="text-bold">{entry[1]}</span></div>)}
+                </div>
+            </div>
         </section>
     );
 };

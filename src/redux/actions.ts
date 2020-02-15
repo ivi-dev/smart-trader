@@ -3,14 +3,14 @@ import BoxData, { BoxType } from '../BoxData';
 import ListData from '../ListData';
 import TableData from '../TableData';
 import AlertData from '../AlertData';
-import { ChartDescriptor, ChartOptions } from './store';
+import { ChartOptions } from './store';
 import { isVowel } from '../utility';
 import { Option } from './store';
-import ChartData from '../ChartData';
+import CompanyProfile from '../CompanyProfile';
 
 export const SET_STOCKS_LIST = 'SET_STOCKS_LIST';
-export const SELECT_STOCK = 'SELECT_INDEX';
-export const SEARCH_FOR_INDEX = 'SEARCH_FOR_INDEX';
+export const SELECT_STOCK = 'SELECT_STOCK';
+export const SEARCH_FOR_STOCK = 'SEARCH_FOR_STOCK';
 export const SEARCH_WATCHLIST = 'SEARCH_WATCHLIST';
 export const ADD_TO_WATCHLIST = 'ADD_TO_WATCHLIST';
 export const REMOVE_FROM_WATCHLIST = 'REMOVE_FROM_WATCHLIST';
@@ -18,6 +18,7 @@ export const UPDATE_WATCHLIST = 'UPDATE_WATCHLIST';
 export const UPDATE_EXCHANGES = 'UPDATE_EXCHANGES';
 export const SELECT_EXCHANGE = 'SELECT_EXCHANGE';
 export const UPDATE_SELECTED_EXCHANGE = 'UPDATE_SELECTED_EXCHANGE';
+export const UPDATE_STOCK = 'UPDATE_STOCK';
 
 export const SET_CHART_TYPE = 'SET_CHART_TYPE';
 export const SET_CHART_YEAR = 'SET_CHART_SOURCE';
@@ -59,6 +60,9 @@ export const TOGGLE_TRACKER = 'TOGGLE_TRACKER';
 export const SWITCH_TRACKER_MODE = 'SWITCH_TRACKER_MODE';
 export const SET_TRACKER_MODE = 'SET_TRACKER_MODE';
 
+export const UPDATE_COMPANY_PROFILE = 'UPDATE_COMPANY_PROFILE';
+export const SET_ACTIVE_COMPANY_SECTION = 'SET_ACTIVE_COMPANY_SECTION';
+
 export const activityLabels = {
     sell: (amount: number, indexName: string, price: number) => {
         const price_ = (new Intl.NumberFormat(
@@ -97,7 +101,7 @@ export const selectStock = (index: StockData) => ({
 });
 
 export const searchForIndex = (name: string) => ({
-    type: SEARCH_FOR_INDEX,
+    type: SEARCH_FOR_STOCK,
     arg: name
 });
 
@@ -294,4 +298,19 @@ export const switchTrackerMode = () => ({
 export const setTrackerMode = (mode: boolean) => ({
     type: SET_TRACKER_MODE,
     arg: mode
+});
+
+export const updateStock = (data: StockData) => ({
+    type: UPDATE_STOCK,
+    arg: data
+});
+
+export const updateCompanyProfile = (profile: CompanyProfile) => ({
+    type: UPDATE_COMPANY_PROFILE,
+    arg: profile
+});
+
+export const setActiveCompanySection = (section: string) => ({
+    type: SET_ACTIVE_COMPANY_SECTION,
+    arg: section
 });

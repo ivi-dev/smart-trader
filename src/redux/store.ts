@@ -13,6 +13,7 @@ import News, { Category } from '../News';
 import { fullDate, alphabet, digits } from '../utility';
 import { help } from '../help';
 import FinnHub from '../FinnHub';
+import CompanyProfile from '../CompanyProfile';
 
 export type ChartType = 'bar' | 'candlestick' | 'line';
 export const ORDER_HEADERS = [
@@ -54,7 +55,11 @@ export type ChartOptions = {
 
 export type ChartDescriptor = {
     stock: StockData | null,
-    options: ChartOptions
+    options: ChartOptions,
+    company: {
+        profile: CompanyProfile,
+        sections: Option[]
+    }
 }
 
 export type HelpType = {
@@ -161,8 +166,9 @@ const fetchSelectedExchange = () => {
         if (exchange) {
             const exchange_ = exchange as {name: string, code: string};
             fetchStocks(exchange_.code);
-            store.dispatch(actions.updateSelectedExchange(exchange_.name))
+            store.dispatch(actions.updateSelectedExchange(exchange_.name));
         } else {
+            store.dispatch(actions.updateSelectedExchange('US Exchanges'))
             fetchStocks('US');
         }
     });
@@ -224,7 +230,16 @@ export const state: State = {
             series: [{
                 data: []
             }]
-          }
+        },
+        company: {
+            profile: new CompanyProfile(),
+            sections: [{name: 'Profile', selected: true}, 
+                       {name: 'COE Compensation'}, 
+                       {name: 'Executive'}, 
+                       {name: 'Peers'},
+                       {name: 'Investors Ownership'},
+                       {name: 'Funds Ownership'}]
+        }
     },
 
     buyButtons: [{name: 'Buy', onClick: () => store.dispatch(actions.buy())}],
