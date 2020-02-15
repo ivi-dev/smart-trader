@@ -1,7 +1,8 @@
 .btn.single {
     border-color: rgba(255, 255, 255, 0.3) !important;
     color: rgba(255, 255, 255, 0.5) !important;
-    font-size: 65%;
+    font-size: 75%;
+    padding: 1px 8px;
 }
 
 .btn.single.active {
@@ -16,10 +17,21 @@
     border-color: rgb(70, 159, 233) !important;
 }
 
-.btn.single.danger:hover {
-    background-color: rgba(224, 58, 58, 0.212) !important;
+.btn.single.live {
+    background-color: rgba(224, 58, 58, 0.075) !important;
     color: rgb(231, 75, 75) !important;
     border-color: rgb(231, 75, 75) !important;
+}
+
+.btn.single.live:hover, .btn.single.simulated:hover {
+    background-color: rgba(83, 189, 231, 0.171) !important;
+    color: rgb(70, 159, 233) !important;
+    border-color: rgb(70, 159, 233) !important;
+}
+
+.btn.single.simulated {
+    color: rgb(231, 202, 75) !important;
+    border-color: rgb(231, 202, 75) !important;
 }
 
 .btn.single:active {
