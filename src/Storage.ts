@@ -1,5 +1,5 @@
 import localForage from 'localforage';
-import { ListDataRow } from './ListData';
+import ListData, { ListDataRow } from './ListData';
 import { ORDER_HEADERS, ChartDescriptor } from './redux/store';
 import TableData, { TableRow } from './TableData';
 import AlertData from './AlertData';
@@ -15,63 +15,21 @@ export enum Keys {
     BOXES = 'BOXES',
     WATCHLIST = 'WATCHLIST',
     EXCHANGE = 'EXCHANGE',
-    START_LETTER = 'START_LETTER'
+    START_LETTER = 'START_LETTER',
+    TRACKER_MODE = 'TRACKER_MODE'
 }
 
 export default class Storage {
-    static order(row: TableRow, balance: number, 
-        callback?: (data: TableData, balance: number) => void) {
-        localForage.getItem(Keys.ORDERS).then(orders => {
-            let orders_: TableRow[] = [];
-            if (orders === null) {
-                localForage.setItem(Keys.ORDERS, [row]).then(orders_ => {
-                    localForage.setItem(Keys.BALANCE, balance).then(balance => {
-                        if (callback) {
-                            callback(new TableData(ORDER_HEADERS, orders_), balance);
-                        }
-                    });
-                });
-            } else {
-                orders_ = (orders as Array<TableRow>).slice();
-                orders_.push(row);
-                localForage.setItem(Keys.ORDERS, orders_).then(orders_ => {
-                    localForage.setItem(Keys.BALANCE, balance).then(balance => {
-                        if (callback) {
-                            callback(new TableData(ORDER_HEADERS, orders_), balance);
-                        }
-                    });
-                });
-            }
-        });
+    static orders(orders: TableData) {
+        localForage.setItem(Keys.ORDERS, orders);
     }
 
-    static activity(activity: ListDataRow, callback?: (arg: any) => void) {
-        localForage.getItem(Keys.ACTIVITY).then(activities => {
-            let activities_: ListDataRow[] = [];
-            if (activities === null) {
-                localForage.setItem(Keys.ACTIVITY, [activity]).then(activities => {
-                    if (callback) {
-                        callback(activities);
-                    }
-                });
-            } else {
-                activities_ = (activities as Array<ListDataRow>).slice();
-                activities_.push(activity);
-                localForage.setItem(Keys.ACTIVITY, activities_).then(activities => {
-                    if (callback) {
-                        callback(activities);
-                    }
-                });
-            }
-        });
+    static activities(activities: ListData) {
+        localForage.setItem(Keys.ACTIVITY, activities);
     }
 
-    static alerts(alerts_: AlertData[], callback?: (alerts: AlertData[]) => void) {
-        localForage.setItem(Keys.ALERTS, alerts_).then(alerts => {
-            if (callback) {
-                callback(alerts);
-            }
-        });
+    static alerts(alerts: AlertData[]) {
+        localForage.setItem(Keys.ALERTS, alerts);
     }
 
     static charts(charts: ChartDescriptor[], callback?: (charts: ChartDescriptor[]) => void) {
@@ -82,28 +40,16 @@ export default class Storage {
         });
     }
 
-    static boxes(boxes: BoxData[], callback?: (boxes: BoxData[]) => void) {
-        localForage.setItem(Keys.BOXES, boxes).then(boxes => {
-            if (callback) {
-                callback(boxes);
-            }
-        })
+    static boxes(boxes: BoxData[]) {
+        localForage.setItem(Keys.BOXES, boxes);
     }
 
-    static watchList(watchList: StockData[], callback?: (watchList: StockData[]) => void) {
-        localForage.setItem(Keys.WATCHLIST, watchList).then(watchList => {
-            if (callback) {
-                callback(watchList);
-            }
-        })
+    static watchList(watchList: StockData[]) {
+        localForage.setItem(Keys.WATCHLIST, watchList);
     }
 
-    static exchange(exchange: {name: string, code: string}, callback?: (exchange: {name: string, code: string}) => void) {
-        localForage.setItem(Keys.EXCHANGE, exchange).then(exchange => {
-            if (callback) {
-                callback(exchange);
-            }
-        })
+    static exchange(exchange: {name: string, code: string}) {
+        localForage.setItem(Keys.EXCHANGE, exchange);
     }
 
     static startLetter(letter: string, callback?: (letter: string) => void) {
@@ -112,6 +58,10 @@ export default class Storage {
                 callback(letter);
             }
         })
+    }
+
+    static trackerMode(mode: boolean) {
+        localForage.setItem(Keys.TRACKER_MODE, mode);
     }
 
     static get(key: Keys) {
