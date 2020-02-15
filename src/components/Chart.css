@@ -13,6 +13,38 @@
     border-color: rgb(70, 159, 233) !important;
 }
 
+.chart .company-info.border-left {
+    border-left: 1px solid rgba(255, 255, 2555, 0.2) !important;
+}
+
+.chart .company-info {
+    height: 90%;
+    margin-top: -30px;
+}
+
+.chart .company-info .content {
+    max-height: 90%;
+    overflow: auto;
+}
+
+.chart .tab {
+    color: rgba(255, 255, 2555, 0.5);
+    border: 1px solid rgba(255, 255, 2555, 0.2);
+    transition: 250ms;
+}
+
+.chart .tab:hover {
+    background-color: rgba(255, 255, 2555, 0.1);
+    color: rgba(255, 255, 255, 0.8);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.chart .tab.active {
+    background-color: rgba(255, 255, 2555, 0.1);
+    color: rgb(70, 159, 233);
+    border-color: rgb(70, 159, 233);
+}
+
 @media screen and (min-height: 1024px) {
     .chart {
         height: 52vh;
