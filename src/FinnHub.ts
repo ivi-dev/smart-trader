@@ -33,13 +33,26 @@ export default class FinnHub {
         });
     }
 
-    static track(symbol: string, onData: (data: {p: number, t: number}) => void) {
+    static startTrack(symbol: string, onData: (data: {p: number, t: number}) => void) {
         const socket = new WebSocket(`wss://ws.finnhub.io?token=${config.config.finnHubAPIKey}`);
-        socket.addEventListener('open', event => {
+        socket.addEventListener('open', () => {
             socket.send(JSON.stringify({'type':'subscribe', 'symbol': symbol}));
         });
         socket.addEventListener('message', event => {
-            onData(JSON.parse(event.data).data[0]);
+            try {
+                onData(JSON.parse(event.data).data[0]);
+            } catch (e) {}
+        });
+        return socket;
+    }
+
+    static stopTrack(socket: WebSocket, symbol: string, onClose?: () => void) {
+        socket.send(JSON.stringify({'type':'unsubscribe','symbol': symbol}));
+        socket.close();
+        socket.addEventListener('close', () => {
+            if (onClose) {
+                onClose();
+            }
         });
     }
 }
