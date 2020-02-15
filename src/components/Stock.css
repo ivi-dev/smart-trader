@@ -1,4 +1,4 @@
-.index {
+.stock {
     color: rgba(255, 255, 255, 0.8);
     font-size: 70%;
     background-color: rgba(255, 255, 255, 0.1);
@@ -7,30 +7,26 @@
     animation: fade-in 1s forwards;
 }
 
-.index.active {
+.stock.active {
     background-color: rgba(255, 255, 255, 0.5);
 }
 
-.index:hover {
+.stock:hover {
     background-color: rgba(255, 255, 255, 0.2);
 }
 
-.index .name {
+.stock .name {
     font-size: 120%;
 }
 
-.index .current {
-    font-size: 125%;
+.stock .company-name {
+    color: rgba(255, 255, 255, 0.6);
 }
 
-.index .trend {
-    font-size: 110%;
-}
-
-.index .trend.negative {
+.stock .trend.negative {
     color: rgb(240, 116, 102);
 }
 
-.index .trend.positive {
+.stock .trend.positive {
     color: rgb(66, 207, 113);
 }

@@ -10,7 +10,7 @@ type IndexProp = {
 
 const Stock = (prop: IndexProp) => {
     return (
-    <div className="index col-12 p-2 pl-3 mb-2 row align-items-center no-gutters rounded"
+    <div className="stock col-12 p-2 pl-3 mb-2 row align-items-center no-gutters rounded"
     onClick={(e) => {prop.handleClick(e.altKey, prop.data);}}>
         <div className="col-auto name font-weight-bold mr-2">{prop.data.name}</div>
         <div className="col-auto company-name">{prop.data.companyName}</div>
