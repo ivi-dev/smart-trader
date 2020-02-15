@@ -4,25 +4,21 @@ import StocksList  from './StocksList';
 import { Option, ChartDescriptor, HelpType } from '../redux/store';
 import Chart from './Chart';
 import Reports from './Reports';
-import { State, ReportData, ChartType } from '../redux/store';
+import { State, ReportData } from '../redux/store';
 import { connect } from 'react-redux';
 import StockData from '../StockData';
 import { Action } from '../redux/actions';
 import * as actions from '../redux/actions';
 import ButtonGroup from './ButtonGroup';
 import BoxData from '../BoxData';
-import ChartData from '../ChartData';
 import Row from './Row';
 import Text from './Text';
 import Column from './Column';
 import Input from './Input';
 import Help from './Help';
 import Selector from './Selector';
-import { alphabet, digits } from '../utility';
-import Button from './Button';
 
 type AppProp = {
-  selectedIndex: StockData | null,
   stocksList: StockData[],
   stockStartLetter: string,
   marketSearchResultsList: StockData[],
@@ -33,6 +29,8 @@ type AppProp = {
   selectedExchange: {name: string, code: string},
 
   chart: ChartDescriptor,
+  tracker: WebSocket | number | null,
+  simulateTracker: boolean,
 
   buyButtons: Option[],
   sellButtons: Option[],
@@ -130,7 +128,10 @@ const App = (prop: AppProp) => {
           <ButtonGroup options={prop.generalButtons} classes={'ml-2 my-3'} />
         </Row>
         <Row classes={'chart overflow-auto'} style={{'height': '52vh'}}>
-          <Chart data={prop.chart} dispatch={prop.dispatch} />
+          <Chart data={prop.chart} 
+                 tracker={prop.tracker}
+                 trackerMode={prop.simulateTracker ? 'simulated' : 'live'} 
+                 dispatch={prop.dispatch} />
         </Row>
         <Reports boxes={prop.boxes} 
                  selectedBox={prop.selectedBox} 
@@ -142,8 +143,7 @@ const App = (prop: AppProp) => {
 }
 
 function mapStateToProps(state: State) {
-  return { 
-    selectedIndex: state.selectedIndex,
+  return {
     stocksList: state.stocksList,
     stockStartLetter: state.stockStartLetter,
     marketSearchResultsList: state.marketSearchResultsList,
@@ -154,6 +154,8 @@ function mapStateToProps(state: State) {
     selectedExchange: state.selectedExchange,
 
     chart: state.chart,
+    simulateTracker: state.simulateTracker,
+    tracker: state.tracker,
 
     buyButtons: state.buyButtons,
     sellButtons: state.sellButtons,
