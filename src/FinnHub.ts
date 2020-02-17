@@ -99,7 +99,7 @@ export default class FinnHub {
         return socket;
     }
 
-    static stopTrack(socket: WebSocket, symbol: string, onClose?: () => void) {
+    static stopTrack(socket: WebSocket, symbol: string, onClose: (() => void) | null) {
         socket.send(JSON.stringify({'type':'unsubscribe','symbol': symbol}));
         socket.close();
         socket.addEventListener('close', () => {

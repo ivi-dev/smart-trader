@@ -15,6 +15,7 @@ export enum Keys {
     BOXES = 'BOXES',
     WATCHLIST = 'WATCHLIST',
     EXCHANGE = 'EXCHANGE',
+    STOCK = 'STOCK',
     START_LETTER = 'START_LETTER',
     TRACKER_MODE = 'TRACKER_MODE'
 }
@@ -32,7 +33,8 @@ export default class Storage {
         localForage.setItem(Keys.ALERTS, alerts);
     }
 
-    static charts(charts: ChartDescriptor[], callback?: (charts: ChartDescriptor[]) => void) {
+    static charts(charts: ChartDescriptor[], 
+        callback?: (charts: ChartDescriptor[]) => void) {
         localForage.setItem(Keys.CHARTS, charts).then(charts => {
             if (callback) {
                 callback(charts);
@@ -52,7 +54,12 @@ export default class Storage {
         localForage.setItem(Keys.EXCHANGE, exchange);
     }
 
-    static startLetter(letter: string, callback?: (letter: string) => void) {
+    static stock(stock: StockData) {
+        localForage.setItem(Keys.STOCK, stock);
+    }
+
+    static startLetter(letter: string, 
+        callback?: (letter: string) => void) {
         localForage.setItem(Keys.START_LETTER, letter).then(letter => {
             if (callback) {
                 callback(letter);

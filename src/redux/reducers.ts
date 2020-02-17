@@ -8,7 +8,7 @@ import TableData, { TableRow, TableCell } from '../TableData';
 import ListData, { ListDataRow } from '../ListData';
 import { fullDate, time } from '../utility';
 import Storage from '../Storage';
-import AlertData, { AlertLevel } from '../AlertData';
+import AlertData from '../AlertData';
 import { Option } from './store';
 import { number } from '../randomizer';
 import FinnHub from '../FinnHub';
@@ -49,8 +49,13 @@ const recordSelectedExchange = (exchange: {name: string, code: string}) => {
     Storage.exchange(exchange);
 }
 
+const recordSelectedStock = (stock: StockData) => {
+    Storage.stock(stock);
+}
+
 const recordStockStartLetter = (letter: string) => {
-    Storage.startLetter(letter, letter => store.dispatch(actions.setStockStartLetter(letter)));
+    Storage.startLetter(letter, letter => 
+        store.dispatch(actions.setStockStartLetter(letter)));
 }
 
 const recordTrackerMode = (simulation: boolean) => {
@@ -78,17 +83,24 @@ export const main = (state = initialState, action: Action) => {
 
         case actions.SELECT_STOCK:
             const stock = action.arg as StockData;
+            if (!stock) {
+                return state;
+            }
             let chartOptions = Object.assign({}, state.chart.options);
             let tracker_ = null;
             if (state.simulateTracker) {
+                clearInterval(state.tracker as number);
                 tracker_ = setInterval(() => {
                     chartOptions.series[0].data.push({x: time(new Date()), y: number(50, 100)});
                     store.dispatch(actions.updateChartOptions(chartOptions));
                 }, 2000);
             } else {
-                tracker_ = FinnHub.startTrack(stock.name, data_ => {
-                    chartOptions.series[0].data.push({x: time(new Date(data_.t)), y: data_.p});
-                    store.dispatch(actions.updateChartOptions(chartOptions));
+                FinnHub.stopTrack(state.tracker as WebSocket, 
+                    state.chart.stock!.name, () => {
+                        tracker_ = FinnHub.startTrack(stock.name, data_ => {
+                            chartOptions.series[0].data.push({x: time(new Date(data_.t)), y: data_.p});
+                            store.dispatch(actions.updateChartOptions(chartOptions));
+                    });
                 });
             }
             FinnHub.quote(stock.name, quote => {
@@ -100,14 +112,13 @@ export const main = (state = initialState, action: Action) => {
                     store.dispatch(actions.addAlert('error', error.message))
                 }
             });
-            
             FinnHub.companyProfile(stock.name, profile => 
                 store.dispatch(actions.updateCompanyProfile(profile)), error => {
                     if (error) {
                         store.dispatch(actions.addAlert('error', error.message))
                     }
             });
-
+            recordSelectedStock(stock);
             return Object.assign({}, state, {tracker: tracker_}, 
                 {chart: {...state.chart, stock: stock, status: 'Loading Data...'}});
 
@@ -274,7 +285,7 @@ export const main = (state = initialState, action: Action) => {
             } else {
                 if (state.tracker) {
                     FinnHub.stopTrack(state.tracker as WebSocket, 
-                        state.chart.stock!.name);
+                        state.chart.stock!.name, null);
                 } else {
                     tracker = FinnHub.startTrack(state.chart.stock!.name, 
                         data_ => {chartOptions.series[0].data.push(
@@ -293,10 +304,10 @@ export const main = (state = initialState, action: Action) => {
             } else {
                 if (state.tracker) {
                     FinnHub.stopTrack(state.tracker as WebSocket, 
-                        state.chart.stock!.name);
+                        state.chart.stock!.name, null);
                 }
             }
-            recordTrackerMode(!state.simulateTracker);
+            // recordTrackerMode(!state.simulateTracker);
             return Object.assign({}, state, {tracker: null}, 
                 {simulateTracker: action.arg as boolean});
 

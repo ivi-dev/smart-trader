@@ -155,10 +155,14 @@ Storage.get(Keys.START_LETTER).then(letter => {
     }
 });
 
-Storage.get(Keys.TRACKER_MODE).then(mode => {
-    if (mode !== null) {
-        store.dispatch(actions.setTrackerMode(mode as boolean));
-    }
+// Storage.get(Keys.TRACKER_MODE).then(mode => {
+//     if (mode !== null) {
+//         store.dispatch(actions.setTrackerMode(mode as boolean));
+//     }
+// });
+
+Storage.get(Keys.STOCK).then(stock => {
+    store.dispatch(actions.selectStock(stock as StockData));
 });
 
 const fetchHeadlines = (category: Category) =>
