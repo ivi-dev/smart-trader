@@ -39,3 +39,15 @@ export const time = (date: Date, separator: string = ':') => {
 export const isVowel = (letter: string) => {
     return vowels.includes(letter.toLowerCase());
 }
+
+export const formatMetricDataLabels = (label: string) => {
+    let label_ = label.replace(/s&p500/gi, ' S&P 500 ');
+    label_ = label_.replace(/13week/gi, ' 13 Week ');
+    label_ = label_.replace(/26week/gi, ' 26 Week ');
+    label_ = label_.replace(/52week/gi, ' 52 Week ');
+    label_ = label_.replace(/3month/gi, ' 3 Month ');
+    label_ = label_.replace(/5day/gi, ' 5 Day ');
+    label_ = label_.replace(/10day/gi, ' 10 Day ');
+    label_ = label_.replace(/ttm/gi, ' TTM ');
+    return label_.replace(/\s{2,}/, ' ').trim();
+}

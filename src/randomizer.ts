@@ -58,9 +58,7 @@ export const indexHistory = (year: number | string = (new Date().getFullYear() -
     const months = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
     for (let index = 1; index < months.length + 1; index++) {
         for (let index2 = 1; index2 < months[index - 1] + 1; index2++) {
-            const open = number(10, 149), 
-            highest = number(10, 150), lowest = Math.round(highest - highest * 0.2), 
-            close = number(0, (highest - lowest)) + lowest;
+            const open = number(10, 149);
             const month = index < 10 ? `0${index}` : index, date = index2 < 10 ? `0${index2}` : index2;
             history.entries.push(new ChartDataEntry(`${year}-${month}-${date}`, Number(`${open}.${number(0, 99)}`)));
         }

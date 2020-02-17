@@ -1,19 +1,16 @@
 import { createStore } from 'redux';
 import { main } from './reducers';
 import StockData from '../StockData';
-import * as random from '../randomizer';
-import ChartData, { ChartDataEntry } from '../ChartData';
-import TableData, { TableCell, TableRow } from '../TableData';
+import TableData, { TableCell } from '../TableData';
 import ListData, { ListDataRow } from '../ListData';
 import AlertData from '../AlertData';
-import BoxData, { BoxType } from '../BoxData';
+import BoxData from '../BoxData';
 import Storage, { Keys } from '../Storage';
 import * as actions from './actions';
 import News, { Category } from '../News';
 import { fullDate, alphabet, digits } from '../utility';
 import { help } from '../help';
 import FinnHub from '../FinnHub';
-import CompanyProfile from '../CompanyProfile';
 
 export type ChartType = 'bar' | 'candlestick' | 'line';
 export const ORDER_HEADERS = [
@@ -50,14 +47,30 @@ export type ChartOptions = {
     xaxis: {},
     stroke: {},
     noData: {},
-    series: {data: {x: string, y: number}[]}[]
+    series: {data: {x: string, 
+        y: number}[]}[]
 }
+
+export interface CompanyInfo {}
 
 export type ChartDescriptor = {
     stock: StockData | null,
     options: ChartOptions,
+    status: string,
     company: {
-        profile: CompanyProfile,
+        [index: string]: CompanyInfo,
+        profile: {},
+        ceo: {},
+        executives: {}[],
+        price: {},
+        valuarion: {},
+        growth: {},
+        margin: {},
+        management: {},
+        financialStrength: {},
+        perShare: {},
+        investors: {}[],
+        funds: {}[],
         sections: Option[]
     }
 }
@@ -157,7 +170,12 @@ const fetchHeadlines = (category: Category) =>
 fetchHeadlines('business');
 
 const fetchExchanges = () => {
-    FinnHub.listExchanges(list => store.dispatch(actions.updateExchanges(list)));
+    FinnHub.listExchanges(list => store.dispatch(actions.updateExchanges(list)), 
+        error => {
+            if (error) {
+                store.dispatch(actions.addAlert('error', error.message))
+            }
+    });
 }
 fetchExchanges();
 
@@ -176,7 +194,12 @@ const fetchSelectedExchange = () => {
 fetchSelectedExchange();
 
 export const fetchStocks = (exchange: string) => {
-    FinnHub.listStocks(exchange, list => {store.dispatch(actions.setStocksList(list))});
+    FinnHub.listStocks(exchange, list => {store.dispatch(actions.setStocksList(list))},
+        error => {
+            if (error) {
+                store.dispatch(actions.addAlert('error', error.message))
+            }
+    });
 }
 
 export const state: State = {
@@ -197,6 +220,7 @@ export const state: State = {
 
     chart: {
         stock: null,
+        status: 'No Data Yet.',
         options: {
             chart: {
               type: 'line',
@@ -232,13 +256,31 @@ export const state: State = {
             }]
         },
         company: {
-            profile: new CompanyProfile(),
-            sections: [{name: 'Profile', selected: true}, 
-                       {name: 'COE Compensation'}, 
-                       {name: 'Executive'}, 
-                       {name: 'Peers'},
-                       {name: 'Investors Ownership'},
-                       {name: 'Funds Ownership'}]
+            profile: {},
+            ceo: {},
+            executives: [],
+            price: {},
+            valuarion: {},
+            growth: {},
+            margin: {},
+            management: {},
+            financialStrength: {},
+            perShare: {},
+            investors: [],
+            funds: [],
+            valuation: {},
+            sections: [{name: 'Profile', data: 'profile', selected: true}, 
+                       {name: 'CEO', data: 'ceo'}, 
+                       {name: 'Executives', data: 'executives'}, 
+                       {name: 'Price', data: 'price'},
+                       {name: 'Valuation', data: 'valuation'},
+                       {name: 'Growth', data: 'growth'},
+                       {name: 'Margin', data: 'margin'},
+                       {name: 'Management', data: 'management'},
+                       {name: 'Financial Strength', data: 'financialStrength'},
+                       {name: 'Per Share', data: 'perShare'},
+                       {name: 'Investors Ownership', data: 'investors'},
+                       {name: 'Fund Ownership', data: 'funds'}]
         }
     },
 
@@ -267,7 +309,7 @@ export const state: State = {
             {name: 'all', onClick: () => store.dispatch(actions.setDisplayedAlertsLevel('all'))},
             {name: 'info', onClick: () => store.dispatch(actions.setDisplayedAlertsLevel('info'))},
             {name: 'warning', onClick: () => store.dispatch(actions.setDisplayedAlertsLevel('warning'))},
-            {name: 'level', onClick: () => store.dispatch(actions.setDisplayedAlertsLevel('level'))}
+            {name: 'error', onClick: () => store.dispatch(actions.setDisplayedAlertsLevel('error'))}
         ],
         displayedAlertsLevel: 'all',
         alerts: []

@@ -12,7 +12,6 @@ import AlertData, { AlertLevel } from '../AlertData';
 import { Option } from './store';
 import { number } from '../randomizer';
 import FinnHub from '../FinnHub';
-import CompanyProfile from '../CompanyProfile';
 
 const getLatestBoxId = (boxList: BoxData[]) => {
     return boxList.length !== 0 ? boxList[boxList.length - 1].id : 0;
@@ -96,15 +95,57 @@ export const main = (state = initialState, action: Action) => {
                 store.dispatch(actions.updateStock(new StockData(stock.id, 
                     stock.name, quote.o, 0, quote.h, quote.l, 
                     quote.c, quote.pc - quote.c, stock.companyName)));
+            }, error => {
+                if (error) {
+                    store.dispatch(actions.addAlert('error', error.message))
+                }
             });
-            FinnHub.companyProfile(stock.name, profile => {
-                store.dispatch(actions.updateCompanyProfile(profile));
+            
+            FinnHub.companyProfile(stock.name, profile => 
+                store.dispatch(actions.updateCompanyProfile(profile)), error => {
+                    if (error) {
+                        store.dispatch(actions.addAlert('error', error.message))
+                    }
             });
+
             return Object.assign({}, state, {tracker: tracker_}, 
-                {chart: {...state.chart, stock: stock}});
+                {chart: {...state.chart, stock: stock, status: 'Loading Data...'}});
 
         case actions.UPDATE_COMPANY_PROFILE:
-            return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, profile: action.arg as CompanyProfile}}})
+            return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, profile: action.arg}}});
+
+        case actions.UPDATE_CEO_INFO:
+            return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, ceo: action.arg}}});
+
+        case actions.UPDATE_EXECUTIVES_LIST:
+            return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, executives: action.arg as {}[]}}});
+
+        case actions.UPDATE_COMPANY_PRICE_METRIC:
+            return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company,  price: action.arg}}});
+            
+        case actions.UPDATE_COMPANY_VALUATION_METRIC:
+            return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, valuation: action.arg}}});
+
+        case actions.UPDATE_COMPANY_GROWTH_METRIC:
+            return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, growth: action.arg}}});
+
+        case actions.UPDATE_COMPANY_MARGIN_METRIC:
+            return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, margin: action.arg}}});
+
+        case actions.UPDATE_COMPANY_MANAGEMENT_METRIC:
+            return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, management: action.arg}}});
+
+        case actions.UPDATE_COMPANY_FINANCIAL_STRENGTH_METRIC:
+            return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, financialStrength: action.arg}}});
+
+        case actions.UPDATE_COMPANY_PER_SHARE_METRIC:
+            return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, perShare: action.arg}}});
+
+        case actions.UPDATE_COMPANY_INVESTORS_OWNERSHIP:
+            return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, investors: action.arg}}});
+
+        case actions.UPDATE_COMPANY_FUND_OWNERSHIP:
+            return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, funds: action.arg}}});
 
         case actions.UPDATE_STOCK:
             return Object.assign({}, state, {chart: {...state.chart, stock: action.arg as StockData}});
@@ -266,8 +307,8 @@ export const main = (state = initialState, action: Action) => {
             const boxType = action.arg as BoxType;
             let boxTitle = BoxData.getTitle(boxType);
             const activities = Object.assign({}, state.reportData.activities);
-            activities.items.push(new ListDataRow(actions.activityLabels.
-                addBox(boxType), 'far fa-square', fullDate(new Date())));
+            activities.items.push(new ListDataRow(actions.activityLabels
+                .addBox(boxType), 'far fa-square', fullDate(new Date())));
             recordActivity(activities);
             const boxesAfterAdd = state.boxes.concat([new BoxData(
                 getLatestBoxId(state.boxes) + 1, boxTitle, boxType)]);
@@ -336,7 +377,8 @@ export const main = (state = initialState, action: Action) => {
             return Object.assign({}, state, {displayedAlertsLevel: action.arg as string});
 
         case actions.ADD_ALERT:
-            const alerts_ = state.reportData.alerts.concat([new AlertData(getLatestAlertId(state.reportData.alerts) + 1, 'Lorem ipsum', action.arg as AlertLevel)]);
+            const {message, level} = action.arg;
+            const alerts_ = state.reportData.alerts.concat([new AlertData(getLatestAlertId(state.reportData.alerts) + 1, message, level)]);
             recordAlerts(alerts_);
             return Object.assign({}, state, {reportData: {...state.reportData, 
                 alerts: alerts_}});
@@ -366,8 +408,100 @@ export const main = (state = initialState, action: Action) => {
 
         case actions.SET_ACTIVE_COMPANY_SECTION:
             const sections_ = state.chart.company.sections.slice();
-            sections_.forEach(section => {if (section.name === action.arg as string) {section.selected = true} else {delete section.selected}});
-            return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, sections: sections_}}});
+            const sectionName = action.arg as string, stock_ = state.chart.stock!;
+            sections_.forEach(section => {if (section.name === sectionName) {section.selected = true} else {delete section.selected}});
+
+            switch (sectionName.toLowerCase()) {
+                case 'ceo':
+                    FinnHub.ceo(stock_.name, ceo => 
+                        store.dispatch(actions.updateCEOInfo(ceo)), error => {
+                            if (error) {
+                                store.dispatch(actions.addAlert('error', error.message))
+                            }
+                        });
+                    break;
+                case 'executives':
+                    FinnHub.executives(stock_.name, list => 
+                        store.dispatch(actions.updateExecutivesList(list)), error => {
+                            if (error) {
+                                store.dispatch(actions.addAlert('error', error.message))
+                            }
+                    });
+                    break;
+                case 'investors ownership':
+                    FinnHub.investors(stock_.name, info => 
+                        store.dispatch(actions.updateCompanyInvestorsOwnership(info)), error => {
+                            if (error) {
+                                store.dispatch(actions.addAlert('error', error.message))
+                            }
+                    });
+                    break;
+                case 'fund ownership':
+                    FinnHub.funds(stock_.name, info => 
+                        store.dispatch(actions.updateCompanyFundOwnership(info)), error => {
+                            if (error) {
+                                store.dispatch(actions.addAlert('error', error.message))
+                            }
+                    });
+                    break;
+                case 'price':
+                    FinnHub.metrics(stock_.name, 'price', info => 
+                        store.dispatch(actions.updateCompanyPriceMetric(info)), error => {
+                            if (error) {
+                                store.dispatch(actions.addAlert('error', error.message))
+                            }
+                    });
+                    break;
+                case 'valuation':
+                    FinnHub.metrics(stock_.name, 'valuation', info => 
+                        store.dispatch(actions.updateCompanyValuationMetric(info)), error => {
+                            if (error) {
+                                store.dispatch(actions.addAlert('error', error.message))
+                            }
+                    });
+                    break;
+                case 'growth':
+                    FinnHub.metrics(stock_.name, 'growth', info => 
+                        store.dispatch(actions.updateCompanyGrowthMetric(info)), error => {
+                            if (error) {
+                                store.dispatch(actions.addAlert('error', error.message))
+                            }
+                    });
+                    break;
+                case 'margin':
+                    FinnHub.metrics(stock_.name, 'margin', info => 
+                        store.dispatch(actions.updateCompanyMarginMetric(info)), error => {
+                            if (error) {
+                                store.dispatch(actions.addAlert('error', error.message))
+                            }
+                    });
+                    break;
+                case 'management':
+                    FinnHub.metrics(stock_.name, 'management', info => 
+                        store.dispatch(actions.updateCompanyManagementMetric(info)), error => {
+                            if (error) {
+                                store.dispatch(actions.addAlert('error', error.message))
+                            }
+                    });
+                    break;
+                case 'financial strength':
+                    FinnHub.metrics(stock_.name, 'financialStrength', info => 
+                        store.dispatch(actions.updateCompanyFinancialStrengthMetric(info)), error => {
+                            if (error) {
+                                store.dispatch(actions.addAlert('error', error.message))
+                            }
+                    });
+                    break;
+                default:
+                    FinnHub.metrics(stock_.name, 'perShare', info => 
+                        store.dispatch(actions.updateCompanyPerShareMetric(info)), error => {
+                            if (error) {
+                                store.dispatch(actions.addAlert('error', error.message))
+                            }
+                    });
+            }
+
+            return Object.assign({}, state, {chart: {...state.chart, status: 'Loading Data...', company: {...state.chart.company, sections: sections_}}});
 
         case actions.UPDATE_BALANCE:
             return Object.assign({}, state, {balance: action.arg as number});

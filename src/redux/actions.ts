@@ -6,7 +6,6 @@ import AlertData from '../AlertData';
 import { ChartOptions } from './store';
 import { isVowel } from '../utility';
 import { Option } from './store';
-import CompanyProfile from '../CompanyProfile';
 
 export const SET_STOCKS_LIST = 'SET_STOCKS_LIST';
 export const SELECT_STOCK = 'SELECT_STOCK';
@@ -61,6 +60,18 @@ export const SWITCH_TRACKER_MODE = 'SWITCH_TRACKER_MODE';
 export const SET_TRACKER_MODE = 'SET_TRACKER_MODE';
 
 export const UPDATE_COMPANY_PROFILE = 'UPDATE_COMPANY_PROFILE';
+export const UPDATE_CEO_INFO = 'UPDATE_CEO_INFO';
+export const UPDATE_COMPANY_PRICE_METRIC = 'UPDATE_COMPANY_PRICE_METRIC';
+export const UPDATE_COMPANY_VALUATION_METRIC = 'UPDATE_COMPANY_VALUATION_METRIC';
+export const UPDATE_COMPANY_GROWTH_METRIC = 'UPDATE_COMPANY_GROWTH_METRIC';
+export const UPDATE_COMPANY_MARGIN_METRIC = 'UPDATE_COMPANY_MARGIN_METRIC';
+export const UPDATE_COMPANY_MANAGEMENT_METRIC = 'UPDATE_COMPANY_MANAGEMENT_METRIC';
+export const UPDATE_COMPANY_FINANCIAL_STRENGTH_METRIC = 'UPDATE_COMPANY_FINANCIAL_STRENGTH_METRIC';
+export const UPDATE_COMPANY_PER_SHARE_METRIC = 'UPDATE_COMPANY_PER_SHARE_METRIC';
+export const UPDATE_COMPANY_INVESTORS_OWNERSHIP = 'UPDATE_COMPANY_INVESTORS_OWNERSHIP';
+export const UPDATE_COMPANY_FUND_OWNERSHIP = 'UPDATE_COMPANY_FUNDS_OWNERSHIP';
+export const UPDATE_EXECUTIVES_LIST = 'UPDATE_EXECUTIVES_LIST';
+
 export const SET_ACTIVE_COMPANY_SECTION = 'SET_ACTIVE_COMPANY_SECTION';
 
 export const activityLabels = {
@@ -240,9 +251,9 @@ export const setDisplayedAlertsLevel = (level: string) => ({
     arg: level
 });
 
-export const addAlert = (level: string) => ({
+export const addAlert = (level: string, message: string) => ({
     type: ADD_ALERT,
-    arg: level
+    arg: {level, message}
 });
 
 export const updateAlerts = (alerts: AlertData[]) => ({
@@ -305,12 +316,67 @@ export const updateStock = (data: StockData) => ({
     arg: data
 });
 
-export const updateCompanyProfile = (profile: CompanyProfile) => ({
+export const updateCompanyProfile = (profile: {}) => ({
     type: UPDATE_COMPANY_PROFILE,
     arg: profile
+});
+
+export const updateCEOInfo = (info: {}) => ({
+    type: UPDATE_CEO_INFO,
+    arg: info
+});
+
+export const updateExecutivesList = (list: {}[]) => ({
+    type: UPDATE_EXECUTIVES_LIST,
+    arg: list
 });
 
 export const setActiveCompanySection = (section: string) => ({
     type: SET_ACTIVE_COMPANY_SECTION,
     arg: section
+});
+
+export const updateCompanyPriceMetric = (info: {}) => ({
+    type: UPDATE_COMPANY_PRICE_METRIC,
+    arg: info
+});
+
+export const updateCompanyValuationMetric = (info: {}) => ({
+    type: UPDATE_COMPANY_VALUATION_METRIC,
+    arg: info
+});
+
+export const updateCompanyGrowthMetric = (info: {}) => ({
+    type: UPDATE_COMPANY_GROWTH_METRIC,
+    arg: info
+});
+
+export const updateCompanyMarginMetric = (info: {}) => ({
+    type: UPDATE_COMPANY_MARGIN_METRIC,
+    arg: info
+});
+
+export const updateCompanyManagementMetric = (info: {}) => ({
+    type: UPDATE_COMPANY_MANAGEMENT_METRIC,
+    arg: info
+});
+
+export const updateCompanyFinancialStrengthMetric = (info: {}) => ({
+    type: UPDATE_COMPANY_FINANCIAL_STRENGTH_METRIC,
+    arg: info
+});
+
+export const updateCompanyPerShareMetric = (info: {}) => ({
+    type: UPDATE_COMPANY_PER_SHARE_METRIC,
+    arg: info
+});
+
+export const updateCompanyInvestorsOwnership = (info: {}[]) => ({
+    type: UPDATE_COMPANY_INVESTORS_OWNERSHIP,
+    arg: info
+});
+
+export const updateCompanyFundOwnership = (info: {}[]) => ({
+    type: UPDATE_COMPANY_FUND_OWNERSHIP,
+    arg: info
 });

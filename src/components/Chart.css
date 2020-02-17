@@ -18,13 +18,16 @@
 }
 
 .chart .company-info {
-    height: 90%;
-    margin-top: -30px;
+    height: 95%;
+    margin-top: -52px;
 }
 
 .chart .company-info .content {
-    max-height: 90%;
+    max-height: 92%;
+    font-size: 90%;
+    line-height: 1.8;
     overflow: auto;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 1);
 }
 
 .chart .tab {

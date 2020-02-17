@@ -1,6 +1,5 @@
-import React, { useEffect, RefObject } from 'react';
+import React, { RefObject } from 'react';
 import './Search.css';
-import { Action } from '../redux/actions';
 
 type SearchProp = {
     placeholder?: string,

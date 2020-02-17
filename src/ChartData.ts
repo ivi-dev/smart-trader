@@ -1,5 +1,3 @@
-import { ChartType } from './redux/store';
-
 export class ChartDataEntry {
     constructor(public time: string, public price: number) {}
 }

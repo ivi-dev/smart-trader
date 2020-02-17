@@ -61,7 +61,7 @@ const Box = (prop: BoxProp) => {
             content = <div className={`scroll-area ${prop.listTitle ? 'lower' : null}`}>
                 {prop.listTitle && <div className="row no-gutters p-2 pl-4 list-title position-absolute col-12">{capitalize(prop.listTitle)}</div>}
                 {prop.listData.items.map((item, index) => 
-                <a key={index} className="row data-row text-decoration-none position-relative no-gutters px-3 py-2 border-bottom" href={item.href} target="_blank" onClick={(e) => {if (item.href) {e.stopPropagation();}}}>
+                <a key={index} className="row data-row text-decoration-none position-relative no-gutters px-3 py-2 border-bottom" href={item.href} target="_blank" rel="noopener noreferrer" onClick={(e) => {if (item.href) {e.stopPropagation();}}}>
                     {item.graphic && <i className={`row no-gutters col-auto ${item.graphic} align-items-center`}></i>}
                     <div className="col">
                         <div className="row no-gutters col-12">
@@ -95,8 +95,8 @@ const Box = (prop: BoxProp) => {
                     }
                     return (
                         <div key={alert.id} className="row p-2 pl-3 mx-3 mb-2 no-gutters alert shadow-sm position-relative align-items-center">
-                            <i className={`${icon} pr-3`} style={{color: color}}></i>
-                            {alert.text}
+                            <i className={`${icon} pr-3 col-auto`} style={{color: color}}></i>
+                            <span className="pl-1 col-10">{alert.text}</span>
                             <i className="fas fa-times position-absolute" onClick={(e) => {e.stopPropagation(); prop.dispatch(actions.dismissAlert!(!e.altKey ? alert.id : -1))}}></i>
                         </div>
                     )
@@ -119,15 +119,15 @@ const Box = (prop: BoxProp) => {
                 setMenuVisible(false);
             } else if (keyCode === 69) {
                 if (altKey) {
-                    prop.dispatch(actions.addAlert('error'));
+                    prop.dispatch(actions.addAlert('error', 'Lorem ipsum'));
                 }
             } else if (keyCode === 87) {
                 if (altKey) {
-                    prop.dispatch(actions.addAlert('warning'));
+                    prop.dispatch(actions.addAlert('warning', 'Lorem ipsum'));
                 }
             } else if (keyCode === 73) {
                 if (altKey) {
-                    prop.dispatch(actions.addAlert('info'));
+                    prop.dispatch(actions.addAlert('info', 'Lorem ipsum'));
                 }
             }
         }

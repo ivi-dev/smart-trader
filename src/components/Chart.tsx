@@ -5,6 +5,9 @@ import { Action } from '../redux/actions';
 import StockDetails from './StockDetails';
 import { ChartDescriptor } from '../redux/store';
 import * as actions from '../redux/actions';
+import { capitalize, formatMetricDataLabels } from '../utility';
+import Selector from './Selector';
+import Row from './Row';
 
 type ChartProp = {
     data: ChartDescriptor,
@@ -19,12 +22,63 @@ const Chart = (prop: ChartProp) => {
             container.removeChild(container.childNodes[i]);
         }
     }
-    const companyProfile = () => {
+    const content_ = (section: string) => {
         const data: [string, string][] = [];
-        for (let [key, value] of Object.entries(prop.data.company.profile)) {
-            data.push([key, value]);
+        if (!(prop.data.company[section.toString()] instanceof Array)) {
+            const entries = Object.entries(prop.data
+                .company[section.toString()]);
+                if (entries.length === 0) {
+                    return <div className="row no-gutters justify-content-center text-muted empty-label mt-5">
+                               {prop.data.status}
+                           </div>
+                }
+            for (let [key, value] of entries) {
+                data.push([capitalize(formatMetricDataLabels(key)), value]);
+            }
+            return data.map((entry, index) => 
+                        <div key={index} className="row no-gutters">
+                            <span className="text-muted">
+                                {entry[0]}:
+                            </span>&nbsp;&nbsp;
+                            <span className="text-bold">{entry[1] || '---'}</span>
+                        </div>);
+        } else {
+            const data_: [string, string][][] = [];
+            const items = Object.values(
+                prop.data.company[section.toString()])
+                if (items.length === 0) {
+                    return  <div className="row no-gutters justify-content-center text-muted empty-label mt-5">
+                               {prop.data.status}
+                           </div>
+                }
+            for (const item of Object.values(
+                prop.data.company[section.toString()])) {
+                    const item_: [string, string][] = [];
+                    for (let [key, value] of Object.entries(item)) {
+                        item_.push([capitalize(formatMetricDataLabels(key)), 
+                            value as string]);
+                    }
+                    data_.push(item_);
+            }
+            return data_.map((executive, index) => 
+                        <div key={index} className="mb-4">
+                            <div className="text-muted">#{index + 1}</div>
+                            {executive.map((entry, index) => 
+                                <div key={index} className="row no-gutters">
+                                    <span className="text-muted">
+                                        {entry[0]}:
+                                    </span>&nbsp;&nbsp;
+                                <span className="text-bold">{entry[1] || '---'}</span>
+                            </div>)}
+                        </div>);
         }
-        return data;
+    }
+    const content = () => {
+        for (const section of prop.data.company.sections) {
+            if (section.selected) {
+                return content_(section.data!.toString());
+            }
+        }
     }
     const chartBox: RefObject<HTMLDivElement> = React.createRef();
 
@@ -34,7 +88,7 @@ const Chart = (prop: ChartProp) => {
           chart.render();
     });
     return (
-        <section className={`row col-12 no-gutters px-4 chart align-items-start`}>
+        <section className={`row col-12 no-gutters pl-4 chart align-items-start`}>
             <div className="row justify-content-between 
                 align-items-center no-gutters col-12">
                 <StockDetails data={prop.data.stock} 
@@ -43,21 +97,20 @@ const Chart = (prop: ChartProp) => {
                               dispatch={prop.dispatch} />
             </div>
             <div ref={chartBox} className="col-9 graph border rounded"></div>
-
-            <div className="company-info col-3 px-4 border-left">
+            <div className="company-info col-3 border-left">
                 <div className="row no-gutters">
-                    {prop.data.company.sections.map((section, index) => 
-                        <a key={index} href="/" className={`tab col-auto px-2 mb-2 mr-2 test-reset text-decoration-none rounded ${section.selected ? 'active' : null}`} 
-                        onClick={e => {e.preventDefault(); prop.dispatch(actions.setActiveCompanySection(section.name.toString()))}}>
-                            {section.name}
-                        </a>
-                    )}
+                    <Row classes='col-12 py-2 px-4 shadow' 
+                         style={{borderBottom: '1px solid rgba(255, 255, 255, 0.1)'}}>
+                        <Selector title='Section:' 
+                                options={prop.data.company.sections} 
+                                selected={prop.data.company.sections.find(
+                                    section => section.selected)!.name} 
+                                handleSelect={value => prop.dispatch(
+                                    actions.setActiveCompanySection(value))} />
+                    </Row>
                 </div>
-                
-                <div className="content no-gutters py-3">
-                    {companyProfile().map(entry => 
-                    <div className="row no-gutters"><span className="text-muted">{entry[0]}:</span>&nbsp;&nbsp;
-                    <span className="text-bold">{entry[1]}</span></div>)}
+                <div className="content px-4 no-gutters py-3">
+                    {content()}
                 </div>
             </div>
         </section>

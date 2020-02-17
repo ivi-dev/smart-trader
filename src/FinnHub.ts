@@ -1,7 +1,6 @@
 import { Option } from './redux/store';
 import * as config from './config';
 import StockData from './StockData';
-import CompanyProfile from './CompanyProfile';
 
 export type CompanyInfo = {
     address: string,
@@ -25,44 +24,65 @@ export type CompanyInfo = {
     weburl: string
 }
 
+class FinnHubAPILimitError extends Error {
+    constructor() {
+        super('FinnHub\'s call Limit reached. Wait a bit and try again.');
+    }
+}
+
 export default class FinnHub {
-    static listExchanges(callback?: (list: Option[]) => void) {
+    static listExchanges(callback: (list: Option[]) => void, 
+        onError: (error: FinnHubAPILimitError) => void) {
         fetch(`https://finnhub.io/api/v1/stock/exchange?token=${config.config.finnHubAPIKey}`)
-        .then(list => {
-            if (callback) {
-                list.json().then(list => {
-                    let list_: Option[] = [];
-                    for (const exchange of list) {
-                        list_.push({name: exchange.name, data: exchange.code});
-                    }
-                    callback(list_);
-                });
+        .then(data => {
+            if (data.status !== 200) {
+                onError(new FinnHubAPILimitError());
+            } else {
+                if (callback) {
+                    data.json().then(list => {
+                        let list_: Option[] = [];
+                        for (const exchange of list) {
+                            list_.push({name: exchange.name, data: exchange.code});
+                        }
+                        callback(list_);
+                    });
+                }
             }
         });
     }
 
-    static listStocks(exchange: string, callback?: (stocks: StockData[]) => void) {
+    static listStocks(exchange: string, callback: (stocks: StockData[]) => void, 
+        onError: (error: FinnHubAPILimitError) => void) {
         fetch(`https://finnhub.io/api/v1//stock/symbol?exchange=${exchange}&token=${config.config.finnHubAPIKey}`)
-        .then(stocks => {
-            if (callback) {
-                stocks.json().then(stocks => {
-                    let list: StockData[] = [];
-                    for (let index = 0; index < stocks.length; index++) {
-                        list.push(new StockData(index, stocks[index].displaySymbol, 0, 0, 0, 0, 0, 0, stocks[index].description));
-                    }
-                    callback(list);
-                });
+        .then(data => {
+            if (data.status !== 200) {
+                onError(new FinnHubAPILimitError());
+            } else {
+                if (callback) {
+                    data.json().then(stocks => {
+                        let list: StockData[] = [];
+                        for (let index = 0; index < stocks.length; index++) {
+                            list.push(new StockData(index, stocks[index].displaySymbol, 0, 0, 0, 0, 0, 0, stocks[index].description));
+                        }
+                        callback(list);
+                    });
+                }
             }
         });
     }
 
     static quote(symbol: string, callback: (quote: {o:number , 
-        c: number, pc: number, h: number, l:number}) => void) {
+        c: number, pc: number, h: number, l:number}) => void, 
+        onError: (error: FinnHubAPILimitError) => void) {
         fetch(`https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${config.config.finnHubAPIKey}`)
         .then(data => {
-            data.json().then(quote => {
-                callback(quote);
-            });
+            if (data.status !== 200) {
+                onError(new FinnHubAPILimitError());
+            } else {
+                data.json().then(quote => {
+                    callback(quote);
+                });
+            }
         });
     }
 
@@ -89,12 +109,76 @@ export default class FinnHub {
         });
     }
     
-    static companyProfile(symbol: string, callback: (info: CompanyProfile) => void) {
+    static companyProfile(symbol: string, callback: (info: {}) => void, 
+        onError: (error: FinnHubAPILimitError) => void) {
         fetch(`https://finnhub.io/api/v1/stock/profile?symbol=${symbol}&token=${config.config.finnHubAPIKey}`)
         .then(data => {
-            data.json().then(info => {
-                callback(new CompanyProfile(info.address, info.city, info.country, info.currency, info.cusip, info.description, info.exchange, info.ggroup, info.gind, info.gsector, info.gsubind, info.ipo, info.isin, info.naics, info.name, info.phone, info.state, info.ticker, info.weburl));
-            });
+            if (data.status !== 200) {
+                onError(new FinnHubAPILimitError());
+            } else {
+                data.json().then(profile => callback(profile));
+            }
+        });
+    }
+
+    static ceo(symbol: string, callback: (info: {}) => void, 
+        onError: (error: FinnHubAPILimitError) => void) {
+        fetch(`https://finnhub.io/api/v1/stock/ceo-compensation?symbol=${symbol}&token=${config.config.finnHubAPIKey}`)
+        .then(data => {
+            if (data.status !== 200) {
+                onError(new FinnHubAPILimitError());
+            } else {
+                data.json().then(ceo => callback(ceo));
+            }
+        });
+    }
+
+    static executives(symbol: string, callback: (info: {}[]) => void, 
+        onError: (error: FinnHubAPILimitError) => void) {
+        fetch(`https://finnhub.io/api/v1/stock/executive?symbol=${symbol}&token=${config.config.finnHubAPIKey}`)
+        .then(data => {
+            if (data.status !== 200) {
+                onError(new FinnHubAPILimitError());
+            } else {
+                data.json().then(list => callback(list.executive));
+            }
+        });
+    }
+
+    static metrics(symbol: string, metric: 'price' | 'valuation' | 'growth' | 'margin' | 'management' | 'financialStrength' | 'perShare', 
+            callback: (info: {}) => void, 
+                onError: (error: FinnHubAPILimitError) => void) {
+        fetch(`https://finnhub.io/api/v1/stock/metric?symbol=${symbol}&metric=${metric}&token=${config.config.finnHubAPIKey}`)
+        .then(data => {
+            if (data.status !== 200) {
+                onError(new FinnHubAPILimitError());
+            } else {
+                data.json().then(info => callback(info.metric));
+            }
+        });
+    }
+
+    static investors(symbol: string, callback: (info: {}[]) => void, 
+        onError: (error: FinnHubAPILimitError) => void) {
+        fetch(`https://finnhub.io/api/v1/stock/investor-ownership?symbol=${symbol}&token=${config.config.finnHubAPIKey}`)
+        .then(data => {
+            if (data.status !== 200) {
+                onError(new FinnHubAPILimitError());
+            } else {
+                data.json().then(info => callback(info.ownership));
+            }
+        });
+    }
+
+    static funds(symbol: string, callback: (info: {}[]) => void, 
+        onError: (error: FinnHubAPILimitError) => void) {
+        fetch(`https://finnhub.io/api/v1/stock/fund-ownership?symbol=${symbol}&token=${config.config.finnHubAPIKey}`)
+        .then(data => {
+            if (data.status !== 200) {
+                onError(new FinnHubAPILimitError());
+            } else {
+                data.json().then(info => callback(info.ownership));
+            }
         });
     }
 }
