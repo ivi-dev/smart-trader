@@ -35,6 +35,7 @@ export const SET_BOXES = 'SET_BOXES';
 export const DISMISS_ALERT = 'DISMISS_ALERT';
 export const SET_DISPLAYED_ALERTS_LEVEL = 'SET_DISPLAYED_ALERTS_LEVEL';
 export const SET_DISPLAYED_ACTIVITIES_LEVEL = 'SET_DISPLAYED_ACTIVITIES_LEVEL';
+export const SET_DISPLAYED_ORDERS_LEVEL = 'SET_DISPLAYED_ORDERS_LEVEL';
 export const ADD_ALERT = 'ADD_ALERT';
 export const UPDATE_ALERTS = 'UPDATE_ALERTS';
 
@@ -255,6 +256,11 @@ export const setDisplayedAlertsLevel = (level: string) => ({
 
 export const setDisplayedActivitiesLevel = (level: string) => ({
     type: SET_DISPLAYED_ACTIVITIES_LEVEL,
+    arg: level
+});
+
+export const setOrdersDisplayLevel = (level: string) => ({
+    type: SET_DISPLAYED_ORDERS_LEVEL,
     arg: level
 });
 

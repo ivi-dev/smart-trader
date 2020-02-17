@@ -1,5 +1,7 @@
+export type OrderType = 'all' | 'buy' | 'sell';
+
 export class TableRow {
-    constructor(public cells: TableCell[]) {}
+    constructor(public cells: TableCell[], public type: OrderType) {}
 }
 
 export class TableCell {

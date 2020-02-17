@@ -212,7 +212,7 @@ export const main = (state = initialState, action: Action) => {
                         new TableCell(state.chart.stock!.name.toUpperCase()),
                         new TableCell((stockBuy!.current * state.buyQty).toString()),
                         new TableCell(state.buyQty.toString()),
-                        new TableCell('BUY', 'buy')]);
+                        new TableCell('BUY', 'buy')], 'buy');
                     orderHistory.rows.push(order);
                     activities.items.push(new ListDataRow(
                         actions.activityLabels.buy(state.buyQty, 
@@ -238,7 +238,7 @@ export const main = (state = initialState, action: Action) => {
                         new TableCell(state.chart.stock!.name.toUpperCase()),
                         new TableCell((stockSell!.current * state.buyQty).toString()),
                         new TableCell(state.buyQty.toString()),
-                        new TableCell('SELL', 'sell')]);
+                        new TableCell('SELL', 'sell')], 'sell');
                     orderHistory.rows.push(order);
                     activities.items.push(new ListDataRow(
                         actions.activityLabels.sell(state.buyQty, 
@@ -391,6 +391,9 @@ export const main = (state = initialState, action: Action) => {
 
         case actions.SET_DISPLAYED_ACTIVITIES_LEVEL:
             return Object.assign({}, state, {reportData: {...state.reportData, displayedActivitiesLevel: action.arg as string}});
+
+        case actions.SET_DISPLAYED_ORDERS_LEVEL:
+            return Object.assign({}, state, {reportData: {...state.reportData, displayedOrdersLevel: action.arg as string}});
 
         case actions.TOGGLE_MENU:
             const {visible, boxId} = action.arg as {visible: boolean, boxId: number};

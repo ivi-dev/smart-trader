@@ -1,7 +1,7 @@
 import { createStore } from 'redux';
 import { main } from './reducers';
 import StockData from '../StockData';
-import TableData, { TableCell } from '../TableData';
+import TableData, { TableCell, OrderType } from '../TableData';
 import ListData, { ListDataRow, ActivityType } from '../ListData';
 import AlertData, { AlertLevel } from '../AlertData';
 import BoxData from '../BoxData';
@@ -36,9 +36,11 @@ export type ReportData = {
     activities: ListData,
     headlines: ListData,
     headlinesTitle: string,
+    ordersDisplayOptions: Option[],
     activityDisplayOptions: Option[],
     headlinesMenuItems: Option[],
     alertDisplayOptions: Option[],
+    displayedOrdersLevel: OrderType,
     displayedActivitiesLevel: ActivityType,
     displayedAlertsLevel: AlertLevel,
     alerts: AlertData[],
@@ -301,6 +303,11 @@ export const state: State = {
         activities: new ListData([]),
         headlines: new ListData([]),
         headlinesTitle: 'Business',
+        ordersDisplayOptions: [
+            {name: 'all', onClick: () => store.dispatch(actions.setOrdersDisplayLevel('all'))}, 
+            {name: 'buy', onClick: () => store.dispatch(actions.setOrdersDisplayLevel('buy'))}, 
+            {name: 'sell', onClick: () => store.dispatch(actions.setOrdersDisplayLevel('sell'))}
+        ],
         activityDisplayOptions: [
             {name: 'all', onClick: () => store.dispatch(actions.setDisplayedActivitiesLevel('all'))},
             {name: 'application', onClick: () => store.dispatch(actions.setDisplayedActivitiesLevel('application'))},
@@ -322,6 +329,7 @@ export const state: State = {
             {name: 'error', onClick: () => store.dispatch(actions.setDisplayedAlertsLevel('error'))}
         ],
         menuVisible: false,
+        displayedOrdersLevel: 'all',
         displayedActivitiesLevel: 'all',
         displayedAlertsLevel: 'all',
         alerts: []

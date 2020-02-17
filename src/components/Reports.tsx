@@ -5,6 +5,7 @@ import Box from './Box';
 import { ReportData } from '../redux/store';
 import { Action } from '../redux/actions';
 import ListData from '../ListData';
+import TableData from '../TableData';
 
 type ReportsProp = {
     data: ReportData,
@@ -23,18 +24,24 @@ const Reports = (prop: ReportsProp) => {
     prop.boxes.map(box => {
         switch (box.type) {
             case BoxType.ORDER_HISTORY:
+                let orders = prop.data.orderHistory.rows;
+                if (prop.data.displayedOrdersLevel !== 'all') {
+                    orders = orders.slice().filter(order => 
+                        order.type === prop.data.displayedOrdersLevel);
+                }
                 return <Box key={box.id} 
                             id={box.id} 
                             title={box.title} 
                             status={'No data yet.'} 
                             menuVisible={box.menuVisible}
                             selectedBox={prop.selectedBox}
-                            tableData={prop.data.orderHistory} 
-                            dispatch={prop.dispatch} />
+                            tableData={new TableData(prop.data.orderHistory.headers, orders)} 
+                            dispatch={prop.dispatch}
+                            menuItems={prop.data.ordersDisplayOptions} />
             case BoxType.RECENT_ACTIVIY:
                 let activities = prop.data.activities.items;
                 if (prop.data.displayedActivitiesLevel !== 'all') {
-                    activities = prop.data.activities.items.slice().filter(activity => 
+                    activities = activities.slice().filter(activity => 
                         activity.type === prop.data.displayedActivitiesLevel);
                 }
                 return <Box key={box.id} 

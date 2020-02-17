@@ -78,20 +78,3 @@ export const indexHistories = (upTo: number = 2000) => {
     }
     return {years: years, archive: histories};
 }
-
-export const orders = (num = 50) => {
-    const tableData = new TableData(ORDER_HEADERS, []);
-    const types = ['buy', 'sell'];
-    for (let index = 0; index < num; index++) {
-        let cells: TableCell[] = [];
-        cells.push(new TableCell(`${number(1, 59)}m`));
-        cells.push(new TableCell(indexName()));
-        cells.push(new TableCell(`${number(10, 150)}.${number(0, 99)}`));
-        cells.push(new TableCell(number(10, 150).toString()));
-        const type = types[number(0, types.length - 1)];
-        cells.push(new TableCell(type.toUpperCase(), type));
-        let row = new TableRow(cells);
-        tableData.rows?.push(row);
-    }
-    return tableData;
-}
