@@ -28,14 +28,15 @@ const StockDetails = (prop: StockDetailsProp) => {
             if (!altKey) {
                 prop.dispatch(actions.toggleStopTracker());
             } else {
-                prop.dispatch(actions.setTrackerMode(prop.trackerMode === 'simulated' ? false : true));
+                prop.dispatch(actions.setTrackerMode(prop.trackerMode ===
+                     'simulated' ? false : true));
             }
         }
     }
     const title = () => {
         return !prop.tracker ? 'Paused' : 
             (prop.trackerMode === 'simulated' ?
-            'Simulation Running...' : 'Live mode...');
+            'Simulation' : 'Live mode');
     }
     return (
         <div className="col-auto row no-gutters stock-details align-items-center">
