@@ -65,18 +65,20 @@ const App = (prop: AppProp) => {
             visible={prop.help.visible} 
             dispatch={prop.dispatch} />
 
-      <Column classes={`col-2 p-2 vh-100 side-panel ${prop.help.visible ? 'faded' : null}`}>
+      <Column classes={`col-2 px-2 pb-2 pt-1 vh-100 side-panel ${prop.help.visible ? 'faded' : null}`}>
         <StocksList title='Market' 
                     status='Fetching stocks...' 
                     listType='symbolsList' 
-                    data={prop.marketSearchResultsList.length === 0 ? prop.stocksList : prop.marketSearchResultsList} 
+                    data={prop.marketSearchResultsList.length === 0 ? 
+                      prop.stocksList : prop.marketSearchResultsList} 
                     dispatch={prop.dispatch} 
                     onSearch={value => prop.dispatch(actions.searchForIndex(value))} />
         <StocksList title='Watchlist' 
                     status='Empty' 
                     listType='watchList' 
                     dispatch={prop.dispatch} 
-                    data={prop.watchListSearchResultsList.length === 0 ? prop.watchList : prop.watchListSearchResultsList} 
+                    data={prop.watchListSearchResultsList.length === 0 ? 
+                      prop.watchList : prop.watchListSearchResultsList} 
                     onSearch={value => prop.dispatch(actions.searchWatchlist(value))} />
       </Column>
 
