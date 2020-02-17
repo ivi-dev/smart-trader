@@ -4,6 +4,7 @@ import BoxData, { BoxType } from '../BoxData';
 import Box from './Box';
 import { ReportData } from '../redux/store';
 import { Action } from '../redux/actions';
+import ListData from '../ListData';
 
 type ReportsProp = {
     data: ReportData,
@@ -26,23 +27,34 @@ const Reports = (prop: ReportsProp) => {
                             id={box.id} 
                             title={box.title} 
                             status={'No data yet.'} 
+                            menuVisible={box.menuVisible}
                             selectedBox={prop.selectedBox}
                             tableData={prop.data.orderHistory} 
                             dispatch={prop.dispatch} />
             case BoxType.RECENT_ACTIVIY:
+                let activities = prop.data.activities.items;
+                if (prop.data.displayedActivitiesLevel !== 'all') {
+                    activities = prop.data.activities.items.slice().filter(activity => 
+                        activity.type === prop.data.displayedActivitiesLevel);
+                }
                 return <Box key={box.id} 
                             id={box.id} 
                             title={box.title} 
                             status={'No data yet.'} 
+                            menuVisible={box.menuVisible}
                             selectedBox={prop.selectedBox}
-                            listData={prop.data.activities} 
-                            dispatch={prop.dispatch}  />
+                            listData={new ListData(activities)} 
+                            dispatch={prop.dispatch} 
+                            menuItems={prop.data.activityDisplayOptions} />
             case BoxType.HEADLINES:
                 return <Box key={box.id} 
                             id={box.id} 
                             title={box.title} 
-                            status={'Fetching headlines...'} classes={'headlines'} 
-                            secondary={<span className="small text-muted">Powered by NewsAPI.com</span>} 
+                            status={'Fetching headlines...'} 
+                            menuVisible={box.menuVisible}
+                            classes={'headlines'} 
+                            secondary={<span className="small text-muted">
+                                Powered by NewsAPI.com</span>} 
                             selectedBox={prop.selectedBox}
                             listData={prop.data.headlines} 
                             listTitle={prop.data.headlinesTitle} 
@@ -58,6 +70,7 @@ const Reports = (prop: ReportsProp) => {
                             id={box.id} 
                             title={box.title} 
                             status={'No alerts.'} 
+                            menuVisible={box.menuVisible}
                             selectedBox={prop.selectedBox}
                             alerts={alerts} 
                             dispatch={prop.dispatch} 

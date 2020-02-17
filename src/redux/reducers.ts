@@ -58,10 +58,6 @@ const recordStockStartLetter = (letter: string) => {
         store.dispatch(actions.setStockStartLetter(letter)));
 }
 
-const recordTrackerMode = (simulation: boolean) => {
-    Storage.trackerMode(simulation);
-};
-
 export const main = (state = initialState, action: Action) => {
     switch (action.type) {
         case actions.SET_STOCKS_LIST:
@@ -86,15 +82,16 @@ export const main = (state = initialState, action: Action) => {
             if (!stock) {
                 return state;
             }
-            let chartOptions = Object.assign({}, state.chart.options);
             let tracker_ = null;
             if (state.simulateTracker) {
                 clearInterval(state.tracker as number);
+                let chartOptions = Object.assign({}, state.chart.options);
                 tracker_ = setInterval(() => {
                     chartOptions.series[0].data.push({x: time(new Date()), y: number(50, 100)});
                     store.dispatch(actions.updateChartOptions(chartOptions));
                 }, 2000);
             } else {
+                let chartOptions = Object.assign({}, state.chart.options);
                 FinnHub.stopTrack(state.tracker as WebSocket, 
                     state.chart.stock!.name, () => {
                         tracker_ = FinnHub.startTrack(stock.name, data_ => {
@@ -120,7 +117,7 @@ export const main = (state = initialState, action: Action) => {
             });
             recordSelectedStock(stock);
             return Object.assign({}, state, {tracker: tracker_}, 
-                {chart: {...state.chart, stock: stock, status: 'Loading Data...'}});
+                {chart: {...state.chart, options: {...state.chart.options, series: [{data: []}]}, stock: stock, status: 'Loading Data...'}});
 
         case actions.UPDATE_COMPANY_PROFILE:
             return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, profile: action.arg}}});
@@ -219,7 +216,7 @@ export const main = (state = initialState, action: Action) => {
                     orderHistory.rows.push(order);
                     activities.items.push(new ListDataRow(
                         actions.activityLabels.buy(state.buyQty, 
-                            state.chart.stock!.name.toUpperCase(), stockBuy!.current)));
+                            state.chart.stock!.name.toUpperCase(), stockBuy!.current), 'trade', 'fas fa-dollar-sign buy'));
                     Storage.orders(orderHistory);
                     recordActivity(activities);
                 return Object.assign({}, state, {reportData: 
@@ -244,8 +241,8 @@ export const main = (state = initialState, action: Action) => {
                         new TableCell('SELL', 'sell')]);
                     orderHistory.rows.push(order);
                     activities.items.push(new ListDataRow(
-                        actions.activityLabels.buy(state.buyQty, 
-                            state.chart.stock!.name.toUpperCase(), stockSell!.current)));
+                        actions.activityLabels.sell(state.buyQty, 
+                            state.chart.stock!.name.toUpperCase(), stockSell!.current), 'trade', 'fas fa-dollar-sign sell'));
                     Storage.orders(orderHistory);
                     recordActivity(activities);
                 return Object.assign({}, state, {reportData: 
@@ -276,8 +273,8 @@ export const main = (state = initialState, action: Action) => {
                 if (state.tracker) {
                     clearInterval(state.tracker as number);
                 } else {
+                    let options = Object.assign({}, state.chart.options);
                     tracker = setInterval(() => {
-                        let options = Object.assign({}, state.chart.options);
                         options.series[0].data.push({x: time(new Date()), y: number(50, 100)});
                         store.dispatch(actions.updateChartOptions(options));
                     }, 2000);
@@ -287,10 +284,11 @@ export const main = (state = initialState, action: Action) => {
                     FinnHub.stopTrack(state.tracker as WebSocket, 
                         state.chart.stock!.name, null);
                 } else {
+                    let options = Object.assign({}, state.chart.options);
                     tracker = FinnHub.startTrack(state.chart.stock!.name, 
-                        data_ => {chartOptions.series[0].data.push(
+                        data_ => {options.series[0].data.push(
                             {x: time(new Date(data_.t)), y: data_.p});
-                        store.dispatch(actions.updateChartOptions(chartOptions));
+                        store.dispatch(actions.updateChartOptions(options));
                     });
                 }
             }
@@ -319,7 +317,7 @@ export const main = (state = initialState, action: Action) => {
             let boxTitle = BoxData.getTitle(boxType);
             const activities = Object.assign({}, state.reportData.activities);
             activities.items.push(new ListDataRow(actions.activityLabels
-                .addBox(boxType), 'far fa-square', fullDate(new Date())));
+                .addBox(boxType), 'application', 'far fa-square', fullDate(new Date())));
             recordActivity(activities);
             const boxesAfterAdd = state.boxes.concat([new BoxData(
                 getLatestBoxId(state.boxes) + 1, boxTitle, boxType)]);
@@ -327,10 +325,11 @@ export const main = (state = initialState, action: Action) => {
             return Object.assign({}, state, {boxes: boxesAfterAdd}, {selectedBox: null});
         
         case actions.REMOVE_BOX:
+            const boxId_ = action.arg as number;
             const activities_ = Object.assign({}, state.reportData.activities);
-            activities_.items.push(new ListDataRow(actions.activityLabels.removeBox(getBoxType(state.boxes, action.arg as number)!), 'far fa-square', fullDate(new Date())));
+            activities_.items.push(new ListDataRow(actions.activityLabels.removeBox(getBoxType(state.boxes, boxId_)!), 'application', 'far fa-square', fullDate(new Date())));
             recordActivity(activities_);
-            const boxesAfterRemove = state.boxes.filter(box => box.id !== action.arg as number);
+            const boxesAfterRemove = state.boxes.filter(box => box.id !== boxId_);
             recordBoxes(boxesAfterRemove);
             return Object.assign({}, state, {boxes: boxesAfterRemove}, {selectedBox: null});
 
@@ -339,7 +338,10 @@ export const main = (state = initialState, action: Action) => {
 
         case actions.SELECT_BOX:
             const id1 = action.arg as number;
-            return Object.assign({}, state, {selectedBox: state.selectedBox === id1 ? null : id1});
+            const boxes_3 = state.boxes.slice();
+            boxes_3.find(box => box.id === id1)!.menuVisible = false;
+            return Object.assign({}, state, {selectedBox: state.selectedBox === id1 ?
+                 null : id1}, {boxes: boxes_3});
 
         case actions.MOVE_BOX_BACK:
             const id2 = action.arg as number;
@@ -385,11 +387,23 @@ export const main = (state = initialState, action: Action) => {
             return state;
 
         case actions.SET_DISPLAYED_ALERTS_LEVEL:
-            return Object.assign({}, state, {displayedAlertsLevel: action.arg as string});
+            return Object.assign({}, state, {reportData: {...state.reportData, displayedAlertsLevel: action.arg as string}});
+
+        case actions.SET_DISPLAYED_ACTIVITIES_LEVEL:
+            return Object.assign({}, state, {reportData: {...state.reportData, displayedActivitiesLevel: action.arg as string}});
+
+        case actions.TOGGLE_MENU:
+            const {visible, boxId} = action.arg as {visible: boolean, boxId: number};
+            const boxes = state.boxes.slice();
+            const box_ = boxes.find(box => box.id === boxId);
+            box_!.menuVisible = box_?.menuVisible ? false : true;
+            return Object.assign({}, state, {boxes: boxes});
 
         case actions.ADD_ALERT:
             const {message, level} = action.arg;
-            const alerts_ = state.reportData.alerts.concat([new AlertData(getLatestAlertId(state.reportData.alerts) + 1, message, level)]);
+            const alerts_ = state.reportData.alerts.concat([
+                new AlertData(getLatestAlertId(state.reportData.alerts) + 1, 
+                message, level)]);
             recordAlerts(alerts_);
             return Object.assign({}, state, {reportData: {...state.reportData, 
                 alerts: alerts_}});

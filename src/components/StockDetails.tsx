@@ -36,7 +36,7 @@ const StockDetails = (prop: StockDetailsProp) => {
     const title = () => {
         return !prop.tracker ? 'Paused' : 
             (prop.trackerMode === 'simulated' ?
-            'Simulation' : 'Live mode');
+            'Simulation' : 'Live');
     }
     return (
         <div className="col-auto row no-gutters stock-details align-items-center">

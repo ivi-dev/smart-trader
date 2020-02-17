@@ -1,16 +1,3 @@
-.empty-label {
-  font-size: 90%;
-}
-
-.status-bar.border-bottom {
-  border-color: rgba(255, 255, 255, 0.2) !important;
-}
-  
-.side-panel {
-  background-color: rgb(35, 43, 65);
-  color: rgb(255, 255, 255);
-}
-
 @keyframes slide-in {
   from { transform: translateX(100px); }
   to { transform: translateX(0); }
@@ -29,6 +16,19 @@
 @keyframes skew-out {
   from { transform: skew(10deg, 10deg); }
   to { transform: skew(0deg, 0deg); }
+}
+
+.empty-label {
+  font-size: 90%;
+}
+
+.status-bar.border-bottom {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+  
+.side-panel {
+  background-color: rgb(35, 43, 65);
+  color: rgb(255, 255, 255);
 }
 
 .main-area {

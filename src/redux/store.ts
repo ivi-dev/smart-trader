@@ -2,8 +2,8 @@ import { createStore } from 'redux';
 import { main } from './reducers';
 import StockData from '../StockData';
 import TableData, { TableCell } from '../TableData';
-import ListData, { ListDataRow } from '../ListData';
-import AlertData from '../AlertData';
+import ListData, { ListDataRow, ActivityType } from '../ListData';
+import AlertData, { AlertLevel } from '../AlertData';
 import BoxData from '../BoxData';
 import Storage, { Keys } from '../Storage';
 import * as actions from './actions';
@@ -26,7 +26,8 @@ export type Option = {
     graphic?: string,
     title?: string,
     data?: string,
-    onClick?: (value: string | number, ...other: any) => void,
+    onClick?: (value: string | 
+        number, ...other: any) => void,
     selected?: boolean
 }
 
@@ -35,10 +36,13 @@ export type ReportData = {
     activities: ListData,
     headlines: ListData,
     headlinesTitle: string,
+    activityDisplayOptions: Option[],
     headlinesMenuItems: Option[],
     alertDisplayOptions: Option[],
-    displayedAlertsLevel: DisplayedAlertsLevel,
-    alerts: AlertData[]
+    displayedActivitiesLevel: ActivityType,
+    displayedAlertsLevel: AlertLevel,
+    alerts: AlertData[],
+    menuVisible: boolean
 }
 
 export type ChartOptions = {
@@ -80,8 +84,6 @@ export type HelpType = {
     sections: Option[]
 }
 
-export type DisplayedAlertsLevel = 'all' | 'error' | 'warning' | 'info';
-
 export interface State {
     allStocksList: StockData[],
     stocksList: StockData[],
@@ -104,7 +106,6 @@ export interface State {
     reportData: ReportData,
     boxes: BoxData[],
     selectedBox: number | null,
-    menusVisible: boolean,
 
     balance: number,
     buyQty: number,
@@ -168,7 +169,7 @@ Storage.get(Keys.STOCK).then(stock => {
 const fetchHeadlines = (category: Category) =>
     News.headlines(category, articles => {
         const headlines: ListDataRow[] = [];
-        articles.forEach(article => headlines.push(new ListDataRow(article.title, undefined, `${article.author} @ ${fullDate(new Date(article.publishedAt))}`, article.url)));
+        articles.forEach(article => headlines.push(new ListDataRow(article.title, 'other', undefined, `${article.author} @ ${fullDate(new Date(article.publishedAt))}`, article.url)));
         store.dispatch(actions.updateHeadlines(new ListData(headlines), category));
     }, () => store.dispatch(actions.updateHeadlines(new ListData([new ListDataRow('An error occurred while trying get the latest headlines.')]), category)));
 fetchHeadlines('business');
@@ -300,6 +301,11 @@ export const state: State = {
         activities: new ListData([]),
         headlines: new ListData([]),
         headlinesTitle: 'Business',
+        activityDisplayOptions: [
+            {name: 'all', onClick: () => store.dispatch(actions.setDisplayedActivitiesLevel('all'))},
+            {name: 'application', onClick: () => store.dispatch(actions.setDisplayedActivitiesLevel('application'))},
+            {name: 'trade', onClick: () => store.dispatch(actions.setDisplayedActivitiesLevel('trade'))}
+        ],
         headlinesMenuItems: [
             {name: 'business', onClick: (category) => fetchHeadlines(category as Category)}, 
             {name: 'entertainment', onClick: (category) => fetchHeadlines(category as Category)}, 
@@ -315,12 +321,13 @@ export const state: State = {
             {name: 'warning', onClick: () => store.dispatch(actions.setDisplayedAlertsLevel('warning'))},
             {name: 'error', onClick: () => store.dispatch(actions.setDisplayedAlertsLevel('error'))}
         ],
+        menuVisible: false,
+        displayedActivitiesLevel: 'all',
         displayedAlertsLevel: 'all',
         alerts: []
     },
     boxes: [],
     selectedBox: null,
-    menusVisible: false,
 
     balance: 10000,
     buyQty: 1,

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import TableData from '../TableData';
 import ListData from '../ListData';
 import AlertData from '../AlertData';
@@ -15,6 +15,7 @@ type BoxProp = {
     selectedBox: number | null,
     status?: string,
     menuItems?: Option[],
+    menuVisible: boolean,
     secondary?: JSX.Element,
     classes?: string,
     tableData?: TableData,
@@ -61,7 +62,11 @@ const Box = (prop: BoxProp) => {
             content = <div className={`scroll-area ${prop.listTitle ? 'lower' : null}`}>
                 {prop.listTitle && <div className="row no-gutters p-2 pl-4 list-title position-absolute col-12">{capitalize(prop.listTitle)}</div>}
                 {prop.listData.items.map((item, index) => 
-                <a key={index} className="row data-row text-decoration-none position-relative no-gutters px-3 py-2 border-bottom" href={item.href} target="_blank" rel="noopener noreferrer" onClick={(e) => {if (item.href) {e.stopPropagation();}}}>
+                <a key={index} className="row data-row text-decoration-none position-relative no-gutters px-3 py-2 border-bottom" 
+                   href={item.href} 
+                   target="_blank" 
+                   rel="noopener noreferrer" 
+                   onClick={(e) => {if (item.href) {e.stopPropagation();}}}>
                     {item.graphic && <i className={`row no-gutters col-auto ${item.graphic} align-items-center`}></i>}
                     <div className="col">
                         <div className="row no-gutters col-12">
@@ -77,7 +82,9 @@ const Box = (prop: BoxProp) => {
     } else if (prop.alerts) {
         if (prop.alerts.length === 0) {
             content = <div className="scroll-area mt-2">
-                <div className="empty-label text-muted text-center col-12 mt-5">{prop.status}</div>
+                <div className="empty-label text-muted text-center col-12 mt-5">
+                    {prop.status}
+                </div>
             </div>
         } else {
             content = <div className="scroll-area mt-2">
@@ -95,12 +102,16 @@ const Box = (prop: BoxProp) => {
                     }
                     return (
                         <div key={alert.id} className="row p-2 pl-3 mx-3 mb-2 no-gutters alert shadow-sm position-relative align-items-center">
-                            <i className={`${icon} pr-3 col-auto`} style={{color: color}}></i>
+                            <i className={`${icon} pr-3 col-auto`} 
+                               style={{color: color}}></i>
                             <span className="pl-1 col-10">{alert.text}</span>
-                            <i className="fas fa-times position-absolute" onClick={(e) => {e.stopPropagation(); prop.dispatch(actions.dismissAlert!(!e.altKey ? alert.id : -1))}}></i>
+                            <i className="fas fa-times position-absolute" 
+                               onClick={(e) => {e.stopPropagation(); 
+                               prop.dispatch(actions.dismissAlert!(!e.altKey ? 
+                                alert.id : -1))}}></i>
                         </div>
                     )
-                    })}
+                })}
             </div>
         }
     }
@@ -116,7 +127,6 @@ const Box = (prop: BoxProp) => {
                 }
             } else if (keyCode === 27) {
                 prop.dispatch(actions.selectBox(prop.id))
-                setMenuVisible(false);
             } else if (keyCode === 69) {
                 if (altKey) {
                     prop.dispatch(actions.addAlert('error', 'Lorem ipsum'));
@@ -132,15 +142,21 @@ const Box = (prop: BoxProp) => {
             }
         }
     }
-    const [ menuVisible, setMenuVisible ] = useState(false);
     return (
         <div className={`box col mr-3 mt-1 shadow pb-1 rounded ${prop.classes} ${prop.selectedBox === prop.id ? 'selected' : null}`} onClick={() => prop.dispatch(actions.selectBox(prop.id))} tabIndex={prop.id} onKeyDown={(e) => handleKeyDown(e.keyCode, e.altKey)}>
-            {prop.menuItems && <Menu items={prop.menuItems} visible={menuVisible} />}
+            {prop.menuItems && <Menu items={prop.menuItems} 
+                                     visible={prop.menuVisible} 
+                                     boxId={prop.id} 
+                                     dispatch={prop.dispatch} />}
             <div className="row no-gutters header p-2 pl-3 align-items-center">
                 {prop.title}&nbsp;&nbsp;
                 {prop.secondary}
-                <i className="fas fa-ellipsis-v px-2 py-1 ml-auto rounded" onClick={(e) => {e.stopPropagation(); setMenuVisible(!menuVisible)}}></i>
-                <i className="fas fa-times px-2 py-1 rounded" onClick={() => {prop.dispatch(actions.removeBox(prop.id))}}></i>
+                <i className="fas fa-ellipsis-v px-2 py-1 ml-auto rounded" 
+                    onClick={e => {e.stopPropagation(); 
+                    prop.dispatch(actions.setMenuVisible(true, prop.id))}}></i>
+                <i className="fas fa-times px-2 py-1 rounded" 
+                   onClick={e => {e.stopPropagation(); 
+                   prop.dispatch(actions.removeBox(prop.id))}}></i>
             </div>
             {content}
         </div>

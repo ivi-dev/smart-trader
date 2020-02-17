@@ -95,27 +95,3 @@ export const orders = (num = 50) => {
     }
     return tableData;
 }
-
-export const activities = (num = 50) => {
-    let items: ListDataRow[] = [];
-    for (let index = 0; index < num; index++) {
-        items.push(new ListDataRow('Lorem ipsum', formatDate((new Date((new Date()).getFullYear(), number(1, 12), number(1, 28), number(0, 23), number(0, 59))))));
-    }
-    return new ListData(items);
-}
-
-export const headlines = (num = 15) => {
-    let items: ListDataRow[] = [];
-    for (let index = 0; index < num; index++) {
-        items.push(new ListDataRow('Lorem ipsum', 'Lorem ipsum'));
-    }
-    return new ListData(items);
-}
-
-export const alerts = (num = 20) => {
-    let list: AlertData[] = [];
-    for (let index = 0; index < num; index++) {
-        list.push(new AlertData(index, 'Lorem ipsum'));
-    }
-    return list;
-}

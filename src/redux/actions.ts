@@ -34,6 +34,7 @@ export const MOVE_BOX_FORWARD = 'MOVE_BOX_FORWARD';
 export const SET_BOXES = 'SET_BOXES';
 export const DISMISS_ALERT = 'DISMISS_ALERT';
 export const SET_DISPLAYED_ALERTS_LEVEL = 'SET_DISPLAYED_ALERTS_LEVEL';
+export const SET_DISPLAYED_ACTIVITIES_LEVEL = 'SET_DISPLAYED_ACTIVITIES_LEVEL';
 export const ADD_ALERT = 'ADD_ALERT';
 export const UPDATE_ALERTS = 'UPDATE_ALERTS';
 
@@ -73,6 +74,7 @@ export const UPDATE_COMPANY_FUND_OWNERSHIP = 'UPDATE_COMPANY_FUNDS_OWNERSHIP';
 export const UPDATE_EXECUTIVES_LIST = 'UPDATE_EXECUTIVES_LIST';
 
 export const SET_ACTIVE_COMPANY_SECTION = 'SET_ACTIVE_COMPANY_SECTION';
+export const TOGGLE_MENU = 'TOGGLE_MENU';
 
 export const activityLabels = {
     sell: (amount: number, indexName: string, price: number) => {
@@ -251,6 +253,11 @@ export const setDisplayedAlertsLevel = (level: string) => ({
     arg: level
 });
 
+export const setDisplayedActivitiesLevel = (level: string) => ({
+    type: SET_DISPLAYED_ACTIVITIES_LEVEL,
+    arg: level
+});
+
 export const addAlert = (level: string, message: string) => ({
     type: ADD_ALERT,
     arg: {level, message}
@@ -379,4 +386,9 @@ export const updateCompanyInvestorsOwnership = (info: {}[]) => ({
 export const updateCompanyFundOwnership = (info: {}[]) => ({
     type: UPDATE_COMPANY_FUND_OWNERSHIP,
     arg: info
+});
+
+export const setMenuVisible = (visible: boolean, boxId: number) => ({
+    type: TOGGLE_MENU,
+    arg: {visible, boxId}
 });

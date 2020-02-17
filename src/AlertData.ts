@@ -1,4 +1,4 @@
-export type AlertLevel = 'error' | 'warning' | 'info';
+export type AlertLevel = 'all' | 'error' | 'warning' | 'info';
 
 export default class AlertData {
     constructor(public id: number, public text: string, 

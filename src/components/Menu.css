@@ -5,6 +5,10 @@
     z-index: 10000;
 }
 
+.menu:focus {
+    outline: none;
+}
+
 a {
     font-size: 80%;
     transition: 250ms;
