@@ -9,7 +9,7 @@ const trendPercentage = Number(Math.abs(trendValue / data.current * 100).toFixed
 
 const renderStockDetails = (mode: 'simulated' | 'live' = 'simulated') => {
     return render(<StockDetails data={data} 
-                                tracker={null} 
+                                tracker={1} 
                                 trackerMode={mode} />);
 }
 
