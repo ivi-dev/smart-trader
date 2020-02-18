@@ -34,7 +34,7 @@ const StockDetails = (prop: StockDetailsProp) => {
         }
     }
     const title = () => {
-        return (prop.trackerMode === 'simulated' ?
+        return !prop.tracker ? 'Paused' : (prop.trackerMode === 'simulated' ?
             'Simulation' : 'Live');
     }
     return (
