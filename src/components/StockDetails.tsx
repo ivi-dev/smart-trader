@@ -26,7 +26,7 @@ const StockDetails = (prop: StockDetailsProp) => {
     const handleClick = (altKey: boolean) => {
         if (prop.dispatch) {
             if (!altKey) {
-                prop.dispatch(actions.toggleStopTracker());
+                prop.dispatch(actions.toggleTracker());
             } else {
                 prop.dispatch(actions.setTrackerMode(prop.trackerMode ===
                      'simulated' ? false : true));
@@ -34,8 +34,7 @@ const StockDetails = (prop: StockDetailsProp) => {
         }
     }
     const title = () => {
-        return !prop.tracker ? 'Paused' : 
-            (prop.trackerMode === 'simulated' ?
+        return (prop.trackerMode === 'simulated' ?
             'Simulation' : 'Live');
     }
     return (
