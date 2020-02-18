@@ -60,6 +60,7 @@ export const UPDATE_CHART_OPTIONS = 'SET_CHART_DATA';
 export const TOGGLE_TRACKER = 'TOGGLE_TRACKER';
 export const SWITCH_TRACKER_MODE = 'SWITCH_TRACKER_MODE';
 export const SET_TRACKER_MODE = 'SET_TRACKER_MODE';
+export const SET_TRACKER = 'SET_TRACKER';
 
 export const UPDATE_COMPANY_PROFILE = 'UPDATE_COMPANY_PROFILE';
 export const UPDATE_CEO_INFO = 'UPDATE_CEO_INFO';
@@ -309,19 +310,19 @@ export const updateChartOptions = (options: ChartOptions) => ({
     arg: options
 });
 
-export const toggleStopTracker = () => ({
+export const toggleTracker = () => ({
     type: TOGGLE_TRACKER,
-    arg: null
-});
-
-export const switchTrackerMode = () => ({
-    type: SWITCH_TRACKER_MODE,
     arg: null
 });
 
 export const setTrackerMode = (mode: boolean) => ({
     type: SET_TRACKER_MODE,
     arg: mode
+});
+
+export const setTracker = (tracker: any) => ({
+    type: SET_TRACKER,
+    arg: tracker
 });
 
 export const updateStock = (data: StockData) => ({

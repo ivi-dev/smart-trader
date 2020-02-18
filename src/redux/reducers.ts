@@ -58,6 +58,21 @@ const recordStockStartLetter = (letter: string) => {
         store.dispatch(actions.setStockStartLetter(letter)));
 }
 
+const startSimulatedTracker = (options: ChartOptions) => {
+    return setInterval(() => {
+        options.series[0].data.push({x: time(new Date()), y: number(50, 100)});
+        store.dispatch(actions.updateChartOptions(options));
+    }, 2000);
+}
+
+const startLiveTracker = (stockName: string, options: ChartOptions) => {
+    return FinnHub.startTrack(stockName, 
+        data_ => {options.series[0].data.push(
+            {x: time(new Date(data_.t)), y: data_.p});
+        store.dispatch(actions.updateChartOptions(options));
+    });
+}
+
 export const main = (state = initialState, action: Action) => {
     switch (action.type) {
         case actions.SET_STOCKS_LIST:
@@ -86,12 +101,14 @@ export const main = (state = initialState, action: Action) => {
             if (state.simulateTracker) {
                 clearInterval(state.tracker as number);
                 let chartOptions = Object.assign({}, state.chart.options);
+                chartOptions.series[0].data = [];
                 tracker_ = setInterval(() => {
                     chartOptions.series[0].data.push({x: time(new Date()), y: number(50, 100)});
                     store.dispatch(actions.updateChartOptions(chartOptions));
                 }, 2000);
             } else {
                 let chartOptions = Object.assign({}, state.chart.options);
+                chartOptions.series[0].data = [];
                 FinnHub.stopTrack(state.tracker as WebSocket, 
                     state.chart.stock!.name, () => {
                         tracker_ = FinnHub.startTrack(stock.name, data_ => {
@@ -295,19 +312,34 @@ export const main = (state = initialState, action: Action) => {
             return Object.assign({}, state, {tracker: tracker});
 
         case actions.SET_TRACKER_MODE:
+            let tracker_2 = null;
             if (state.simulateTracker) {
                 if (state.tracker) {
                     clearInterval(state.tracker as number);
+                    let options = Object.assign({}, state.chart.options);
+                    options.series[0].data = [];
+                    tracker_2 = FinnHub.startTrack(state.chart.stock!.name, 
+                        data_ => {options.series[0].data.push(
+                            {x: time(new Date(data_.t)), y: data_.p});
+                        store.dispatch(actions.updateChartOptions(options));
+                    });
                 }
             } else {
                 if (state.tracker) {
+                    let options = Object.assign({}, state.chart.options);
+                    options.series[0].data = [];
                     FinnHub.stopTrack(state.tracker as WebSocket, 
-                        state.chart.stock!.name, null);
+                        state.chart.stock!.name, () => {
+                            store.dispatch(actions.setTracker(startSimulatedTracker(options)));
+                        });
                 }
             }
-            // recordTrackerMode(!state.simulateTracker);
-            return Object.assign({}, state, {tracker: null}, 
-                {simulateTracker: action.arg as boolean});
+            return Object.assign({}, state, {tracker: tracker_2}, 
+                {simulateTracker: action.arg as boolean}, {chart: {...state.chart, 
+                    options: {...state.chart.options, series: [{data: []}]}}});
+
+        case actions.SET_TRACKER:
+            return Object.assign({}, state, {tracker: action.arg});
 
 
 
