@@ -45,7 +45,7 @@ const renderMultiRowListBox = (mainListItems: string[],
     secondaryListItems: string[]) => {
     const listRows: ListDataRow[] = [];
     for (let index = 0; index < mainListItems.length; index++) {
-        listRows.push(new ListDataRow(mainListItems[index], undefined, secondaryListItems[index]));
+        listRows.push(new ListDataRow(mainListItems[index], 'application', '', secondaryListItems[index]));
     }
     const listData = new ListData(listRows);
     return render(<Box id={0} 
@@ -132,7 +132,7 @@ test('renders a box with a dual-row-item list data', () => {
     const dataRows = container.querySelectorAll('.data-row');
     expect(dataRows).toHaveLength(4);
     for (let index = 0; index < dataRows.length; index++) {
-        expect(dataRows[index].children[0].children[0].innerHTML).toBe(mainListItems[index]);
+        expect(dataRows[index].querySelectorAll('.row')[0].innerHTML).toBe(mainListItems[index]);
         expect(dataRows[index].querySelectorAll('.row')[1].innerHTML).toBe(secondaryListItems[index]);
     }
 });

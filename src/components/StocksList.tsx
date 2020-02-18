@@ -35,12 +35,12 @@ const StocksList = (prop: StocksListProp) => {
     }
     const title = prop.title ? 
     <div className="row no-gutters align-items-center">
-    <div className="col-auto pt-3 pb-2 text-muted">
-        {prop.title}
-    </div>
-    <Search classes='ml-auto col-8'
-            style={{fontSize: '95%', transform: 'translateY(6px)'}}
-            onKeyUp={value => prop.onSearch(value)} />
+        <div className="col-auto pt-3 pb-2 text-muted">
+            {prop.title}
+        </div>
+        <Search classes='ml-auto col-8'
+                style={{fontSize: '95%', transform: 'translateY(6px)'}}
+                onKeyUp={value => prop.onSearch(value)} />
     </div> : null;
     return (
         <>

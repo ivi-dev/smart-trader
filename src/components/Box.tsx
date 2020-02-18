@@ -66,7 +66,7 @@ const Box = (prop: BoxProp) => {
                    href={item.href} 
                    target="_blank" 
                    rel="noopener noreferrer" 
-                   onClick={(e) => {if (item.href) {e.stopPropagation();}}}>
+                   onClick={(e) => {if (item.href) {e.stopPropagation()}}}>
                     {item.graphic && <i className={`row no-gutters col-auto ${item.graphic} align-items-center`}></i>}
                     <div className="col">
                         <div className="row no-gutters col-12">

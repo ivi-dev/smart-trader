@@ -10,6 +10,7 @@ import Selector from './Selector';
 import Row from './Row';
 
 type ChartProp = {
+    testMode?: boolean,
     data: ChartDescriptor,
     tracker: WebSocket | number | null,
     trackerMode: 'live' | 'simulated',
@@ -83,12 +84,14 @@ const Chart = (prop: ChartProp) => {
     const chartBox: RefObject<HTMLDivElement> = React.createRef();
 
     useEffect(() => {
-          cleanUp(chartBox.current as HTMLDivElement);
-          var chart = new ApexCharts(chartBox.current, prop.data.options);
-          chart.render();
+        if (!prop.testMode) {
+            cleanUp(chartBox.current as HTMLDivElement);
+            var chart = new ApexCharts(chartBox.current, prop.data.options);
+            chart.render();
+        }
     });
     return (
-        <section className={`row col-12 no-gutters pl-4 chart align-items-start`}>
+        <section className="row col-12 no-gutters pl-4 chart align-items-start">
             <div className="row justify-content-between 
                 align-items-center no-gutters col-12">
                 <StockDetails data={prop.data.stock} 

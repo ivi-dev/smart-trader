@@ -4,29 +4,20 @@ import Stock from './Stock';
 import StockData from '../StockData';
 
 const mockHandleClick = jest.fn((altKey: boolean, data: StockData) => {});
-const negativeData = new StockData(0, 'ABC', 1, 1.1, 1.2, 0.5, 0.8, 0.10);
-const positiveData = new StockData(0, 'ABC', 1, 1.1, 1.2, 0.5, 0.8, -0.10);
-const renderIndex = (data: StockData) => {
+const data_ = new StockData(0, 'ABC', 1, 1.1, 1.2, 0.5, 0.8, 0.10, 'Company Name');
+const renderStock = (data: StockData = data_) => {
     return render(<Stock data={data} 
                          handleClick={mockHandleClick} />);
 }
 
-test('render an element representing a stock with a negative trend', () => {
-    const { container } = renderIndex(negativeData);
-    expect(container.children[0].querySelector('.name')?.innerHTML).toBe(negativeData.name);
-    expect(container.children[0].querySelector('.current')?.innerHTML).toBe(negativeData.current.toString());
-    expect(container.children[0].querySelector('.trend')?.innerHTML).toBe(`-${Math.abs(negativeData.trend)}&nbsp;(${Math.abs(Number((negativeData.trend / negativeData.open * 100).toFixed(2)))}%)`);
+test('render an element representing a stock', () => {
+    const { container } = renderStock();
+    expect(container.children[0].querySelector('.name')?.innerHTML).toBe(data_.name);
+    expect(container.children[0].querySelector('.company-name')?.innerHTML).toBe(data_.companyName);
 });
 
-test('render an element representing a stock with a positive trend', () => {
-    const { container } = renderIndex(positiveData);
-    expect(container.children[0].querySelector('.name')?.innerHTML).toBe(positiveData.name);
-    expect(container.children[0].querySelector('.current')?.innerHTML).toBe(positiveData.current.toString());
-    expect(container.children[0].querySelector('.trend')?.innerHTML).toBe(`${Math.abs(positiveData.trend)}&nbsp;(${Math.abs(Number((positiveData.trend / positiveData.open * 100).toFixed(2)))}%)`);
-});
-
-test('an index responds to a click', () => {
-    const { container } = renderIndex(positiveData);
+test('a stock responds to a click', () => {
+    const { container } = renderStock();
     fireEvent(container.children[0], new MouseEvent('click', {bubbles: true, cancelable: true}));
-    expect(mockHandleClick).toHaveBeenCalledWith(false, positiveData);
+    expect(mockHandleClick).toHaveBeenCalledWith(false, data_);
 });
