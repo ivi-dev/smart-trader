@@ -117,33 +117,31 @@ const Box = (prop: BoxProp) => {
     }
     const handleKeyDown = (keyCode: number, altKey: boolean) => {
         if (prop.selectedBox === prop.id) {
-            if (keyCode === 37) {
-                if (altKey) {
+            if (altKey) {
+                if (keyCode === 37) {
                     prop.dispatch(actions.moveBoxBack(prop.id));
-                }
-            } else if (keyCode === 39) {
-                if (altKey) {
+                } else if (keyCode === 39) {
                     prop.dispatch(actions.moveBoxForward(prop.id));
-                }
-            } else if (keyCode === 27) {
-                prop.dispatch(actions.selectBox(prop.id))
-            } else if (keyCode === 69) {
-                if (altKey) {
+                } else if (keyCode === 69) {
                     prop.dispatch(actions.addAlert('error', 'Lorem ipsum'));
-                }
-            } else if (keyCode === 87) {
-                if (altKey) {
+                } else if (keyCode === 87) {
                     prop.dispatch(actions.addAlert('warning', 'Lorem ipsum'));
-                }
-            } else if (keyCode === 73) {
-                if (altKey) {
+                } else if (keyCode === 73) {
                     prop.dispatch(actions.addAlert('info', 'Lorem ipsum'));
                 }
+            }
+            if (keyCode === 27) {
+                prop.dispatch(actions.selectBox(prop.id))
             }
         }
     }
     return (
-        <div className={`box col mr-3 mt-1 shadow pb-1 rounded ${prop.classes} ${prop.selectedBox === prop.id ? 'selected' : null}`} onClick={() => prop.dispatch(actions.selectBox(prop.id))} tabIndex={prop.id} onKeyDown={(e) => handleKeyDown(e.keyCode, e.altKey)}>
+        <div className={`box col mr-3 mt-1 shadow pb-1 rounded 
+            ${prop.classes} ${prop.selectedBox === prop.id ? 
+                'selected' : null}`}
+            onClick={() => prop.dispatch(actions.selectBox(prop.id))} 
+            tabIndex={prop.id} 
+            onKeyDown={(e) => handleKeyDown(e.keyCode, e.altKey)}>
             {prop.menuItems && <Menu items={prop.menuItems} 
                                      visible={prop.menuVisible} 
                                      boxId={prop.id} 

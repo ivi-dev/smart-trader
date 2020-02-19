@@ -58,11 +58,18 @@ const recordStockStartLetter = (letter: string) => {
         store.dispatch(actions.setStockStartLetter(letter)));
 }
 
-const startSimulatedTracker = (options: ChartOptions) => {
+const startSimulatedTracker = (stockPartialData: {id: number, 
+    name: string, companyName?: string, open: number, 
+    previousClose: number}, options: ChartOptions) => {
     return setInterval(() => {
         options.series[0].data.push({x: time(new Date()), y: number(50, 100)});
         store.dispatch(actions.updateChartOptions(options));
+        store.dispatch(actions.updateStock(new StockData(stockPartialData.id, stockPartialData.name, stockPartialData.open, stockPartialData.previousClose, number(50, 100), number(50, 100), number(50, 100), number(-5, 5), stockPartialData.companyName)));
     }, 2000);
+}
+
+const recordBalance = (balance: number) => {
+    Storage.balance(balance);
 }
 
 const startLiveTracker = (stockName: string, options: ChartOptions) => {
@@ -102,10 +109,7 @@ export const main = (state = initialState, action: Action) => {
                 clearInterval(state.tracker as number);
                 let chartOptions = Object.assign({}, state.chart.options);
                 chartOptions.series[0].data = [];
-                tracker_ = setInterval(() => {
-                    chartOptions.series[0].data.push({x: time(new Date()), y: number(50, 100)});
-                    store.dispatch(actions.updateChartOptions(chartOptions));
-                }, 2000);
+                tracker_ = startSimulatedTracker({id: stock.id, name: stock.name, companyName: stock.companyName, open: stock.open, previousClose: stock.close}, chartOptions);
             } else {
                 let chartOptions = Object.assign({}, state.chart.options);
                 chartOptions.series[0].data = [];
@@ -114,6 +118,7 @@ export const main = (state = initialState, action: Action) => {
                         tracker_ = FinnHub.startTrack(stock.name, data_ => {
                             chartOptions.series[0].data.push({x: time(new Date(data_.t)), y: data_.p});
                             store.dispatch(actions.updateChartOptions(chartOptions));
+                            store.dispatch(actions.updateStock(new StockData(stock.id, stock.name, stock.open, stock.close, stock.high > data_.p ? stock.high : data_.p, stock.low < data_.p ? stock.low : data_.p, data_.p, stock.close - data_.p, stock.companyName)));
                     });
                 });
             }
@@ -236,6 +241,7 @@ export const main = (state = initialState, action: Action) => {
                             state.chart.stock!.name.toUpperCase(), stockBuy!.current), 'trade', 'fas fa-dollar-sign buy'));
                     Storage.orders(orderHistory);
                     recordActivity(activities);
+                    recordBalance(state.balance - stockBuy!.current * state.buyQty);
                 return Object.assign({}, state, {reportData: 
                     {...state.reportData, orderHistory: orderHistory, 
                         activities: activities}}, 
@@ -262,6 +268,7 @@ export const main = (state = initialState, action: Action) => {
                             state.chart.stock!.name.toUpperCase(), stockSell!.current), 'trade', 'fas fa-dollar-sign sell'));
                     Storage.orders(orderHistory);
                     recordActivity(activities);
+                    recordBalance(state.balance + stockSell!.current * state.buyQty);
                 return Object.assign({}, state, {reportData: 
                     {...state.reportData, orderHistory: orderHistory, 
                         activities: activities}}, 
@@ -306,6 +313,7 @@ export const main = (state = initialState, action: Action) => {
                         data_ => {options.series[0].data.push(
                             {x: time(new Date(data_.t)), y: data_.p});
                         store.dispatch(actions.updateChartOptions(options));
+                        store.dispatch(actions.updateStock(new StockData(state.chart.stock!.id, state.chart.stock!.name, state.chart.stock!.open, state.chart.stock!.close, state.chart.stock!.high > data_.p ? state.chart.stock!.high : data_.p, state.chart.stock!.low < data_.p ? state.chart.stock!.low : data_.p, data_.p, state.chart.stock!.close - data_.p, state.chart.stock!.companyName)));
                     });
                 }
             }
@@ -322,15 +330,17 @@ export const main = (state = initialState, action: Action) => {
                         data_ => {options.series[0].data.push(
                             {x: time(new Date(data_.t)), y: data_.p});
                         store.dispatch(actions.updateChartOptions(options));
+                        store.dispatch(actions.updateStock(new StockData(state.chart.stock!.id, state.chart.stock!.name, state.chart.stock!.open, state.chart.stock!.close, state.chart.stock!.high > data_.p ? state.chart.stock!.high : data_.p, state.chart.stock!.low < data_.p ? state.chart.stock!.low : data_.p, data_.p, state.chart.stock!.close - data_.p, state.chart.stock!.companyName)));
                     });
                 }
             } else {
                 if (state.tracker) {
                     let options = Object.assign({}, state.chart.options);
+                    const stock_ = state.chart.stock;
                     options.series[0].data = [];
                     FinnHub.stopTrack(state.tracker as WebSocket, 
                         state.chart.stock!.name, () => {
-                            store.dispatch(actions.setTracker(startSimulatedTracker(options)));
+                            store.dispatch(actions.setTracker(startSimulatedTracker({id: stock_!.id, name: stock_!.name, companyName: stock_!.companyName, open: stock_!.open, previousClose: stock_!.close}, options)));
                         });
                 }
             }
@@ -431,6 +441,7 @@ export const main = (state = initialState, action: Action) => {
             const {visible, boxId} = action.arg as {visible: boolean, boxId: number};
             const boxes = state.boxes.slice();
             const box_ = boxes.find(box => box.id === boxId);
+            boxes.forEach(box => {if (box.id !== boxId) {box.menuVisible = false}});
             box_!.menuVisible = box_?.menuVisible ? false : true;
             return Object.assign({}, state, {boxes: boxes});
 
@@ -472,7 +483,7 @@ export const main = (state = initialState, action: Action) => {
             sections_.forEach(section => {if (section.name === sectionName) {section.selected = true} else {delete section.selected}});
 
             switch (sectionName.toLowerCase()) {
-                case 'ceo':
+                case 'ceo (us companies only)':
                     FinnHub.ceo(stock_.name, ceo => 
                         store.dispatch(actions.updateCEOInfo(ceo)), error => {
                             if (error) {

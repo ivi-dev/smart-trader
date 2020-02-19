@@ -3,22 +3,34 @@
 }
 
 .help.slid-up {
-    transform: translateY(-350px);
+    transform: translateY(-800px);
 }
 
 .help {
     top: 100px;
-    right: 25%;
-    width: 45%;
+    right: 15%;
+    width: 65%;
     background-color: rgb(54, 66, 99);
     color: rgba(255, 255, 255, 0.8);
-    transform: translateY(-350px);
+    transform: translateY(-800px);
+    overflow: visible;
     transition: 500ms;
     z-index: 9999;
 }
 
 .help:focus {
     outline: none;
+}
+
+.help .content {
+    position: relative;
+    height: 480px;
+    overflow: auto;
+    z-index: 9999;
+}
+
+.help span:first-of-type {
+    font-size: 90%;
 }
 
 .help .fas.fa-times {

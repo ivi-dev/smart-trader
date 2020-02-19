@@ -18,6 +18,16 @@
   to { transform: skew(0deg, 0deg); }
 }
 
+@keyframes slide-down {
+  from { transform: translateY(-500px); opacity: 1; }
+  to { transform: translateY(0); opacity: 0; }
+}
+
+@keyframes slide-up {
+  from { transform: translateY(0); opacity: 1; }
+  to { transform: translateY(-800px); opacity: 0; }
+}
+
 .empty-label {
   font-size: 90%;
 }

@@ -29,6 +29,10 @@ export default class Storage {
         localForage.setItem(Keys.ACTIVITY, activities);
     }
 
+    static balance(balance: number) {
+        localForage.setItem(Keys.BALANCE, balance);
+    }
+
     static alerts(alerts: AlertData[]) {
         localForage.setItem(Keys.ALERTS, alerts);
     }

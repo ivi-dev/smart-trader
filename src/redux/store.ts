@@ -26,6 +26,7 @@ export type Option = {
     graphic?: string,
     title?: string,
     data?: string,
+    altData?: string,
     onClick?: (value: string | 
         number, ...other: any) => void,
     selected?: boolean
@@ -271,7 +272,7 @@ export const state: State = {
             funds: [],
             valuation: {},
             sections: [{name: 'Profile', data: 'profile', selected: true}, 
-                       {name: 'CEO', data: 'ceo'}, 
+                       {name: 'CEO (US Companies Only)', data: 'ceo'}, 
                        {name: 'Executives', data: 'executives'}, 
                        {name: 'Price', data: 'price'},
                        {name: 'Valuation', data: 'valuation'},
@@ -338,11 +339,11 @@ export const state: State = {
     help: {
         visible: false,
         sections: [
-            {name: 'Overview', data: help.overview, onClick: (section) => store.dispatch(actions.setActiveHelpSection(section.toString())), selected: true},
-            {name: 'Basic Navigation', data: help.basicNavigation, onClick: (section) => store.dispatch(actions.setActiveHelpSection(section.toString()))},
-            {name: 'Exploring Stocks', data: help.exploringStocks, onClick: (section) => store.dispatch(actions.setActiveHelpSection(section.toString()))},
-            {name: 'Buying/Selling Stocks', data: help.buyingSellinStocks, onClick: (section) => store.dispatch(actions.setActiveHelpSection(section.toString()))},
-            {name: 'Customizing Your Workspace', data: help.customizingYourWorkspace, onClick: (section) => store.dispatch(actions.setActiveHelpSection(section.toString()))}
+            {name: 'Overview', data: help.overview.text, altData: help.overview.next, onClick: (section) => store.dispatch(actions.setActiveHelpSection(section.toString())), selected: true},
+            {name: 'Navigation', data: help.basicNavigation.text, onClick: (section) => store.dispatch(actions.setActiveHelpSection(section.toString()))},
+            {name: 'Stocks/Companies', data: help.stocksAndCompanies.text, onClick: (section) => store.dispatch(actions.setActiveHelpSection(section.toString()))},
+            {name: 'Trading', data: help.trading.text, onClick: (section) => store.dispatch(actions.setActiveHelpSection(section.toString()))},
+            {name: 'Workspace', data: help.workspace.text, onClick: (section) => store.dispatch(actions.setActiveHelpSection(section.toString()))}
         ]
     }
 }
