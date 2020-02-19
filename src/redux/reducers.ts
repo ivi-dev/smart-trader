@@ -26,7 +26,7 @@ const getBoxType = (boxes: BoxData[], id: number) => {
 }
 
 const getLatestAlertId = (alertList: AlertData[]) => {
-    return alertList.length !== 0 ? alertList[alertList.length - 1].id : 0;
+    return alertList.length !== 0 ? alertList[0].id : 0;
 }
 
 const recordActivity = (activities: ListData) => {
@@ -58,6 +58,10 @@ const recordStockStartLetter = (letter: string) => {
         store.dispatch(actions.setStockStartLetter(letter)));
 }
 
+const recordBalance = (balance: number) => {
+    Storage.balance(balance);
+}
+
 const startSimulatedTracker = (stockPartialData: {id: number, 
     name: string, companyName?: string, open: number, 
     previousClose: number}, options: ChartOptions) => {
@@ -68,12 +72,8 @@ const startSimulatedTracker = (stockPartialData: {id: number,
     }, 2000);
 }
 
-const recordBalance = (balance: number) => {
-    Storage.balance(balance);
-}
-
-const startLiveTracker = (stockName: string, options: ChartOptions) => {
-    return FinnHub.startTrack(stockName, 
+const startLiveTracker = (stock: StockData, options: ChartOptions) => {
+    return FinnHub.startTrack(stock.name, 
         data_ => {options.series[0].data.push(
             {x: time(new Date(data_.t)), y: data_.p});
         store.dispatch(actions.updateChartOptions(options));
@@ -109,7 +109,7 @@ export const main = (state = initialState, action: Action) => {
                 clearInterval(state.tracker as number);
                 let chartOptions = Object.assign({}, state.chart.options);
                 chartOptions.series[0].data = [];
-                tracker_ = startSimulatedTracker({id: stock.id, name: stock.name, companyName: stock.companyName, open: stock.open, previousClose: stock.close}, chartOptions);
+                tracker_ = startSimulatedTracker({id: stock.id, name: stock.name, companyName: stock.companyName, open: number(10, 50), previousClose: stock.close}, chartOptions);
             } else {
                 let chartOptions = Object.assign({}, state.chart.options);
                 chartOptions.series[0].data = [];
@@ -447,9 +447,9 @@ export const main = (state = initialState, action: Action) => {
 
         case actions.ADD_ALERT:
             const {message, level} = action.arg;
-            const alerts_ = state.reportData.alerts.concat([
+            const alerts_ = [
                 new AlertData(getLatestAlertId(state.reportData.alerts) + 1, 
-                message, level)]);
+                message, level)].concat(state.reportData.alerts);
             recordAlerts(alerts_);
             return Object.assign({}, state, {reportData: {...state.reportData, 
                 alerts: alerts_}});
