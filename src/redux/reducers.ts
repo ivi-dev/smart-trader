@@ -70,16 +70,19 @@ const startSimulatedTracker = (stock: StockData, options: ChartOptions) => {
     }, 2000);
 }
 
+let timestamp = 0;
 const startLiveTracker = (stock: StockData, options: ChartOptions) => {
-    return FinnHub.startTrack(stock.name, 
-        data_ => {
+    return FinnHub.startTrack(stock.name, data_ => {
+        if (data_.t > timestamp + 2000) {
             options.series[0].data.push(
             {x: time(new Date(data_.t)), y: data_.p});
-        store.dispatch(actions.updateChartOptions(options));
-        store.dispatch(actions.updateStock(new StockData(stock.id, stock.name, 
+            store.dispatch(actions.updateChartOptions(options));
+            store.dispatch(actions.updateStock(new StockData(stock.id, stock.name, 
             stock.open, stock.close, stock.high > data_.p ? stock.high : data_.p, 
             stock.low < data_.p ? stock.low : data_.p, data_.p, data_.p - stock.close, 
             stock.companyName)));
+            timestamp = data_.t;
+        }
     });
 }
 
@@ -100,7 +103,8 @@ export const main = (state = initialState, action: Action) => {
 
         case actions.SELECT_STOCK_START_LETTER:
             const letter = action.arg as string;
-            let stocks = state.allStocksList.filter(stock => stock.name.toLowerCase().startsWith(letter.toLowerCase()));
+            let stocks = state.allStocksList.filter(stock => 
+                stock.name.toLowerCase().startsWith(letter.toLowerCase()));
             recordStockStartLetter(letter);
             return Object.assign({}, state, {stocksList: stocks});
 
