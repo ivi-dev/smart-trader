@@ -115,7 +115,7 @@ export const help = {
     next: 'Customizing Your Workspace' },
 
     workspace: { text: `<dl>
-    <dt>Adding Reports</dt>
+    <dt>Reports</dt>
     <dd>You can add reports containing various information to your workspace through the button to the right of the status bar.<br /><br />
     <img src="/img/report_buttons_highlighted.png" class="d-block my-2" style="width: 100%;" />
     <p>Here's what each button does:<br />
@@ -128,8 +128,30 @@ export const help = {
     <img src="/img/notifications_button.png" class="my-2 mr-2" style="width: 30px" />
     Add a report listing all app notifications.<br />
     <p>All of the report boxes have a menu which you can reveal by clicking the button on the top right of the box. Choosing an item on that menu narrows down the list of displayed items in a report box.</p>
-    <img src="/img/menus_revealed.png" class="d-block my-2" style="width: 100%;" />
+    <img src="/img/report_menu_buttons_highlighted.png" class="d-block my-2" style="width: 100%;" />
+    You can also temporarily remove reports that you don't need by clicking the close button at the top right of it.
+    <img src="/img/reports_close_buttons_highlighted.png" class="d-block my-2" style="width: 100%;" />
     </p>
+
+    <dt>The Orders Report</dt>
+    <dd>The orders report tells you about the trading orders you've made so far. You have the ability to narrow down the list to see only the buys, only the sells or all orders by just clicking the ellipsis button at the top right of the report and choosing an item from the menu. Each row of the table displays the time of the order, the traded symbol, amount, overall price and the type of trade.
+    <img src="/img/orders.png" class="d-block my-2" style="width: 25%;" />
+    </dd>
+
+    <dt>The Activities Report</dt>
+    <dd>The activities report lists actions you've performed using the app. Activities fall in two categories: <i>Application</i> and <i>Trade</i>. <i>Application</i> activities are actions specific to the app like adding or removing reports for example. <i>Trade</i> activities are actions related to trading like buying or selling. You can choose to list activities from a specific category by clicking the ellipsis button at the top right of the report and choosing an item from the menu.
+    <img src="/img/activities.png" class="d-block my-2" style="width: 25%;" />
+    </dd>
+
+    <dt>The Headlines Report</dt>
+    <dd>The headlines report shows you the latest news headlines from around the world. The list is scrollable and lets you click on an item to get to the full story. There are 7 category of news: <i>Business</i>, <i>Entertainment</i>, <i>General</i>, <i>Health</i>, <i>Science</i>, <i>Sports</i>, <i>Technology</i>. You can choose to view headlines from a specific category by clicking the ellipsis button at the top right of the report and choosing an item from the menu.
+    <img src="/img/headlines.png" class="d-block my-2" style="width: 25%;" />
+    </dd>
+
+    <dt>The Notifications Report</dt>
+    <dd>The notifications report shows notifications. There are 3 levels of them: <i>Info</i>, <i>Warning</i> and <i>Error</i>. You can filter the notifications list by clicking the ellipsis button at the top right of the report and choosing an item from the menu.
+    <img src="/img/notifications.png" class="d-block my-2" style="width: 25%;" />
+    </dd>
     
     <dt>Getting Help</dt>
     <dd>
