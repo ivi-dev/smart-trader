@@ -252,7 +252,8 @@ export const main = (state = initialState, action: Action) => {
                     orderHistory.rows.push(order);
                     activities.items.push(new ListDataRow(
                         actions.activityLabels.buy(state.buyQty, 
-                            state.chart.stock!.name.toUpperCase(), stockBuy!.current), 'trade', 'fas fa-dollar-sign buy'));
+                            state.chart.stock!.name.toUpperCase(), 
+                            stockBuy!.current), 'trade', 'fas fa-dollar-sign buy'));
                     Storage.orders(orderHistory);
                     recordActivity(activities);
                     recordBalance(state.balance - stockBuy!.current * state.buyQty);
@@ -273,20 +274,20 @@ export const main = (state = initialState, action: Action) => {
                     const activities = Object.assign({}, state.reportData.activities);
                     const order = new TableRow([new TableCell(time(new Date())),
                         new TableCell(state.chart.stock!.name.toUpperCase()),
-                        new TableCell((stockSell!.current * state.buyQty).toString()),
-                        new TableCell(state.buyQty.toString()),
+                        new TableCell((stockSell!.current * state.sellQty).toString()),
+                        new TableCell(state.sellQty.toString()),
                         new TableCell('SELL', 'sell')], 'sell');
                     orderHistory.rows.push(order);
                     activities.items.push(new ListDataRow(
-                        actions.activityLabels.sell(state.buyQty, 
+                        actions.activityLabels.sell(state.sellQty, 
                             state.chart.stock!.name.toUpperCase(), stockSell!.current), 'trade', 'fas fa-dollar-sign sell'));
                     Storage.orders(orderHistory);
                     recordActivity(activities);
-                    recordBalance(state.balance + stockSell!.current * state.buyQty);
+                    recordBalance(state.balance + stockSell!.current * state.sellQty);
                 return Object.assign({}, state, {reportData: 
                     {...state.reportData, orderHistory: orderHistory, 
                         activities: activities}}, 
-                    {balance: state.balance + stockSell!.current * state.buyQty});
+                    {balance: state.balance + stockSell!.current * state.sellQty});
                 }
             }
             return state;
