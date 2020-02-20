@@ -54,8 +54,9 @@ export type ChartOptions = {
     xaxis: {},
     stroke: {},
     noData: {},
-    series: {data: {x: string, 
-        y: number}[]}[]
+    series: {name: string,
+             data: {x: string, 
+                    y: number}[]}[]
 }
 
 export interface CompanyInfo {}
@@ -234,7 +235,7 @@ export const state: State = {
               }
             },
             stroke: {
-                width: 1
+                width: 3
             },
             grid: {
                 borderColor: 'rgba(255, 255, 255, 0.2)'
@@ -254,6 +255,7 @@ export const state: State = {
                 }
             },
             series: [{
+                name: '',
                 data: []
             }]
         },

@@ -152,6 +152,10 @@ export const help = {
     <dd>The notifications report shows notifications. There are 3 levels of them: <i>Info</i>, <i>Warning</i> and <i>Error</i>. You can filter the notifications list by clicking the ellipsis button at the top right of the report and choosing an item from the menu.
     <img src="/img/notifications.png" class="d-block my-2" style="width: 25%;" />
     </dd>
+
+    <dt>Repositioning Reports</dt>
+    <dd>You can move reports left and right to place them where you need them. To do that pick a report that you want to move, click on its title area. You'll see it gets marked as <i>Selected</i>, which is indicated by the yellow border arund it. Then simply use <i><b>ALt/Option-Left Arrow</b></i> or <i><b>ALt/Option-Right Arrow</b></i> to move it around.
+    </dd>
     
     <dt>Getting Help</dt>
     <dd>

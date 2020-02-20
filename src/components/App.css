@@ -52,3 +52,7 @@ a:hover {
 .faded {
   opacity: 0.3;
 }
+
+.apexcharts-tooltip {
+  color: rgba(0, 0, 0, 0.8);
+}

@@ -64,6 +64,7 @@ const recordBalance = (balance: number) => {
 
 const startSimulatedTracker = (stock: StockData, options: ChartOptions) => {
     return setInterval(() => {
+        options.series[0].name = stock.name;
         options.series[0].data.push({x: time(new Date()), y: number(50, 100)});
         store.dispatch(actions.updateChartOptions(options));
         store.dispatch(actions.updateStock(new StockData(stock.id, stock.name, stock.open, stock.close, stock.high, stock.low, number(50, 100), number(-5, 5), stock.companyName)));
@@ -74,6 +75,7 @@ let timestamp = 0;
 const startLiveTracker = (stock: StockData, options: ChartOptions) => {
     return FinnHub.startTrack(stock.name, data_ => {
         if (data_.t > timestamp + 2000) {
+            options.series[0].name = stock.name;
             options.series[0].data.push(
             {x: time(new Date(data_.t)), y: data_.p});
             store.dispatch(actions.updateChartOptions(options));
