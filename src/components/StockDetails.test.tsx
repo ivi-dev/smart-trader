@@ -17,10 +17,10 @@ test('render an element in simulation mode', () => {
     const { container } = renderStockDetails();
     expect(container.children[0].querySelector('.name')?.innerHTML).toBe(data.name);
     expect(container.children[0].querySelector('.company-name')?.innerHTML).toBe(data.companyName);
-    expect(container.children[0].querySelectorAll('.stat')[0]?.querySelector('.value')?.innerHTML).toBe(data.open.toString());
-    expect(container.children[0].querySelectorAll('.stat')[1]?.querySelector('.value')?.innerHTML).toBe(data.high.toString());
-    expect(container.children[0].querySelectorAll('.stat')[2]?.querySelector('.value')?.innerHTML).toBe(data.low.toString());
-    expect(container.children[0].querySelectorAll('.stat')[3]?.querySelector('.value')?.innerHTML).toBe(`${trendValue > 0 ? '-' : ''}${trendValue} (${trendPercentage}%)`);
+    expect(container.children[0].querySelectorAll('.stat')[0]?.querySelector('.value')?.innerHTML).toBe(data.open.toFixed(3));
+    expect(container.children[0].querySelectorAll('.stat')[1]?.querySelector('.value')?.innerHTML).toBe(data.high.toFixed(3));
+    expect(container.children[0].querySelectorAll('.stat')[2]?.querySelector('.value')?.innerHTML).toBe(data.low.toFixed(3));
+    expect(container.children[0].querySelectorAll('.stat')[3]?.querySelector('.value')?.innerHTML).toBe(`${trendValue > 0 ? '-' : ''}${trendValue.toFixed(3)} (${trendPercentage.toFixed(3)}%)`);
     expect(container.children[0].querySelector('button')?.innerHTML).toBe('Simulation');
 });
 
