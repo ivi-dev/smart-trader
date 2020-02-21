@@ -48,6 +48,10 @@
     border-color: rgb(70, 159, 233);
 }
 
+.apexcharts-tooltip, .apexcharts-menu {
+    color: rgba(0, 0, 0, 0.8);
+}
+
 @media screen and (min-height: 1024px) {
     .chart {
         height: 52vh;
