@@ -236,7 +236,7 @@ export const state: State = {
               }
             },
             stroke: {
-                width: 3
+                width: 2
             },
             grid: {
                 borderColor: 'rgba(255, 255, 255, 0.2)'
