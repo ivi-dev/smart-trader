@@ -1,6 +1,6 @@
-import { Option } from './redux/store';
-import * as config from './config';
-import StockData from './StockData';
+import { Option } from '../redux/store';
+import * as config from '../config';
+import Stock from '../models/Stock';
 
 export type CompanyInfo = {
     address: string,
@@ -51,7 +51,7 @@ export default class FinnHub {
         });
     }
 
-    static listStocks(exchange: string, callback: (stocks: StockData[]) => void, 
+    static listStocks(exchange: string, callback: (stocks: Stock[]) => void, 
         onError: (error: FinnHubAPILimitError) => void) {
         fetch(`https://finnhub.io/api/v1//stock/symbol?exchange=${exchange}&token=${config.config.finnHubAPIKey}`)
         .then(data => {
@@ -60,9 +60,9 @@ export default class FinnHub {
             } else {
                 if (callback) {
                     data.json().then(stocks => {
-                        let list: StockData[] = [];
+                        let list: Stock[] = [];
                         for (let index = 0; index < stocks.length; index++) {
-                            list.push(new StockData(index, stocks[index].displaySymbol, 0, 0, 0, 0, 0, 0, stocks[index].description));
+                            list.push(new Stock(index, stocks[index].displaySymbol, 0, 0, 0, 0, 0, 0, stocks[index].description));
                         }
                         callback(list);
                     });

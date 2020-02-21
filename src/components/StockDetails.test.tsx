@@ -1,9 +1,9 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import StockData from '../StockData';
+import Stock from '../models/Stock';
 import StockDetails from './StockDetails';
 
-const data = new StockData(0, 'ABC', 1, 1.1, 1.2, 0.5, 0.8, -0.10, 'Company Name');
+const data = new Stock(0, 'ABC', 1, 1.1, 1.2, 0.5, 0.8, -0.10, 'Company Name');
 const trendValue = Number(Math.abs(data.trend).toFixed(2));
 const trendPercentage = Number(Math.abs(trendValue / data.current * 100).toFixed(2));
 

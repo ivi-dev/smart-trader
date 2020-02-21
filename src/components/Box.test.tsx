@@ -1,10 +1,10 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import Box from './Box';
-import TableData, { TableCell, TableRow } from '../TableData';
+import Table, { TableCell, TableRow } from '../models/Table';
 import { Action } from '../redux/actions';
-import ListData, { ListDataRow } from '../ListData';
-import AlertData from '../AlertData';
+import ListData, { ListDataRow } from '../models/List';
+import Alert from '../models/Alert';
 import * as actions from '../redux/actions';
 
 const alerts_ = ['Alert 1', 'Alert 2', 'Alert 3', 'Alert 4'];
@@ -20,10 +20,10 @@ const renderTableBox = (headerContent: string[], cellsContent: string[]) => {
     for (const item of cellsContent) {
         cells.push(new TableCell(item));
     }
-    const row = new TableRow(cells);
+    const row = new TableRow(cells, 'sell');
     return render(<Box id={0} 
                        title={title} 
-                       tableData={new TableData(headers, [row])} 
+                       tableData={new Table(headers, [row])} 
                        selectedBox={0}
                        dispatch={(action: Action) => {}} />);
 }
@@ -56,9 +56,9 @@ const renderMultiRowListBox = (mainListItems: string[],
 }
 
 const renderAlertBox = (id = 0) => {
-    const alerts: AlertData[] = [];
+    const alerts: Alert[] = [];
     for (let index = 0; index < alerts_.length; index++) {
-        alerts.push(new AlertData(index, alerts_[index]));
+        alerts.push(new Alert(index, alerts_[index]));
     }
     return render(<Box id={id} 
                        title={'Alerts Box'} 
@@ -71,8 +71,8 @@ test('renders a non-selected box with a title and a close button', () => {
     const title = 'Box';
     const { container, getByText } = render(<Box id={0} 
                                                  title={title} 
-                                                 tableData={new TableData([new TableCell('')], 
-                                                             [new TableRow([new TableCell('')])])} 
+                                                 tableData={new Table([new TableCell('')], 
+                                                             [new TableRow([new TableCell('')], 'sell')])} 
                                                  selectedBox={null}
                                                  dispatch={(action: Action) => {}} />);
 
@@ -87,8 +87,8 @@ test('renders a selected box', () => {
     const title = 'Selected Box';
     const { container } = render(<Box id={0} 
                                       title={title} 
-                                      tableData={new TableData([new TableCell('')], 
-                                                  [new TableRow([new TableCell('')])])} 
+                                      tableData={new Table([new TableCell('')], 
+                                                  [new TableRow([new TableCell('')], 'sell')])} 
                                       selectedBox={0}
                                       dispatch={(action: Action) => {}} />);
 

@@ -1,16 +1,16 @@
 import React from 'react';
 import './App.css';
 import StocksList  from './StocksList';
-import { Option, ChartDescriptor, HelpType } from '../redux/store';
+import { Option, Chart as ChartType, HelpType } from '../redux/store';
 import Chart from './Chart';
 import Reports from './Reports';
 import { State, ReportData } from '../redux/store';
 import { connect } from 'react-redux';
-import StockData from '../StockData';
+import Stock from '../models/Stock';
 import { Action } from '../redux/actions';
 import * as actions from '../redux/actions';
 import ButtonGroup from './ButtonGroup';
-import BoxData from '../BoxData';
+import Box from '../models/Box';
 import Row from './Row';
 import Text from './Text';
 import Column from './Column';
@@ -19,16 +19,16 @@ import Help from './Help';
 import Selector from './Selector';
 
 type AppProp = {
-  stocksList: StockData[],
+  stocksList: Stock[],
   stockStartLetter: string,
-  marketSearchResultsList: StockData[],
-  watchListSearchResultsList: StockData[],
-  watchList: StockData[],
+  marketSearchResultsList: Stock[],
+  watchListSearchResultsList: Stock[],
+  watchList: Stock[],
   exchanges: Option[],
   stockIndexOptions: Option[],
   selectedExchange: {name: string, code: string},
 
-  chart: ChartDescriptor,
+  chart: ChartType,
   tracker: WebSocket | number | null,
   simulateTracker: boolean,
 
@@ -37,7 +37,7 @@ type AppProp = {
   reportButtons: Option[],
   generalButtons: Option[],
   reportData: ReportData,
-  boxes: BoxData[],
+  boxes: Box[],
   selectedBox: number | null,
   balance: number,
   buyQty: number,

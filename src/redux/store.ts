@@ -1,16 +1,17 @@
 import { createStore } from 'redux';
 import { main } from './reducers';
-import StockData from '../StockData';
-import TableData, { TableCell, OrderType } from '../TableData';
-import ListData, { ListDataRow, ActivityType } from '../ListData';
-import AlertData, { AlertLevel } from '../AlertData';
-import BoxData from '../BoxData';
-import Storage, { Keys } from '../Storage';
+import Stock from '../models/Stock';
+import Table, { TableCell, OrderType } from '../models/Table';
+import ListData, { ListDataRow } from '../models/List';
+import { ActivityType } from '../models/Activity';
+import Alert, { AlertLevel } from '../models/Alert';
+import Box from '../models/Box';
+import Storage, { Keys } from '../services/Storage';
 import * as actions from './actions';
-import News, { Category } from '../News';
+import News, { Category } from '../services/News';
 import { fullDate, alphabet, digits } from '../utility';
 import { help } from '../help';
-import FinnHub from '../FinnHub';
+import FinnHub from '../services/FinnHub';
 
 export type ChartType = 'bar' | 'candlestick' | 'line';
 export const ORDER_HEADERS = [
@@ -33,10 +34,10 @@ export type Option = {
 }
 
 export type ReportData = {
-    orderHistory: TableData,
+    orderHistory: Table,
     activities: ListData,
     headlines: ListData,
-    headlinesTitle: string,
+    headlinesTitle?: string,
     ordersDisplayOptions: Option[],
     activityDisplayOptions: Option[],
     headlinesMenuItems: Option[],
@@ -44,7 +45,7 @@ export type ReportData = {
     displayedOrdersLevel: OrderType,
     displayedActivitiesLevel: ActivityType,
     displayedAlertsLevel: AlertLevel,
-    alerts: AlertData[],
+    alerts: Alert[],
     menuVisible: boolean
 }
 
@@ -61,8 +62,8 @@ export type ChartOptions = {
 
 export interface CompanyInfo {}
 
-export type ChartDescriptor = {
-    stock: StockData | null,
+export type Chart = {
+    stock: Stock | null,
     options: ChartOptions,
     status: string,
     company: {
@@ -89,26 +90,26 @@ export type HelpType = {
 }
 
 export interface State {
-    allStocksList: StockData[],
-    stocksList: StockData[],
+    allStocksList: Stock[],
+    stocksList: Stock[],
     stockStartLetter: string,
-    marketSearchResultsList: StockData[],
-    watchListSearchResultsList: StockData[],
-    watchList: StockData[],
+    marketSearchResultsList: Stock[],
+    watchListSearchResultsList: Stock[],
+    watchList: Stock[],
     exchanges: Option[],
     stockIndexOptions: Option[],
     selectedExchange: {name: string, code: string},
 
     tracker: WebSocket | number | null,
     simulateTracker: boolean,
-    chart: ChartDescriptor,
+    chart: Chart,
 
     buyButtons: Option[],
     sellButtons: Option[],
     reportButtons: Option[],
     generalButtons: Option[],
     reportData: ReportData,
-    boxes: BoxData[],
+    boxes: Box[],
     selectedBox: number | null,
 
     balance: number,
@@ -120,7 +121,7 @@ export interface State {
 
 Storage.get(Keys.ORDERS).then(orders => { 
     if (orders) {
-        store.dispatch(actions.setOrderHistory(orders as TableData));
+        store.dispatch(actions.setOrderHistory(orders as Table));
     }
 });
 
@@ -138,19 +139,19 @@ Storage.get(Keys.BALANCE).then(balance => {
 
 Storage.get(Keys.ALERTS).then(alerts => {
     if (alerts) {
-        store.dispatch(actions.updateAlerts(alerts as AlertData[]));
+        store.dispatch(actions.updateAlerts(alerts as Alert[]));
     }
 });
 
 Storage.get(Keys.BOXES).then(boxes => {
     if (boxes) {
-        store.dispatch(actions.setBoxes(boxes as Array<BoxData>));
+        store.dispatch(actions.setBoxes(boxes as Array<Box>));
     }
 });
 
 Storage.get(Keys.WATCHLIST).then(watchlist => {
     if (watchlist) {
-        store.dispatch(actions.updateWatchList(watchlist as Array<StockData>));
+        store.dispatch(actions.updateWatchList(watchlist as Array<Stock>));
     }
 });
 
@@ -161,7 +162,7 @@ Storage.get(Keys.START_LETTER).then(letter => {
 });
 
 Storage.get(Keys.STOCK).then(stock => {
-    store.dispatch(actions.selectStock(stock as StockData));
+    store.dispatch(actions.selectStock(stock as Stock));
 });
 
 const fetchHeadlines = (category: Category) =>
@@ -290,13 +291,13 @@ export const state: State = {
 
     buyButtons: [{name: 'Buy', onClick: () => store.dispatch(actions.buy())}],
     sellButtons: [{name: 'Sell', onClick: () => store.dispatch(actions.sell())}],
-    reportButtons: [{name: '', graphic: 'fas fa-history', title: 'Add a History Report', data: 'history', onClick: () => store.dispatch(actions.addBox(BoxData.getBoxType('history')))},
-                    {name: '', graphic: 'fas fa-flag', title: 'Add an Activity Report', data: 'activity', onClick: () => store.dispatch(actions.addBox(BoxData.getBoxType('activity')))},
-                    {name: '', graphic: 'far fa-newspaper', title: 'Add a Headlines Report', data: 'headlines', onClick: () => store.dispatch(actions.addBox(BoxData.getBoxType('headlines')))}, 
-                    {name: '', graphic: 'far fa-bell', title: 'Add a Notifications Report', data: 'alerts', onClick: () => store.dispatch(actions.addBox(BoxData.getBoxType('alerts')))}],
+    reportButtons: [{name: '', graphic: 'fas fa-history', title: 'Add a History Report', data: 'history', onClick: () => store.dispatch(actions.addBox(Box.getBoxType('history')))},
+                    {name: '', graphic: 'fas fa-flag', title: 'Add an Activity Report', data: 'activity', onClick: () => store.dispatch(actions.addBox(Box.getBoxType('activity')))},
+                    {name: '', graphic: 'far fa-newspaper', title: 'Add a Headlines Report', data: 'headlines', onClick: () => store.dispatch(actions.addBox(Box.getBoxType('headlines')))}, 
+                    {name: '', graphic: 'far fa-bell', title: 'Add a Notifications Report', data: 'alerts', onClick: () => store.dispatch(actions.addBox(Box.getBoxType('alerts')))}],
     generalButtons: [{name: '', graphic: 'fas fa-question-circle', onClick: () => store.dispatch(actions.toggleHelp('open'))}],
     reportData: {
-        orderHistory: new TableData(ORDER_HEADERS, []),
+        orderHistory: new Table(ORDER_HEADERS, []),
         activities: new ListData([]),
         headlines: new ListData([]),
         headlinesTitle: 'Business',

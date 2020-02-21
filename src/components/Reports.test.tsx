@@ -1,12 +1,13 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import Reports from './Reports';
-import TableData, { TableCell, TableRow } from '../TableData';
-import ListData, { ListDataRow } from '../ListData';
-import AlertData from '../AlertData';
+import Table, { TableCell, TableRow, OrderType } from '../models/Table';
+import ListData, { ListDataRow } from '../models/List';
+import { ActivityType } from '../models/Activity';
+import Alert, { AlertLevel } from '../models/Alert';
 import { Action } from '../redux/actions';
-import BoxData from '../BoxData';
-import { BoxType } from '../BoxData';
+import Box from '../models/Box';
+import { BoxType } from '../models/Box';
 
 const mockDispatch = jest.fn((action: Action) => {});
 
@@ -21,8 +22,8 @@ test('render a section with report boxes', () => {
     for (const item of cellsContent) {
         cells.push(new TableCell(item));
     }
-    const row = new TableRow(cells);
-    const orderHistory = new TableData(headers, [row]);
+    const row = new TableRow(cells, 'sell');
+    const orderHistory = new Table(headers, [row]);
     
     const activitiesRow = new ListDataRow('Item');
     const activities = new ListData([activitiesRow]);
@@ -30,12 +31,21 @@ test('render a section with report boxes', () => {
     const headlinesRow = new ListDataRow('Item');
     const headlines = new ListData([headlinesRow]);
 
-    const alerts = [new AlertData(0, 'Alert')];
+    const alerts = [new Alert(0, 'Alert')];
 
     const data = {orderHistory, activities, headlines, headlinesMenuItems: 
-        [{name: 'Item 1'}, {name: 'Item 2'}], alerts};
+        [{name: 'Item 1'}, {name: 'Item 2'}], alerts,
+    
+        headlinesTitle: 'Business',
+        ordersDisplayOptions: [],
+        activityDisplayOptions: [],
+        alertDisplayOptions: [],
+        menuVisible: false,
+        displayedOrdersLevel: 'all' as OrderType,
+        displayedActivitiesLevel: 'all' as ActivityType,
+        displayedAlertsLevel: 'all' as AlertLevel};
 
-    const boxes = [new BoxData(0, 'Box 1', BoxType.ORDER_HISTORY)];
+    const boxes = [new Box(0, 'Box 1', BoxType.ORDER_HISTORY)];
     const { container } = render(<Reports data={data} 
                                           boxes={boxes} 
                                           selectedBox={null} 

@@ -1,23 +1,23 @@
 import * as actions from './actions';
 import { state as initialState, 
     store, fetchStocks, ChartOptions } from './store';
-import StockData from '../StockData';
+import Stock from '../models/Stock';
 import { Action } from './actions';
-import BoxData, { BoxType } from '../BoxData';
-import TableData, { TableRow, TableCell } from '../TableData';
-import ListData, { ListDataRow } from '../ListData';
+import Box, { BoxType } from '../models/Box';
+import Table, { TableRow, TableCell } from '../models/Table';
+import ListData, { ListDataRow } from '../models/List';
 import { fullDate, time } from '../utility';
-import Storage from '../Storage';
-import AlertData from '../AlertData';
+import Storage from '../services/Storage';
+import Alert from '../models/Alert';
 import { Option } from './store';
 import { number } from '../randomizer';
-import FinnHub from '../FinnHub';
+import FinnHub from '../services/FinnHub';
 
-const getLatestBoxId = (boxList: BoxData[]) => {
+const getLatestBoxId = (boxList: Box[]) => {
     return boxList.length !== 0 ? boxList[boxList.length - 1].id : 0;
 }
 
-const getBoxType = (boxes: BoxData[], id: number) => {
+const getBoxType = (boxes: Box[], id: number) => {
     for (const box of boxes) {
         if (box.id === id) {
             return box.type;
@@ -25,7 +25,7 @@ const getBoxType = (boxes: BoxData[], id: number) => {
     }
 }
 
-const getLatestAlertId = (alertList: AlertData[]) => {
+const getLatestAlertId = (alertList: Alert[]) => {
     return alertList.length !== 0 ? alertList[0].id : 0;
 }
 
@@ -33,15 +33,15 @@ const recordActivity = (activities: ListData) => {
     Storage.activities(activities);
 }
 
-const recordAlerts = (alerts: AlertData[]) => {
+const recordAlerts = (alerts: Alert[]) => {
     Storage.alerts(alerts);
 }
 
-const recordBoxes = (boxes: BoxData[]) => {
+const recordBoxes = (boxes: Box[]) => {
     Storage.boxes(boxes);
 }
 
-const recordWatchlist = (watchList: StockData[]) => {
+const recordWatchlist = (watchList: Stock[]) => {
     Storage.watchList(watchList);
 }
 
@@ -49,7 +49,7 @@ const recordSelectedExchange = (exchange: {name: string, code: string}) => {
     Storage.exchange(exchange);
 }
 
-const recordSelectedStock = (stock: StockData) => {
+const recordSelectedStock = (stock: Stock) => {
     Storage.stock(stock);
 }
 
@@ -62,24 +62,24 @@ const recordBalance = (balance: number) => {
     Storage.balance(balance);
 }
 
-const startSimulatedTracker = (stock: StockData, options: ChartOptions) => {
+const startSimulatedTracker = (stock: Stock, options: ChartOptions) => {
     return setInterval(() => {
         options.series[0].name = stock.name;
         options.series[0].data.push({x: time(new Date()), y: number(50, 100)});
         store.dispatch(actions.updateChartOptions(options));
-        store.dispatch(actions.updateStock(new StockData(stock.id, stock.name, stock.open, stock.close, stock.high, stock.low, number(50, 100), number(-5, 5), stock.companyName)));
+        store.dispatch(actions.updateStock(new Stock(stock.id, stock.name, stock.open, stock.close, stock.high, stock.low, number(50, 100), number(-5, 5), stock.companyName)));
     }, 2000);
 }
 
 let timestamp = 0;
-const startLiveTracker = (stock: StockData, options: ChartOptions) => {
+const startLiveTracker = (stock: Stock, options: ChartOptions) => {
     return FinnHub.startTrack(stock.name, data_ => {
         if (data_.t > timestamp + 2000) {
             options.series[0].name = stock.name;
             options.series[0].data.push(
             {x: time(new Date(data_.t)), y: data_.p});
             store.dispatch(actions.updateChartOptions(options));
-            store.dispatch(actions.updateStock(new StockData(stock.id, stock.name, 
+            store.dispatch(actions.updateStock(new Stock(stock.id, stock.name, 
             stock.open, stock.close, stock.high > data_.p ? stock.high : data_.p, 
             stock.low < data_.p ? stock.low : data_.p, data_.p, data_.p - stock.close, 
             stock.companyName)));
@@ -88,7 +88,7 @@ const startLiveTracker = (stock: StockData, options: ChartOptions) => {
     });
 }
 
-const stopLiveTracker = (tracker: WebSocket, stock: StockData,
+const stopLiveTracker = (tracker: WebSocket, stock: Stock,
     callback?: () => void) => {
         FinnHub.stopTrack(tracker, stock.name, callback);
 }
@@ -96,7 +96,7 @@ const stopLiveTracker = (tracker: WebSocket, stock: StockData,
 export const main = (state = initialState, action: Action) => {
     switch (action.type) {
         case actions.SET_STOCKS_LIST:
-            const list = action.arg as Array<StockData>;
+            const list = action.arg as Array<Stock>;
             return Object.assign({}, state, {allStocksList: list}, 
                 {stocksList: list.filter(stock => 
                     stock.name.toLowerCase()
@@ -114,14 +114,14 @@ export const main = (state = initialState, action: Action) => {
             return Object.assign({}, state, {stockStartLetter: action.arg as string});
 
         case actions.SELECT_STOCK:
-            const stock = action.arg as StockData;
+            const stock = action.arg as Stock;
             if (!stock) {
                 return state;
             }
             let tracker_ = null;
             
             FinnHub.quote(stock.name, quote => {
-                const stock_ = new StockData(stock.id, 
+                const stock_ = new Stock(stock.id, 
                     stock.name, quote.o, quote.c, quote.h, quote.l, 
                     quote.c, quote.pc - quote.c, stock.companyName);
                 store.dispatch(actions.updateStock(stock_));
@@ -194,7 +194,7 @@ export const main = (state = initialState, action: Action) => {
             return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, funds: action.arg}}});
 
         case actions.UPDATE_STOCK:
-            return Object.assign({}, state, {chart: {...state.chart, stock: action.arg as StockData}});
+            return Object.assign({}, state, {chart: {...state.chart, stock: action.arg as Stock}});
 
         case actions.SEARCH_FOR_STOCK:
             return Object.assign({}, state, {marketSearchResultsList: 
@@ -205,20 +205,20 @@ export const main = (state = initialState, action: Action) => {
             return Object.assign({}, state, {watchListSearchResultsList: state.watchList.filter(index => index.name.toLowerCase().includes(action.arg.toLowerCase() as string))});    
 
         case actions.ADD_TO_WATCHLIST:
-            if (!state.watchList.find(item => item.name === (action.arg as StockData).name)) {
-                const watchListAfterAdd = state.watchList.concat([action.arg as StockData]);
+            if (!state.watchList.find(item => item.name === (action.arg as Stock).name)) {
+                const watchListAfterAdd = state.watchList.concat([action.arg as Stock]);
                 recordWatchlist(watchListAfterAdd);
                 return Object.assign({}, state, {watchList: watchListAfterAdd});
             }
             return state;
             
         case actions.REMOVE_FROM_WATCHLIST:
-            const watchListAfterRemove = state.watchList.filter(index => index !== (action.arg as StockData));
+            const watchListAfterRemove = state.watchList.filter(index => index !== (action.arg as Stock));
             recordWatchlist(watchListAfterRemove);
             return Object.assign({}, state, {watchList: watchListAfterRemove});
 
         case actions.UPDATE_WATCHLIST:
-            return Object.assign({}, state, {watchList: action.arg as StockData[]}); 
+            return Object.assign({}, state, {watchList: action.arg as Stock[]}); 
 
         case actions.UPDATE_EXCHANGES:
             return Object.assign({}, state, {exchanges: action.arg as Option[]});
@@ -361,12 +361,12 @@ export const main = (state = initialState, action: Action) => {
 
         case actions.ADD_BOX:
             const boxType = action.arg as BoxType;
-            let boxTitle = BoxData.getTitle(boxType);
+            let boxTitle = Box.getTitle(boxType);
             const activities = Object.assign({}, state.reportData.activities);
             activities.items.push(new ListDataRow(actions.activityLabels
                 .addBox(boxType), 'application', 'far fa-square', fullDate(new Date())));
             recordActivity(activities);
-            const boxesAfterAdd = state.boxes.concat([new BoxData(
+            const boxesAfterAdd = state.boxes.concat([new Box(
                 getLatestBoxId(state.boxes) + 1, boxTitle, boxType)]);
             recordBoxes(boxesAfterAdd);
             return Object.assign({}, state, {boxes: boxesAfterAdd}, {selectedBox: null});
@@ -381,7 +381,7 @@ export const main = (state = initialState, action: Action) => {
             return Object.assign({}, state, {boxes: boxesAfterRemove}, {selectedBox: null});
 
         case actions.SET_BOXES:
-            return Object.assign({}, state, {boxes: action.arg as Array<BoxData>});
+            return Object.assign({}, state, {boxes: action.arg as Array<Box>});
 
         case actions.SELECT_BOX:
             const id1 = action.arg as number;
@@ -453,7 +453,7 @@ export const main = (state = initialState, action: Action) => {
         case actions.ADD_ALERT:
             const {message, level} = action.arg;
             const alerts_ = [
-                new AlertData(getLatestAlertId(state.reportData.alerts) + 1, 
+                new Alert(getLatestAlertId(state.reportData.alerts) + 1, 
                 message, level)].concat(state.reportData.alerts);
             recordAlerts(alerts_);
             return Object.assign({}, state, {reportData: {...state.reportData, 
@@ -461,10 +461,10 @@ export const main = (state = initialState, action: Action) => {
 
         case actions.UPDATE_ALERTS:
             return Object.assign({}, state, {reportData: 
-                {...state.reportData, alerts: action.arg as AlertData[]}});
+                {...state.reportData, alerts: action.arg as Alert[]}});
 
         case actions.SET_ORDER_HISTORY:
-            return Object.assign({}, state, {reportData: {...state.reportData, orderHistory: (action.arg as TableData)}});
+            return Object.assign({}, state, {reportData: {...state.reportData, orderHistory: (action.arg as Table)}});
 
         case actions.UPDATE_ACTIVITIES:
             return Object.assign({}, state, {reportData: {...state.reportData, activities: (action.arg as ListData)}});

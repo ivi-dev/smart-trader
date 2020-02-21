@@ -1,6 +1,6 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
-import StockData from '../StockData';
+import { render } from '@testing-library/react';
+import Stock from '../models/Stock';
 import { Action } from '../redux/actions';
 import Chart from './Chart';
 
@@ -14,14 +14,15 @@ window.matchMedia = window.matchMedia || function() {
 
 const id = 0;
 const data = {
-    stock: new StockData(0, 'ABC', 1, 0.5, 1.2, 0.2, 1.1, 2),
+    stock: new Stock(0, 'ABC', 1, 0.5, 1.2, 0.2, 1.1, 2),
     options: {
         chart: {},
         grid: {},
         xaxis: {},
         stroke: {},
         noData: {},
-        series: [{data: [{x: '', y: 0}]}]
+        series: [{name: '', 
+                  data: [{x: '', y: 0}]}]
     },
     status: '',
     company: {

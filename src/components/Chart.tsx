@@ -3,7 +3,7 @@ import ApexCharts from 'apexcharts';
 import './Chart.css';
 import { Action } from '../redux/actions';
 import StockDetails from './StockDetails';
-import { ChartDescriptor } from '../redux/store';
+import { Chart as ChartType } from '../redux/store';
 import * as actions from '../redux/actions';
 import { capitalize, formatMetricDataLabels } from '../utility';
 import Selector from './Selector';
@@ -11,7 +11,7 @@ import Row from './Row';
 
 type ChartProp = {
     testMode?: boolean,
-    data: ChartDescriptor,
+    data: ChartType,
     tracker: WebSocket | number | null,
     trackerMode: 'live' | 'simulated',
     dispatch: (action: Action) => void

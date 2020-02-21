@@ -1,11 +1,11 @@
 import React from 'react';
-import StockData from '../StockData';
+import StockModel from '../models/Stock';
 import './Stock.css';
 
 type IndexProp = {
-    data: StockData,
+    data: StockModel,
     handleClick: (altKey: boolean, 
-        data: StockData) => void
+        data: StockModel) => void
 }
 
 const Stock = (prop: IndexProp) => {

@@ -1,7 +1,7 @@
 import React from 'react';
-import TableData from '../TableData';
-import ListData from '../ListData';
-import AlertData from '../AlertData';
+import Table from '../models/Table';
+import ListData from '../models/List';
+import Alert from '../models/Alert';
 import './Box.css';
 import { Action } from '../redux/actions';
 import * as actions from '../redux/actions';
@@ -15,13 +15,13 @@ type BoxProp = {
     selectedBox: number | null,
     status?: string,
     menuItems?: Option[],
-    menuVisible: boolean,
+    menuVisible?: boolean,
     secondary?: JSX.Element,
     classes?: string,
-    tableData?: TableData,
+    tableData?: Table,
     listTitle?: string,
     listData?: ListData,
-    alerts?: AlertData[],
+    alerts?: Alert[],
     dispatch: (action: Action) => void
 }
 

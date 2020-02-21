@@ -1,8 +1,8 @@
-export type ActivityType = 'all' | 'trade' | 'application' | 'other';
+import { ActivityType } from './Activity';
 
 export class ListDataRow {
     constructor(public main: string, 
-        public type: ActivityType = 'application', public graphic?: string, 
+        public data: ActivityType = 'application', public graphic?: string, 
         public secondary?: string, public href?: string) {}
 }
 

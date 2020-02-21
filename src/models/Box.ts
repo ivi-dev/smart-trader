@@ -5,7 +5,7 @@ export enum BoxType {
     ALERTS = 'Notifications'
 }
 
-export default class BoxData {
+export default class Box {
     menuVisible =  false;
     constructor(public id: number, 
         public title: string, 

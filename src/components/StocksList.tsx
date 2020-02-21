@@ -1,5 +1,5 @@
 import React from 'react';
-import StockData from '../StockData';
+import StockModel from '../models/Stock';
 import Stock from './Stock';
 import './StocksList.css';
 import Search from './Search';
@@ -10,13 +10,13 @@ type StocksListProp = {
     title?: string,
     status?: string,
     listType: 'symbolsList' | 'watchList',
-    data: StockData[],
+    data: StockModel[],
     dispatch: (action: Action) => void,
     onSearch: (value: string) => void
 }
 
 const StocksList = (prop: StocksListProp) => {
-    const handleStockListClick = (altKey: boolean, data: StockData, listType: string) => {
+    const handleStockListClick = (altKey: boolean, data: StockModel, listType: string) => {
         if (prop.dispatch) {
             if (listType === 'symbolsList') {
                 if (altKey) {

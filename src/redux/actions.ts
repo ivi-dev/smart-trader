@@ -1,8 +1,8 @@
-import StockData from '../StockData';
-import BoxData, { BoxType } from '../BoxData';
-import ListData from '../ListData';
-import TableData from '../TableData';
-import AlertData from '../AlertData';
+import Stock from '../models/Stock';
+import Box, { BoxType } from '../models/Box';
+import ListData from '../models/List';
+import Table from '../models/Table';
+import Alert from '../models/Alert';
 import { ChartOptions } from './store';
 import { isVowel } from '../utility';
 import { Option } from './store';
@@ -105,12 +105,12 @@ export type Action = {
     arg: any
 }
 
-export const setStocksList = (list: StockData[]) => ({
+export const setStocksList = (list: Stock[]) => ({
     type: SET_STOCKS_LIST,
     arg: list
 });
 
-export const selectStock = (index: StockData) => ({
+export const selectStock = (index: Stock) => ({
     type: SELECT_STOCK,
     arg: index
 });
@@ -125,12 +125,12 @@ export const searchWatchlist = (name: string) => ({
     arg: name
 });
 
-export const addToWatchlist = (indexData: StockData) => ({
+export const addToWatchlist = (indexData: Stock) => ({
     type: ADD_TO_WATCHLIST,
     arg: indexData
 });
 
-export const removeFromWatchlist = (indexData: StockData) => ({
+export const removeFromWatchlist = (indexData: Stock) => ({
     type: REMOVE_FROM_WATCHLIST,
     arg: indexData
 });
@@ -170,7 +170,7 @@ export const addBox = (type: BoxType) => ({
     arg: type
 });
 
-export const setBoxes = (boxes: BoxData[]) => ({
+export const setBoxes = (boxes: Box[]) => ({
     type: SET_BOXES,
     arg: boxes
 });
@@ -220,7 +220,7 @@ export const setSellQty = (value: number) => ({
     arg: value
 });
 
-export const setOrderHistory = (history: TableData) => ({
+export const setOrderHistory = (history: Table) => ({
     type: SET_ORDER_HISTORY,
     arg: history
 });
@@ -270,7 +270,7 @@ export const addAlert = (level: string, message: string) => ({
     arg: {level, message}
 });
 
-export const updateAlerts = (alerts: AlertData[]) => ({
+export const updateAlerts = (alerts: Alert[]) => ({
     type: UPDATE_ALERTS,
     arg: alerts
 });
@@ -290,7 +290,7 @@ export const updateSelectedExchange = (name: string) => ({
     arg: name
 });
 
-export const updateWatchList = (watchList: StockData[]) => ({
+export const updateWatchList = (watchList: Stock[]) => ({
     type: UPDATE_WATCHLIST,
     arg: watchList
 });
@@ -325,7 +325,7 @@ export const setTracker = (tracker: any) => ({
     arg: tracker
 });
 
-export const updateStock = (data: StockData) => ({
+export const updateStock = (data: Stock) => ({
     type: UPDATE_STOCK,
     arg: data
 });

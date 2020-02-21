@@ -1,15 +1,15 @@
 import React from 'react';
 import './Reports.css';
-import BoxData, { BoxType } from '../BoxData';
+import BoxModel, { BoxType } from '../models/Box';
 import Box from './Box';
 import { ReportData } from '../redux/store';
 import { Action } from '../redux/actions';
-import ListData from '../ListData';
-import TableData from '../TableData';
+import ListData from '../models/List';
+import Table from '../models/Table';
 
 type ReportsProp = {
     data: ReportData,
-    boxes: BoxData[],
+    boxes: BoxModel[],
     selectedBox: number | null,
     dispatch: (action: Action) => void
 }
@@ -35,14 +35,14 @@ const Reports = (prop: ReportsProp) => {
                             status={'No data yet.'} 
                             menuVisible={box.menuVisible}
                             selectedBox={prop.selectedBox}
-                            tableData={new TableData(prop.data.orderHistory.headers, orders)} 
+                            tableData={new Table(prop.data.orderHistory.headers, orders)} 
                             dispatch={prop.dispatch}
                             menuItems={prop.data.ordersDisplayOptions} />
             case BoxType.RECENT_ACTIVIY:
                 let activities = prop.data.activities.items;
                 if (prop.data.displayedActivitiesLevel !== 'all') {
                     activities = activities.slice().filter(activity => 
-                        activity.type === prop.data.displayedActivitiesLevel);
+                        activity.data === prop.data.displayedActivitiesLevel);
                 }
                 return <Box key={box.id} 
                             id={box.id} 

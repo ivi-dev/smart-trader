@@ -1,13 +1,13 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import StocksList from './StocksList';
-import StockData from '../StockData';
+import Stock from '../models/Stock';
 
 const title = 'Symbols';
-const data_ = [new StockData(0, 'ABC', 1, 1.1, 1.2, 0.5, 0.8, -0.10), 
-               new StockData(1, 'DEF', 2, 1.2, 1.1, 0.1, 0.1, -0.12)];
+const data_ = [new Stock(0, 'ABC', 1, 1.1, 1.2, 0.5, 0.8, -0.10), 
+               new Stock(1, 'DEF', 2, 1.2, 1.1, 0.1, 0.1, -0.12)];
 
-const renderStocksList = (data: StockData[] = data_) => {
+const renderStocksList = (data: Stock[] = data_) => {
     return render(<StocksList title={title} 
                               data={data}
                               listType='symbolsList'

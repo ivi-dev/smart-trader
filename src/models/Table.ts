@@ -8,6 +8,6 @@ export class TableCell {
     constructor(public content: string, public classes?: string) {}
 }
 
-export default class TableData {
+export default class Table {
     constructor(public headers: TableCell[], public rows: TableRow[]) {}
 }

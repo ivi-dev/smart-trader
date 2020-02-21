@@ -1,12 +1,12 @@
 import React from 'react';
 import './StockDetails.css';
-import StockData from '../StockData';
+import Stock from '../models/Stock';
 import Button from './Button';
 import { Action } from '../redux/actions';
 import * as actions from '../redux/actions';
 
 type StockDetailsProp = {
-    data: StockData | null,
+    data: Stock | null,
     tracker: WebSocket | number | null,
     trackerMode: 'live' | 'simulated',
     dispatch?: (action: Action) => void

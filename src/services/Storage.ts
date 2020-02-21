@@ -1,10 +1,10 @@
 import localForage from 'localforage';
-import ListData from './ListData';
-import { ChartDescriptor } from './redux/store';
-import TableData from './TableData';
-import AlertData from './AlertData';
-import BoxData from './BoxData';
-import StockData from './StockData';
+import ListData from '../models/List';
+import { Chart } from '../redux/store';
+import Table from '../models/Table';
+import Alert from '../models/Alert';
+import Box from '../models/Box';
+import Stock from '../models/Stock';
 
 export enum Keys {
     ACTIVITY = 'ACTIVITY',
@@ -21,7 +21,7 @@ export enum Keys {
 }
 
 export default class Storage {
-    static orders(orders: TableData) {
+    static orders(orders: Table) {
         localForage.setItem(Keys.ORDERS, orders);
     }
 
@@ -33,12 +33,12 @@ export default class Storage {
         localForage.setItem(Keys.BALANCE, balance);
     }
 
-    static alerts(alerts: AlertData[]) {
+    static alerts(alerts: Alert[]) {
         localForage.setItem(Keys.ALERTS, alerts);
     }
 
-    static charts(charts: ChartDescriptor[], 
-        callback?: (charts: ChartDescriptor[]) => void) {
+    static charts(charts: Chart[], 
+        callback?: (charts: Chart[]) => void) {
         localForage.setItem(Keys.CHARTS, charts).then(charts => {
             if (callback) {
                 callback(charts);
@@ -46,11 +46,11 @@ export default class Storage {
         });
     }
 
-    static boxes(boxes: BoxData[]) {
+    static boxes(boxes: Box[]) {
         localForage.setItem(Keys.BOXES, boxes);
     }
 
-    static watchList(watchList: StockData[]) {
+    static watchList(watchList: Stock[]) {
         localForage.setItem(Keys.WATCHLIST, watchList);
     }
 
@@ -58,7 +58,7 @@ export default class Storage {
         localForage.setItem(Keys.EXCHANGE, exchange);
     }
 
-    static stock(stock: StockData) {
+    static stock(stock: Stock) {
         localForage.setItem(Keys.STOCK, stock);
     }
 
