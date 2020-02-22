@@ -1,4 +1,4 @@
-import React, { RefObject, useEffect } from 'react';
+import React from 'react';
 import './Help.css';
 import { Option } from '../redux/store';
 import { Action } from '../redux/actions';
