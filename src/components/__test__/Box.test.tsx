@@ -1,11 +1,11 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
-import Box from './Box';
-import Table, { TableCell, TableRow } from '../models/Table';
-import { Action } from '../redux/actions';
-import ListData, { ListDataRow } from '../models/List';
-import Alert from '../models/Alert';
-import * as actions from '../redux/actions';
+import Box from '../Box';
+import Table, { TableCell, TableRow } from '../../models/Table';
+import { Action } from '../../redux/actions';
+import ListData, { ListDataRow } from '../../models/List';
+import Alert from '../../models/Alert';
+import * as actions from '../../redux/actions';
 
 const alerts_ = ['Alert 1', 'Alert 2', 'Alert 3', 'Alert 4'];
 const mockDispatch = jest.fn((action: Action) => {});

@@ -5,7 +5,12 @@
       "node_modules/(?!(lightweight-charts|fancy-canvas))/"
     ],
     "collectCoverageFrom": [
-      "src/**/*.{js,jsx,ts,tsx}"
+      "src/**/*.ts",
+      "src/components/*.tsx",
+      "!**/node_modules/**",
+      "!src/config.ts",
+      "!src/help.ts",
+      "!src/*.d.ts"
     ]
   },
   "version": "0.1.0",
@@ -32,6 +37,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test-coverage": "react-scripts test --coverage --watchAll=false",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

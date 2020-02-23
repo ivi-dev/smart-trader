@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import Row from './Row';
+import Row from '../Row';
 
 test('render an element with a child, with add-on classes and a style', () => {
     const { container } = render(

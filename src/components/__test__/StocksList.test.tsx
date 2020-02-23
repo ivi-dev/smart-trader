@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import StocksList from './StocksList';
-import Stock from '../models/Stock';
+import StocksList from '../StocksList';
+import Stock from '../../models/Stock';
 
 const title = 'Symbols';
 const data_ = [new Stock(0, 'ABC', 1, 1.1, 1.2, 0.5, 0.8, -0.10), 

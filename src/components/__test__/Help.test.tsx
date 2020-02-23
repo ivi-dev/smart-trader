@@ -1,8 +1,8 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
-import Help from './Help';
-import { Action } from '../redux/actions';
-import * as actions from '../redux/actions';
+import Help from '../Help';
+import { Action } from '../../redux/actions';
+import * as actions from '../../redux/actions';
 
 const mockDispatch = jest.fn((action: Action) => {});
 const sections = [{name: 'Section 1'}, {name: 'Section 2'}];

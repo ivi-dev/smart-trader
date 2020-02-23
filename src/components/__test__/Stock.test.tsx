@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
-import Stock from './Stock';
-import StockModel from '../models/Stock';
+import Stock from '../Stock';
+import StockModel from '../../models/Stock';
 
 const mockHandleClick = jest.fn((altKey: boolean, data: StockModel) => {});
 const data_ = new StockModel(0, 'ABC', 1, 1.1, 1.2, 0.5, 0.8, 0.10, 'Company Name');

@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import Text from './Text';
+import Text from '../Text';
 
 test('render an elemeny with a text content', () => {
     const content = 'Text';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
-import Selector from './Selector';
+import Selector from '../Selector';
 
 const mockHandleSelect = jest.fn((value: string, ...other: any[]) => {});
 const title = 'Selector';

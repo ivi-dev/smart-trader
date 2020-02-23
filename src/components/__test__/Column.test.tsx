@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import Column from './Column';
+import Column from '../Column';
 
 test('render a container with children and add-on classes', () => {
     const classes = 'cls1';

@@ -1,8 +1,8 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import Stock from '../models/Stock';
-import { Action } from '../redux/actions';
-import Chart from './Chart';
+import Stock from '../../models/Stock';
+import { Action } from '../../redux/actions';
+import Chart from '../Chart';
 
 window.matchMedia = window.matchMedia || function() {
     return {
