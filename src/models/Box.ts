@@ -1,6 +1,6 @@
 export enum BoxType {
     ORDER_HISTORY = 'Orders',
-    RECENT_ACTIVIY = 'Activities',
+    RECENT_ACTIVITY = 'Activities',
     HEADLINES = 'Headlines',
     ALERTS = 'Notifications'
 }
@@ -15,7 +15,7 @@ export default class Box {
         if (type.match(/history/i)) {
             return BoxType.ORDER_HISTORY
         } else if (type.match(/activity/i)) {
-            return BoxType.RECENT_ACTIVIY;
+            return BoxType.RECENT_ACTIVITY;
         } else if (type.match(/headlines/i)) {
             return BoxType.HEADLINES;
         } else if (type.match(/alerts/i)) {
@@ -28,8 +28,8 @@ export default class Box {
         switch (type as BoxType) {
             case BoxType.ORDER_HISTORY:
                 return BoxType.ORDER_HISTORY;
-            case BoxType.RECENT_ACTIVIY:
-                return BoxType.RECENT_ACTIVIY;
+            case BoxType.RECENT_ACTIVITY:
+                return BoxType.RECENT_ACTIVITY;
             case BoxType.HEADLINES:
                 return BoxType.HEADLINES;
             default:
