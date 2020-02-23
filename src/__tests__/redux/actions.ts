@@ -281,7 +281,7 @@ test('correct activity labels are generated', () => {
     expect(activityLabels.addBox(boxType)).toBe(`You added a new ${boxType} report`);
     expect(activityLabels.removeBox(boxType)).toBe(`You removed ${isVowel(boxType.toString().split('')[0]) ?
     'an' : 'a'} ${boxType} report`);
-    boxType = BoxType.RECENT_ACTIVIY;
+    boxType = BoxType.RECENT_ACTIVITY;
     expect(activityLabels.removeBox(boxType)).toBe(`You removed ${isVowel(boxType.toString().split('')[0]) ?
     'an' : 'a'} ${boxType} report`);
 });

@@ -38,7 +38,7 @@ const Reports = (prop: ReportsProp) => {
                             tableData={new Table(prop.data.orderHistory.headers, orders)} 
                             dispatch={prop.dispatch}
                             menuItems={prop.data.ordersDisplayOptions} />
-            case BoxType.RECENT_ACTIVIY:
+            case BoxType.RECENT_ACTIVITY:
                 let activities = prop.data.activities.items;
                 if (prop.data.displayedActivitiesLevel !== 'all') {
                     activities = activities.slice().filter(activity => 
