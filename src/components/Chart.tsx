@@ -5,7 +5,7 @@ import { Action } from '../redux/actions';
 import StockDetails from './StockDetails';
 import { Chart as ChartType } from '../redux/store';
 import * as actions from '../redux/actions';
-import { capitalize, formatMetricDataLabels } from '../utility';
+import { capitalize } from '../utility';
 import Selector from './Selector';
 import Row from './Row';
 
@@ -18,6 +18,7 @@ type ChartProp = {
 }
 
 const Chart = (prop: ChartProp) => {
+    /* istanbul ignore next */
     const cleanUp = (container: HTMLDivElement) => {
         for (let i = 0; i < container.childNodes.length; i++) {
             container.removeChild(container.childNodes[i]);
@@ -26,13 +27,12 @@ const Chart = (prop: ChartProp) => {
     const content_ = (section: string) => {
         const data: [string, string][] = [];
         if (!(prop.data.company[section.toString()] instanceof Array)) {
-            const entries = Object.entries(prop.data
-                .company[section.toString()]);
-                if (entries.length === 0) {
-                    return <div className="row no-gutters justify-content-center text-muted empty-label mt-5">
-                               {prop.data.status}
-                           </div>
-                }
+            const entries = Object.entries(prop.data.company[section.toString()]);
+            if (entries.length === 0) {
+                return <div className="row no-gutters justify-content-center text-muted empty-label mt-5">
+                            {prop.data.status}
+                        </div>
+            }
             for (let [key, value] of entries) {
                 data.push([capitalize(formatMetricDataLabels(key)), value]);
             }
@@ -45,13 +45,12 @@ const Chart = (prop: ChartProp) => {
                         </div>);
         } else {
             const data_: [string, string][][] = [];
-            const items = Object.values(
-                prop.data.company[section.toString()])
-                if (items.length === 0) {
-                    return  <div className="row no-gutters justify-content-center text-muted empty-label mt-5">
-                               {prop.data.status}
-                           </div>
-                }
+            const items = Object.values(prop.data.company[section.toString()])
+            if (items.length === 0) {
+                return  <div className="row no-gutters justify-content-center text-muted empty-label mt-5">
+                            {prop.data.status}
+                        </div>
+            }
             for (const item of Object.values(
                 prop.data.company[section.toString()])) {
                     const item_: [string, string][] = [];
@@ -74,6 +73,18 @@ const Chart = (prop: ChartProp) => {
                         </div>);
         }
     }
+    /* istanbul ignore next */
+    const formatMetricDataLabels = (label: string) => {
+        let label_ = label.replace(/s&p500/gi, ' S&P 500 ');
+        label_ = label_.replace(/13week/gi, ' 13 Week ');
+        label_ = label_.replace(/26week/gi, ' 26 Week ');
+        label_ = label_.replace(/52week/gi, ' 52 Week ');
+        label_ = label_.replace(/3month/gi, ' 3 Month ');
+        label_ = label_.replace(/5day/gi, ' 5 Day ');
+        label_ = label_.replace(/10day/gi, ' 10 Day ');
+        label_ = label_.replace(/ttm/gi, ' TTM ');
+        return label_.replace(/\s{2,}/, ' ').trim();
+    }
     const content = () => {
         for (const section of prop.data.company.sections) {
             if (section.selected) {
@@ -83,6 +94,7 @@ const Chart = (prop: ChartProp) => {
     }
     const chartBox: RefObject<HTMLDivElement> = React.createRef();
 
+    /* istanbul ignore next */
     useEffect(() => {
         if (!prop.testMode) {
             cleanUp(chartBox.current as HTMLDivElement);

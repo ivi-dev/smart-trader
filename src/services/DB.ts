@@ -14,7 +14,7 @@ export enum Key {
     WATCHLIST = 'WATCHLIST',
     EXCHANGE = 'EXCHANGE',
     STOCK = 'STOCK',
-    START_LETTER = 'START_LETTER'
+    STOCK_INDEX = 'STOCK_INDEX'
 }
 
 export default class DB {

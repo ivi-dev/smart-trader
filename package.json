@@ -7,13 +7,20 @@
     "collectCoverageFrom": [
       "src/**/*.ts",
       "src/components/*.tsx",
+      "!src/components/App.tsx",
       "!**/node_modules/**",
       "!src/config.ts",
       "!src/help.ts",
-      "!src/*.d.ts"
+      "!src/*.d.ts",
+      "!src/serviceWorker.ts",
+      "!src/models/Activity.ts",
+      "!src/models/Alert.ts",
+      "!src/models/List.ts",
+      "!src/models/Stock.ts",
+      "!src/models/Table.ts"
     ]
   },
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",

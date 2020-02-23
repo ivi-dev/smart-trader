@@ -97,7 +97,7 @@ const App = (prop: AppProp) => {
           <Selector title='Stock Index:'
                     options={prop.stockIndexOptions} 
                     selected={prop.stockStartLetter}
-                    handleSelect={value => prop.dispatch(actions.selectStockStartLetter(value))} 
+                    handleSelect={value => prop.dispatch(actions.setStockIndex(value))} 
                     classes='ml-4' />
           <Text content={'Balance:'} 
                 classes={'mr-2 ml-auto text-muted small'} 

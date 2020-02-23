@@ -25,9 +25,12 @@ const StockDetails = (prop: StockDetailsProp) => {
     }
     const handleClick = (altKey: boolean) => {
         if (prop.dispatch) {
+            /* istanbul ignore next */
             if (!altKey) {
                 prop.dispatch(actions.toggleTracker());
-            } else {
+            } 
+            /* istanbul ignore next */
+            else {
                 prop.dispatch(actions.setTrackerMode(prop.trackerMode ===
                      'simulated' ? false : true));
             }

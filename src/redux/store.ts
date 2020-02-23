@@ -2,14 +2,14 @@ import { createStore } from 'redux';
 import { main } from './reducers';
 import Stock from '../models/Stock';
 import Table, { TableCell, OrderType } from '../models/Table';
-import ListData, { ListDataRow } from '../models/List';
+import ListData, { ListRow } from '../models/List';
 import { ActivityType } from '../models/Activity';
 import Alert, { AlertLevel } from '../models/Alert';
 import Box from '../models/Box';
-import Storage, { Keys } from '../services/Storage';
+import DB, { Key } from '../services/DB';
 import * as actions from './actions';
 import News, { Category } from '../services/News';
-import { fullDate, alphabet, digits } from '../utility';
+import { date, alphabet, digits } from '../utility';
 import { help } from '../help';
 import FinnHub from '../services/FinnHub';
 
@@ -119,58 +119,58 @@ export interface State {
     help: HelpType
 }
 
-Storage.get(Keys.ORDERS).then(orders => { 
+DB.fetch(Key.ORDERS).then(orders => { 
     if (orders) {
         store.dispatch(actions.setOrderHistory(orders as Table));
     }
 });
 
-Storage.get(Keys.ACTIVITY).then(activity => { 
+DB.fetch(Key.ACTIVITIES).then(activity => { 
     if (activity) {
         store.dispatch(actions.updateActivities(activity as ListData));
     }
 });
 
-Storage.get(Keys.BALANCE).then(balance => { 
+DB.fetch(Key.BALANCE).then(balance => { 
     if (balance) {
         store.dispatch(actions.updateBalance(balance as number));
     }
 });
 
-Storage.get(Keys.ALERTS).then(alerts => {
+DB.fetch(Key.ALERTS).then(alerts => {
     if (alerts) {
         store.dispatch(actions.updateAlerts(alerts as Alert[]));
     }
 });
 
-Storage.get(Keys.BOXES).then(boxes => {
+DB.fetch(Key.BOXES).then(boxes => {
     if (boxes) {
         store.dispatch(actions.setBoxes(boxes as Array<Box>));
     }
 });
 
-Storage.get(Keys.WATCHLIST).then(watchlist => {
+DB.fetch(Key.WATCHLIST).then(watchlist => {
     if (watchlist) {
         store.dispatch(actions.updateWatchList(watchlist as Array<Stock>));
     }
 });
 
-Storage.get(Keys.START_LETTER).then(letter => {
+DB.fetch(Key.STOCK_INDEX).then(letter => {
     if (letter) {
-        store.dispatch(actions.setStockStartLetter(letter as string));
+        store.dispatch(actions.setStockIndex(letter as string));
     }
 });
 
-Storage.get(Keys.STOCK).then(stock => {
+DB.fetch(Key.STOCK).then(stock => {
     store.dispatch(actions.selectStock(stock as Stock));
 });
 
 const fetchHeadlines = (category: Category) =>
     News.headlines(category, articles => {
-        const headlines: ListDataRow[] = [];
-        articles.forEach(article => headlines.push(new ListDataRow(article.title, 'other', undefined, `${article.author} @ ${fullDate(new Date(article.publishedAt))}`, article.url)));
+        const headlines: ListRow[] = [];
+        articles.forEach(article => headlines.push(new ListRow(article.title, 'other', undefined, `${article.author} @ ${date(new Date(article.publishedAt))}`, article.url)));
         store.dispatch(actions.updateHeadlines(new ListData(headlines), category));
-    }, () => store.dispatch(actions.updateHeadlines(new ListData([new ListDataRow('An error occurred while trying get the latest headlines.')]), category)));
+    }, () => store.dispatch(actions.updateHeadlines(new ListData([new ListRow('An error occurred while trying get the latest headlines.')]), category)));
 fetchHeadlines('business');
 
 const fetchExchanges = () => {
@@ -184,7 +184,7 @@ const fetchExchanges = () => {
 fetchExchanges();
 
 const fetchSelectedExchange = () => {
-    Storage.get(Keys.EXCHANGE).then(exchange => {
+    DB.fetch(Key.EXCHANGE).then(exchange => {
         if (exchange) {
             const exchange_ = exchange as {name: string, code: string};
             fetchStocks(exchange_.code);

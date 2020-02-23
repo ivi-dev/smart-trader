@@ -4,7 +4,7 @@ import BoxModel, { BoxType } from '../models/Box';
 import Box from './Box';
 import { ReportData } from '../redux/store';
 import { Action } from '../redux/actions';
-import ListData from '../models/List';
+import List from '../models/List';
 import Table from '../models/Table';
 
 type ReportsProp = {
@@ -50,7 +50,7 @@ const Reports = (prop: ReportsProp) => {
                             status={'No data yet.'} 
                             menuVisible={box.menuVisible}
                             selectedBox={prop.selectedBox}
-                            listData={new ListData(activities)} 
+                            listData={new List(activities)} 
                             dispatch={prop.dispatch} 
                             menuItems={prop.data.activityDisplayOptions} />
             case BoxType.HEADLINES:

@@ -1,6 +1,6 @@
 import React from 'react';
 import Table from '../models/Table';
-import ListData from '../models/List';
+import List from '../models/List';
 import Alert from '../models/Alert';
 import './Box.css';
 import { Action } from '../redux/actions';
@@ -20,16 +20,20 @@ type BoxProp = {
     classes?: string,
     tableData?: Table,
     listTitle?: string,
-    listData?: ListData,
+    listData?: List,
     alerts?: Alert[],
     dispatch: (action: Action) => void
 }
 
 const Box = (prop: BoxProp) => {
-    let content = <div className="empty-label text-muted text-center col-12 mt-5">{prop.status}</div>;
+    let content = <div className="empty-label text-muted text-center col-12 mt-5">
+        {prop.status}
+    </div>;
     if (prop.tableData) {
         if (prop.tableData?.rows.length === 0) {
-            content = <div className="empty-label text-muted text-center col-12 mt-5">{prop.status}</div>
+            content = <div className="empty-label text-muted text-center col-12 mt-5">
+                {prop.status}
+            </div>
         } else {
             content = <div className="row no-gutters content">
                          <div className="scroll-area col-12">
@@ -56,8 +60,10 @@ const Box = (prop: BoxProp) => {
     } else if (prop.listData) {
         if (prop.listData.items.length === 0) {
             content = <div className="scroll-area mt-2">
-                      <div className="empty-label text-muted text-center col-12 mt-5">{prop.status}</div>
-                  </div>;
+                            <div className="empty-label text-muted text-center col-12 mt-5">
+                                {prop.status}
+                            </div>
+                        </div>;
         } else {
             content = <div className={`scroll-area ${prop.listTitle ? 'lower' : null}`}>
                 {prop.listTitle && <div className="row no-gutters p-2 pl-4 list-title position-absolute col-12">{capitalize(prop.listTitle)}</div>}
@@ -66,7 +72,7 @@ const Box = (prop: BoxProp) => {
                    href={item.href} 
                    target="_blank" 
                    rel="noopener noreferrer" 
-                   onClick={(e) => {if (item.href) {e.stopPropagation()}}}>
+                   onClick={e => {if (item.href) {e.stopPropagation()}}}>
                     {item.graphic && <i className={`row no-gutters col-auto ${item.graphic} align-items-center`}></i>}
                     <div className="col">
                         <div className="row no-gutters col-12">
@@ -106,7 +112,7 @@ const Box = (prop: BoxProp) => {
                                style={{color: color}}></i>
                             <span className="pl-1 col-10">{alert.text}</span>
                             <i className="fas fa-times position-absolute" 
-                               onClick={(e) => {e.stopPropagation(); 
+                               onClick={e => {e.stopPropagation(); 
                                prop.dispatch(actions.dismissAlert!(!e.altKey ? 
                                 alert.id : -1))}}></i>
                         </div>
@@ -141,7 +147,7 @@ const Box = (prop: BoxProp) => {
                 'selected' : null}`}
             onClick={() => prop.dispatch(actions.selectBox(prop.id))} 
             tabIndex={prop.id} 
-            onKeyDown={(e) => handleKeyDown(e.keyCode, e.altKey)}>
+            onKeyDown={e => handleKeyDown(e.keyCode, e.altKey)}>
             {prop.menuItems && <Menu items={prop.menuItems} 
                                      visible={prop.menuVisible} 
                                      boxId={prop.id} 
@@ -150,11 +156,13 @@ const Box = (prop: BoxProp) => {
                 {prop.title}&nbsp;&nbsp;
                 {prop.secondary}
                 <i className="fas fa-ellipsis-v px-2 py-1 ml-auto rounded" 
-                    onClick={e => {e.stopPropagation(); 
-                    prop.dispatch(actions.setMenuVisible(true, prop.id))}}></i>
+                    onClick={e => {
+                        e.stopPropagation(); 
+                        prop.dispatch(actions.setMenuVisible(true, prop.id))}}></i>
                 <i className="fas fa-times px-2 py-1 rounded" 
-                   onClick={e => {e.stopPropagation(); 
-                   prop.dispatch(actions.removeBox(prop.id))}}></i>
+                   onClick={e => {
+                       e.stopPropagation(); 
+                       prop.dispatch(actions.removeBox(prop.id))}}></i>
             </div>
             {content}
         </div>

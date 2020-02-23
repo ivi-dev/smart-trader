@@ -16,20 +16,21 @@ type StocksListProp = {
 }
 
 const StocksList = (prop: StocksListProp) => {
-    const handleStockListClick = (altKey: boolean, data: StockModel, listType: string) => {
-        if (prop.dispatch) {
-            if (listType === 'symbolsList') {
-                if (altKey) {
-                    prop.dispatch!(actions.addToWatchlist(data));
-                } else {
-                    prop.dispatch!(actions.selectStock(data));
-                }
+    const handleStockListClick = (altKey: boolean, 
+                                  data: StockModel) => {
+        if (prop.listType === 'symbolsList') {
+            /* istanbul ignore next */
+            if (altKey) {
+                prop.dispatch!(actions.addToWatchlist(data));
             } else {
-                if (altKey) {
-                    prop.dispatch!(actions.removeFromWatchlist(data));
-                } else {
-                    prop.dispatch!(actions.selectStock(data));
-                }
+                prop.dispatch!(actions.selectStock(data));
+            }
+        } else {
+            /* istanbul ignore next */
+            if (altKey) {
+                prop.dispatch!(actions.removeFromWatchlist(data));
+            } else {
+                prop.dispatch!(actions.selectStock(data));
             }
         }
     }
@@ -41,7 +42,9 @@ const StocksList = (prop: StocksListProp) => {
         <Search classes='ml-auto col-8'
                 style={{fontSize: '95%', transform: 'translateY(6px)'}}
                 onKeyUp={value => prop.onSearch(value)} />
-    </div> : null;
+    </div> : <Search classes='ml-auto col-8'
+                style={{fontSize: '95%', transform: 'translateY(6px)'}}
+                onKeyUp={value => prop.onSearch(value)} />;
     return (
         <>
             {title}
@@ -53,7 +56,7 @@ const StocksList = (prop: StocksListProp) => {
                 <Stock key={index.id} 
                        data={index} 
                        handleClick={(altKey, data) => 
-                       {handleStockListClick(altKey, data, prop.listType)}} />)}
+                       {handleStockListClick(altKey, data)}} />)}
             </section>
         </>
     )

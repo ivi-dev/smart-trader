@@ -5,9 +5,9 @@ import Stock from '../models/Stock';
 import { Action } from './actions';
 import Box, { BoxType } from '../models/Box';
 import Table, { TableRow, TableCell } from '../models/Table';
-import ListData, { ListDataRow } from '../models/List';
-import { fullDate, time } from '../utility';
-import Storage from '../services/Storage';
+import ListData, { ListRow } from '../models/List';
+import { time, date } from '../utility';
+import DB, { Key } from '../services/DB';
 import Alert from '../models/Alert';
 import { Option } from './store';
 import { number } from '../randomizer';
@@ -17,49 +17,16 @@ const getLatestBoxId = (boxList: Box[]) => {
     return boxList.length !== 0 ? boxList[boxList.length - 1].id : 0;
 }
 
+const getLatestAlertId = (alertList: Alert[]) => {
+    return alertList.length !== 0 ? alertList[0].id : 0;
+}
+
 const getBoxType = (boxes: Box[], id: number) => {
     for (const box of boxes) {
         if (box.id === id) {
             return box.type;
         }
     }
-}
-
-const getLatestAlertId = (alertList: Alert[]) => {
-    return alertList.length !== 0 ? alertList[0].id : 0;
-}
-
-const recordActivity = (activities: ListData) => {
-    Storage.activities(activities);
-}
-
-const recordAlerts = (alerts: Alert[]) => {
-    Storage.alerts(alerts);
-}
-
-const recordBoxes = (boxes: Box[]) => {
-    Storage.boxes(boxes);
-}
-
-const recordWatchlist = (watchList: Stock[]) => {
-    Storage.watchList(watchList);
-}
-
-const recordSelectedExchange = (exchange: {name: string, code: string}) => {
-    Storage.exchange(exchange);
-}
-
-const recordSelectedStock = (stock: Stock) => {
-    Storage.stock(stock);
-}
-
-const recordStockStartLetter = (letter: string) => {
-    Storage.startLetter(letter, letter => 
-        store.dispatch(actions.setStockStartLetter(letter)));
-}
-
-const recordBalance = (balance: number) => {
-    Storage.balance(balance);
 }
 
 const startSimulatedTracker = (stock: Stock, options: ChartOptions) => {
@@ -107,10 +74,10 @@ export const main = (state = initialState, action: Action) => {
             const letter = action.arg as string;
             let stocks = state.allStocksList.filter(stock => 
                 stock.name.toLowerCase().startsWith(letter.toLowerCase()));
-            recordStockStartLetter(letter);
+            DB.save(Key.STOCK_INDEX, letter);
             return Object.assign({}, state, {stocksList: stocks});
 
-        case actions.SET_STOCK_START_LETTER:
+        case actions.SET_STOCK_INDEX:
             return Object.assign({}, state, {stockStartLetter: action.arg as string});
 
         case actions.SELECT_STOCK:
@@ -153,44 +120,44 @@ export const main = (state = initialState, action: Action) => {
                         store.dispatch(actions.addAlert('error', error.message))
                     }
             });
-            recordSelectedStock(stock);
+            DB.save(Key.STOCK, stock);
             return Object.assign({}, state, {tracker: tracker_}, 
                 {chart: {...state.chart, options: {...state.chart.options, series: [{data: []}]}, stock: stock, status: 'Loading Data...'}});
 
-        case actions.UPDATE_COMPANY_PROFILE:
+        case actions.SET_COMPANY_PROFILE:
             return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, profile: action.arg}}});
 
-        case actions.UPDATE_CEO_INFO:
+        case actions.SET_CEO_INFO:
             return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, ceo: action.arg}}});
 
-        case actions.UPDATE_EXECUTIVES_LIST:
+        case actions.SET_EXECUTIVES_LIST:
             return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, executives: action.arg as {}[]}}});
 
-        case actions.UPDATE_COMPANY_PRICE_METRIC:
+        case actions.SET_COMPANY_PRICE_METRIC:
             return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company,  price: action.arg}}});
             
-        case actions.UPDATE_COMPANY_VALUATION_METRIC:
+        case actions.SET_COMPANY_VALUATION_METRIC:
             return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, valuation: action.arg}}});
 
-        case actions.UPDATE_COMPANY_GROWTH_METRIC:
+        case actions.SET_COMPANY_GROWTH_METRIC:
             return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, growth: action.arg}}});
 
-        case actions.UPDATE_COMPANY_MARGIN_METRIC:
+        case actions.SET_COMPANY_MARGIN_METRIC:
             return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, margin: action.arg}}});
 
-        case actions.UPDATE_COMPANY_MANAGEMENT_METRIC:
+        case actions.SET_COMPANY_MANAGEMENT_METRIC:
             return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, management: action.arg}}});
 
-        case actions.UPDATE_COMPANY_FINANCIAL_STRENGTH_METRIC:
+        case actions.SET_COMPANY_FINANCIAL_STRENGTH_METRIC:
             return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, financialStrength: action.arg}}});
 
-        case actions.UPDATE_COMPANY_PER_SHARE_METRIC:
+        case actions.SET_COMPANY_PER_SHARE_METRIC:
             return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, perShare: action.arg}}});
 
-        case actions.UPDATE_COMPANY_INVESTORS_OWNERSHIP:
+        case actions.SET_COMPANY_INVESTORS_OWNERSHIP:
             return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, investors: action.arg}}});
 
-        case actions.UPDATE_COMPANY_FUND_OWNERSHIP:
+        case actions.SET_COMPANY_FUND_OWNERSHIP:
             return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, funds: action.arg}}});
 
         case actions.UPDATE_STOCK:
@@ -207,14 +174,14 @@ export const main = (state = initialState, action: Action) => {
         case actions.ADD_TO_WATCHLIST:
             if (!state.watchList.find(item => item.name === (action.arg as Stock).name)) {
                 const watchListAfterAdd = state.watchList.concat([action.arg as Stock]);
-                recordWatchlist(watchListAfterAdd);
+                DB.save(Key.WATCHLIST, watchListAfterAdd);
                 return Object.assign({}, state, {watchList: watchListAfterAdd});
             }
             return state;
             
         case actions.REMOVE_FROM_WATCHLIST:
             const watchListAfterRemove = state.watchList.filter(index => index !== (action.arg as Stock));
-            recordWatchlist(watchListAfterRemove);
+            DB.save(Key.WATCHLIST, watchListAfterRemove);
             return Object.assign({}, state, {watchList: watchListAfterRemove});
 
         case actions.UPDATE_WATCHLIST:
@@ -234,7 +201,7 @@ export const main = (state = initialState, action: Action) => {
                 }
             }
             fetchStocks(exchangeCode);
-            recordSelectedExchange(exchange_);
+            DB.save(Key.EXCHANGE, exchange_);
             return Object.assign({}, state, {selectedExchange: exchange_});
 
         case actions.UPDATE_SELECTED_EXCHANGE:
@@ -252,13 +219,13 @@ export const main = (state = initialState, action: Action) => {
                         new TableCell(state.buyQty.toString()),
                         new TableCell('BUY', 'buy')], 'buy');
                     orderHistory.rows.push(order);
-                    activities.items.push(new ListDataRow(
+                    activities.items.push(new ListRow(
                         actions.activityLabels.buy(state.buyQty, 
                             state.chart.stock!.name.toUpperCase(), 
                             stockBuy!.current), 'trade', 'fas fa-dollar-sign buy'));
-                    Storage.orders(orderHistory);
-                    recordActivity(activities);
-                    recordBalance(state.balance - stockBuy!.current * state.buyQty);
+                    DB.save(Key.ORDERS, orderHistory);
+                    DB.save(Key.ACTIVITIES, activities);
+                    DB.save(Key.BALANCE, state.balance - stockBuy!.current * state.buyQty);
                 return Object.assign({}, state, {reportData: 
                     {...state.reportData, orderHistory: orderHistory, 
                         activities: activities}}, 
@@ -280,12 +247,12 @@ export const main = (state = initialState, action: Action) => {
                         new TableCell(state.sellQty.toString()),
                         new TableCell('SELL', 'sell')], 'sell');
                     orderHistory.rows.push(order);
-                    activities.items.push(new ListDataRow(
+                    activities.items.push(new ListRow(
                         actions.activityLabels.sell(state.sellQty, 
                             state.chart.stock!.name.toUpperCase(), stockSell!.current), 'trade', 'fas fa-dollar-sign sell'));
-                    Storage.orders(orderHistory);
-                    recordActivity(activities);
-                    recordBalance(state.balance + stockSell!.current * state.sellQty);
+                    DB.save(Key.ORDERS, orderHistory);
+                    DB.save(Key.ACTIVITIES, activities);
+                    DB.save(Key.BALANCE, state.balance + stockSell!.current * state.sellQty);
                 return Object.assign({}, state, {reportData: 
                     {...state.reportData, orderHistory: orderHistory, 
                         activities: activities}}, 
@@ -363,21 +330,21 @@ export const main = (state = initialState, action: Action) => {
             const boxType = action.arg as BoxType;
             let boxTitle = Box.getTitle(boxType);
             const activities = Object.assign({}, state.reportData.activities);
-            activities.items.push(new ListDataRow(actions.activityLabels
-                .addBox(boxType), 'application', 'far fa-square', fullDate(new Date())));
-            recordActivity(activities);
+            activities.items.push(new ListRow(actions.activityLabels
+                .addBox(boxType), 'application', 'far fa-square', date(new Date())));
+            DB.save(Key.ACTIVITIES, activities);
             const boxesAfterAdd = state.boxes.concat([new Box(
                 getLatestBoxId(state.boxes) + 1, boxTitle, boxType)]);
-            recordBoxes(boxesAfterAdd);
+            DB.save(Key.BOXES, boxesAfterAdd);
             return Object.assign({}, state, {boxes: boxesAfterAdd}, {selectedBox: null});
         
         case actions.REMOVE_BOX:
             const boxId_ = action.arg as number;
             const activities_ = Object.assign({}, state.reportData.activities);
-            activities_.items.push(new ListDataRow(actions.activityLabels.removeBox(getBoxType(state.boxes, boxId_)!), 'application', 'far fa-square', fullDate(new Date())));
-            recordActivity(activities_);
+            activities_.items.push(new ListRow(actions.activityLabels.removeBox(getBoxType(state.boxes, boxId_)!), 'application', 'far fa-square', date(new Date())));
+            DB.save(Key.ACTIVITIES, activities_);
             const boxesAfterRemove = state.boxes.filter(box => box.id !== boxId_);
-            recordBoxes(boxesAfterRemove);
+            DB.save(Key.BOXES, boxesAfterRemove);
             return Object.assign({}, state, {boxes: boxesAfterRemove}, {selectedBox: null});
 
         case actions.SET_BOXES:
@@ -403,7 +370,7 @@ export const main = (state = initialState, action: Action) => {
                     break;
                 }
             }
-            recordBoxes(boxes_);
+            DB.save(Key.BOXES, boxes_);
             return Object.assign({}, state, {boxes: boxes_});
 
         case actions.MOVE_BOX_FORWARD:
@@ -419,7 +386,7 @@ export const main = (state = initialState, action: Action) => {
                     break;
                 }
             }
-            recordBoxes(boxes_2);
+            DB.save(Key.BOXES, boxes_2);
             return Object.assign({}, state, {boxes: boxes_2});
 
         case actions.DISMISS_ALERT:
@@ -427,7 +394,7 @@ export const main = (state = initialState, action: Action) => {
             let alerts = [];
             if (alertId_ !== -1) {
                 alerts = state.reportData.alerts.filter(alert => alert.id !== alertId_);
-                recordAlerts(alerts);
+                DB.save(Key.ALERTS, alerts);
                 return Object.assign({}, state, {reportData: {...state.reportData, 
                     alerts: alerts}});
             }
@@ -455,7 +422,7 @@ export const main = (state = initialState, action: Action) => {
             const alerts_ = [
                 new Alert(getLatestAlertId(state.reportData.alerts) + 1, 
                 message, level)].concat(state.reportData.alerts);
-            recordAlerts(alerts_);
+            DB.save(Key.ALERTS, alerts_);
             return Object.assign({}, state, {reportData: {...state.reportData, 
                 alerts: alerts_}});
 

@@ -31,11 +31,14 @@ const Menu = (prop: MenuProp) => {
         }
     }
     return (
-        <div ref={ref} className={`menu position-absolute rounded shadow 
-        ${prop.visible ? null : 'd-none'}`} tabIndex={0} onKeyDown={e => handleKeyPress(e.keyCode)}>
+        <div ref={ref} 
+             className={`menu position-absolute rounded shadow 
+                ${prop.visible ? null : 'd-none'}`} 
+             tabIndex={0} 
+             onKeyDown={e => handleKeyPress(e.keyCode)}>
             {prop.items.map(item => <a key={i++} href="/" 
                 className="row no-gutters py-1 px-3 col-12 text-reset text-decoration-none" 
-                onClick={(e) => {if (item.onClick) {
+                onClick={e => {if (item.onClick) {
                     e.preventDefault(); 
                     e.stopPropagation(); 
                     handleItemSelect();

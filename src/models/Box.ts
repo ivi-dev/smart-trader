@@ -8,8 +8,8 @@ export enum BoxType {
 export default class Box {
     menuVisible =  false;
     constructor(public id: number, 
-        public title: string, 
-        public type: BoxType) {}
+                public title: string, 
+                public type: BoxType) {}
 
     static getBoxType = (type: string) => {
         if (type.match(/history/i)) {

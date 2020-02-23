@@ -1,6 +1,6 @@
 import Stock from '../models/Stock';
 import Box, { BoxType } from '../models/Box';
-import ListData from '../models/List';
+import List from '../models/List';
 import Table from '../models/Table';
 import Alert from '../models/Alert';
 import { ChartOptions } from './store';
@@ -54,7 +54,7 @@ export const SET_ACTIVE_HELP_SECTION = 'SET_ACTIVE_HELP_SECTION';
 export const UPDATE_BALANCE = 'UPDATE_BALANCE';
 
 export const SELECT_STOCK_START_LETTER = 'SELECT_STOCK_START_LETTER';
-export const SET_STOCK_START_LETTER = 'SET_STOCK_START_LETTER';
+export const SET_STOCK_INDEX = 'SET_STOCK_START_LETTER';
 
 export const UPDATE_CHART_OPTIONS = 'SET_CHART_DATA';
 export const TOGGLE_TRACKER = 'TOGGLE_TRACKER';
@@ -62,32 +62,32 @@ export const SWITCH_TRACKER_MODE = 'SWITCH_TRACKER_MODE';
 export const SET_TRACKER_MODE = 'SET_TRACKER_MODE';
 export const SET_TRACKER = 'SET_TRACKER';
 
-export const UPDATE_COMPANY_PROFILE = 'UPDATE_COMPANY_PROFILE';
-export const UPDATE_CEO_INFO = 'UPDATE_CEO_INFO';
-export const UPDATE_COMPANY_PRICE_METRIC = 'UPDATE_COMPANY_PRICE_METRIC';
-export const UPDATE_COMPANY_VALUATION_METRIC = 'UPDATE_COMPANY_VALUATION_METRIC';
-export const UPDATE_COMPANY_GROWTH_METRIC = 'UPDATE_COMPANY_GROWTH_METRIC';
-export const UPDATE_COMPANY_MARGIN_METRIC = 'UPDATE_COMPANY_MARGIN_METRIC';
-export const UPDATE_COMPANY_MANAGEMENT_METRIC = 'UPDATE_COMPANY_MANAGEMENT_METRIC';
-export const UPDATE_COMPANY_FINANCIAL_STRENGTH_METRIC = 'UPDATE_COMPANY_FINANCIAL_STRENGTH_METRIC';
-export const UPDATE_COMPANY_PER_SHARE_METRIC = 'UPDATE_COMPANY_PER_SHARE_METRIC';
-export const UPDATE_COMPANY_INVESTORS_OWNERSHIP = 'UPDATE_COMPANY_INVESTORS_OWNERSHIP';
-export const UPDATE_COMPANY_FUND_OWNERSHIP = 'UPDATE_COMPANY_FUNDS_OWNERSHIP';
-export const UPDATE_EXECUTIVES_LIST = 'UPDATE_EXECUTIVES_LIST';
+export const SET_COMPANY_PROFILE = 'UPDATE_COMPANY_PROFILE';
+export const SET_CEO_INFO = 'UPDATE_CEO_INFO';
+export const SET_COMPANY_PRICE_METRIC = 'UPDATE_COMPANY_PRICE_METRIC';
+export const SET_COMPANY_VALUATION_METRIC = 'UPDATE_COMPANY_VALUATION_METRIC';
+export const SET_COMPANY_GROWTH_METRIC = 'UPDATE_COMPANY_GROWTH_METRIC';
+export const SET_COMPANY_MARGIN_METRIC = 'UPDATE_COMPANY_MARGIN_METRIC';
+export const SET_COMPANY_MANAGEMENT_METRIC = 'UPDATE_COMPANY_MANAGEMENT_METRIC';
+export const SET_COMPANY_FINANCIAL_STRENGTH_METRIC = 'UPDATE_COMPANY_FINANCIAL_STRENGTH_METRIC';
+export const SET_COMPANY_PER_SHARE_METRIC = 'UPDATE_COMPANY_PER_SHARE_METRIC';
+export const SET_COMPANY_INVESTORS_OWNERSHIP = 'UPDATE_COMPANY_INVESTORS_OWNERSHIP';
+export const SET_COMPANY_FUND_OWNERSHIP = 'UPDATE_COMPANY_FUNDS_OWNERSHIP';
+export const SET_EXECUTIVES_LIST = 'UPDATE_EXECUTIVES_LIST';
 
 export const SET_ACTIVE_COMPANY_SECTION = 'SET_ACTIVE_COMPANY_SECTION';
 export const TOGGLE_MENU = 'TOGGLE_MENU';
 
 export const activityLabels = {
-    sell: (amount: number, indexName: string, price: number) => {
+    sell: (amount: number, symbolName: string, price: number) => {
         const price_ = (new Intl.NumberFormat(
             'en-US', {style: 'currency', currency: 'USD'})).format(price);
-        return `You sold ${amount} of ${indexName} (+${price_})`;
+        return `You sold ${amount} of ${symbolName} (+${price_})`;
     },
-    buy: (amount: number, indexName: string, price: number) => {
+    buy: (amount: number, symbolName: string, price: number) => {
         const price_ = (new Intl.NumberFormat(
             'en-US', {style: 'currency', currency: 'USD'})).format(price);
-        return `You bought ${amount} of ${indexName} (-${price_})`
+        return `You bought ${amount} of ${symbolName} (-${price_})`
     },
     addBox: (boxType: BoxType) => {
         return `You added a new ${boxType} report`
@@ -95,9 +95,6 @@ export const activityLabels = {
     removeBox: (boxType: BoxType) => {
         return `You removed ${isVowel(boxType.toString().split('')[0]) ?
          'an' : 'a'} ${boxType} report`
-    },
-    moveBox: () => {
-        return 'You moved boxes around'
     }};
 
 export type Action = {
@@ -133,36 +130,6 @@ export const addToWatchlist = (indexData: Stock) => ({
 export const removeFromWatchlist = (indexData: Stock) => ({
     type: REMOVE_FROM_WATCHLIST,
     arg: indexData
-});
-
-export const setChartType = (chartType: string, chartId: number) => ({
-    type: SET_CHART_TYPE,
-    arg: { chartType: chartType, chartId: chartId }
-});
-
-export const setChartYear = (year: string | number, chartId: number) => ({
-    type: SET_CHART_YEAR,
-    arg: { year: year, chartId: chartId }
-});
-
-export const setChartResolution = (resolution: string, chartId: number, year: number | string) => ({
-    type: SET_CHART_RESOLUTION,
-    arg: { resolution: resolution, chartId: chartId, year: year }
-});
-
-export const addChart = (chartId: number) => ({
-    type: ADD_CHART,
-    arg: { chartId: chartId }
-});
-
-export const selectChart = (id: number) => ({
-    type: SELECT_CHART,
-    arg: id
-});
-
-export const removeChart = (chartId: number) => ({
-    type: REMOVE_CHART,
-    arg: { chartId: chartId }
 });
 
 export const addBox = (type: BoxType) => ({
@@ -225,12 +192,12 @@ export const setOrderHistory = (history: Table) => ({
     arg: history
 });
 
-export const updateActivities = (activity: ListData) => ({
+export const updateActivities = (activity: List) => ({
     type: UPDATE_ACTIVITIES,
     arg: activity
 });
 
-export const updateHeadlines = (headlines: ListData, category: string) => ({
+export const updateHeadlines = (headlines: List, category: string) => ({
     type: UPDATE_HEADLINES,
     arg: { headlines, category }
 });
@@ -295,14 +262,9 @@ export const updateWatchList = (watchList: Stock[]) => ({
     arg: watchList
 });
 
-export const selectStockStartLetter = (letter: string) => ({
-    type: SELECT_STOCK_START_LETTER,
-    arg: letter
-});
-
-export const setStockStartLetter = (letter: string) => ({
-    type: SET_STOCK_START_LETTER,
-    arg: letter
+export const setStockIndex = (index: string) => ({
+    type: SET_STOCK_INDEX,
+    arg: index
 });
 
 export const updateChartOptions = (options: ChartOptions) => ({
@@ -331,17 +293,17 @@ export const updateStock = (data: Stock) => ({
 });
 
 export const updateCompanyProfile = (profile: {}) => ({
-    type: UPDATE_COMPANY_PROFILE,
+    type: SET_COMPANY_PROFILE,
     arg: profile
 });
 
 export const updateCEOInfo = (info: {}) => ({
-    type: UPDATE_CEO_INFO,
+    type: SET_CEO_INFO,
     arg: info
 });
 
 export const updateExecutivesList = (list: {}[]) => ({
-    type: UPDATE_EXECUTIVES_LIST,
+    type: SET_EXECUTIVES_LIST,
     arg: list
 });
 
@@ -351,47 +313,47 @@ export const setActiveCompanySection = (section: string) => ({
 });
 
 export const updateCompanyPriceMetric = (info: {}) => ({
-    type: UPDATE_COMPANY_PRICE_METRIC,
+    type: SET_COMPANY_PRICE_METRIC,
     arg: info
 });
 
 export const updateCompanyValuationMetric = (info: {}) => ({
-    type: UPDATE_COMPANY_VALUATION_METRIC,
+    type: SET_COMPANY_VALUATION_METRIC,
     arg: info
 });
 
 export const updateCompanyGrowthMetric = (info: {}) => ({
-    type: UPDATE_COMPANY_GROWTH_METRIC,
+    type: SET_COMPANY_GROWTH_METRIC,
     arg: info
 });
 
 export const updateCompanyMarginMetric = (info: {}) => ({
-    type: UPDATE_COMPANY_MARGIN_METRIC,
+    type: SET_COMPANY_MARGIN_METRIC,
     arg: info
 });
 
 export const updateCompanyManagementMetric = (info: {}) => ({
-    type: UPDATE_COMPANY_MANAGEMENT_METRIC,
+    type: SET_COMPANY_MANAGEMENT_METRIC,
     arg: info
 });
 
 export const updateCompanyFinancialStrengthMetric = (info: {}) => ({
-    type: UPDATE_COMPANY_FINANCIAL_STRENGTH_METRIC,
+    type: SET_COMPANY_FINANCIAL_STRENGTH_METRIC,
     arg: info
 });
 
 export const updateCompanyPerShareMetric = (info: {}) => ({
-    type: UPDATE_COMPANY_PER_SHARE_METRIC,
+    type: SET_COMPANY_PER_SHARE_METRIC,
     arg: info
 });
 
 export const updateCompanyInvestorsOwnership = (info: {}[]) => ({
-    type: UPDATE_COMPANY_INVESTORS_OWNERSHIP,
+    type: SET_COMPANY_INVESTORS_OWNERSHIP,
     arg: info
 });
 
 export const updateCompanyFundOwnership = (info: {}[]) => ({
-    type: UPDATE_COMPANY_FUND_OWNERSHIP,
+    type: SET_COMPANY_FUND_OWNERSHIP,
     arg: info
 });
 

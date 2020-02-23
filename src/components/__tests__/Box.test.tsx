@@ -3,15 +3,17 @@ import { render, fireEvent } from '@testing-library/react';
 import Box from '../Box';
 import Table, { TableCell, TableRow } from '../../models/Table';
 import { Action } from '../../redux/actions';
-import ListData, { ListDataRow } from '../../models/List';
+import List, { ListRow } from '../../models/List';
 import Alert from '../../models/Alert';
 import * as actions from '../../redux/actions';
 
+const titles = {tableBox: 'Order History', 
+                listBox: 'List Box', 
+                alertBox: 'Alerts Box'}
 const alerts_ = ['Alert 1', 'Alert 2', 'Alert 3', 'Alert 4'];
 const mockDispatch = jest.fn((action: Action) => {});
 
 const renderTableBox = (headerContent: string[], cellsContent: string[]) => {
-    const title = 'Order History';
     const headers: TableCell[] = [];
     for (const item of headerContent) {
         headers.push(new TableCell(item));
@@ -22,37 +24,38 @@ const renderTableBox = (headerContent: string[], cellsContent: string[]) => {
     }
     const row = new TableRow(cells, 'sell');
     return render(<Box id={0} 
-                       title={title} 
-                       tableData={new Table(headers, [row])} 
+                       title={titles.tableBox} 
+                       tableData={new Table(headers, row.cells.length !== 0 ? [row] : [])} 
                        selectedBox={0}
-                       dispatch={(action: Action) => {}} />);
+                       dispatch={mockDispatch} />);
 }
 
 const renderSingleRowListBox = (listItems: string[]) => {
-    const listRows: ListDataRow[] = [];
+    const listRows: ListRow[] = [];
     for (const item of listItems) {
-        listRows.push(new ListDataRow(item));
+        listRows.push(new ListRow(item));
     }
-    const listData = new ListData(listRows);
+    const listData = new List(listRows);
     return render(<Box id={0} 
-                       title={'List Box'} 
+                       title={titles.listBox}
                        listData={listData} 
                        selectedBox={0}
-                       dispatch={(action: Action) => {}} />);
+                       dispatch={mockDispatch} />);
 }
 
 const renderMultiRowListBox = (mainListItems: string[], 
     secondaryListItems: string[]) => {
-    const listRows: ListDataRow[] = [];
+    const listRows: ListRow[] = [];
     for (let index = 0; index < mainListItems.length; index++) {
-        listRows.push(new ListDataRow(mainListItems[index], 'application', '', secondaryListItems[index]));
+        listRows.push(new ListRow(mainListItems[index], 'application', '', 
+            secondaryListItems[index]));
     }
-    const listData = new ListData(listRows);
+    const listData = new List(listRows);
     return render(<Box id={0} 
-                       title={'List Box'} 
+                       title={titles.listBox}
                        listData={listData} 
                        selectedBox={0}
-                       dispatch={(action: Action) => {}} />);
+                       dispatch={mockDispatch} />);
 }
 
 const renderAlertBox = (id = 0) => {
@@ -61,37 +64,24 @@ const renderAlertBox = (id = 0) => {
         alerts.push(new Alert(index, alerts_[index]));
     }
     return render(<Box id={id} 
-                       title={'Alerts Box'} 
+                       title={titles.alertBox}
                        alerts={alerts} 
                        selectedBox={0}
                        dispatch={mockDispatch} />);
 }
 
 test('renders a non-selected box with a title and a close button', () => {
-    const title = 'Box';
-    const { container, getByText } = render(<Box id={0} 
-                                                 title={title} 
-                                                 tableData={new Table([new TableCell('')], 
-                                                             [new TableRow([new TableCell('')], 'sell')])} 
-                                                 selectedBox={null}
-                                                 dispatch={(action: Action) => {}} />);
-
+    const { container, getByText } = renderAlertBox(1);
     const box = container.querySelector('.box');
     expect(box).toBeTruthy();
     expect(box?.classList.contains('selected')).toBe(false);
-    expect(getByText(title)).toBeTruthy();
+    expect(getByText(titles.alertBox)).toBeTruthy();
     expect(box?.querySelector('.fas.fa-times')).toBeTruthy();
 });
 
 test('renders a selected box', () => {
     const title = 'Selected Box';
-    const { container } = render(<Box id={0} 
-                                      title={title} 
-                                      tableData={new Table([new TableCell('')], 
-                                                  [new TableRow([new TableCell('')], 'sell')])} 
-                                      selectedBox={0}
-                                      dispatch={(action: Action) => {}} />);
-
+    const { container } = renderAlertBox();
     expect(container.querySelector('.box')?.classList.contains('selected')).toBe(true);
 });
 
@@ -99,7 +89,6 @@ test('renders a box with table data', () => {
     const headerContent = ['Time', 'Stock', 'Price', 'Type'];
     const cellsContent = ['1m', 'ABC', '123', 'SELL'];
     const { container } = renderTableBox(headerContent, cellsContent);
-    const box = container.querySelector('.box');
     const tableHeaders = container.querySelectorAll('table thead tr th');
     expect(tableHeaders).toHaveLength(headerContent.length);
     for (let index = 0; index < tableHeaders!.length; index++) {
@@ -113,6 +102,13 @@ test('renders a box with table data', () => {
     for (let index = 0; index < tableCells.length; index++) {
         expect(tableCells[index].innerHTML).toBe(cellsContent[index]);
     }
+});
+
+test('renders a box with empty table data', () => {
+    const headerContent = ['Time', 'Stock', 'Price', 'Type'];
+    const cellsContent: string[] = [];
+    const { container } = renderTableBox(headerContent, cellsContent);
+    expect(container.querySelector('table')).toBeFalsy();
 });
 
 test('renders a box with a single-row-item list data', () => {
@@ -146,29 +142,30 @@ test('renders a box with alerts', () => {
 test('a box gets selected on click', () => {
     const id = 1;
     const { container } = renderAlertBox(id);
-
     const selectBoxAction = actions.selectBox(id);
-    
     mockDispatch.mockClear();
     fireEvent(container.children[0], new MouseEvent('click', {bubbles: true, cancelable: true}));
     expect(mockDispatch).toHaveBeenCalledWith(selectBoxAction);
 });
 
-test('a box triggers a move action on keypdown', () => {
+test('a box gets unselected on Escape key press', () => {
+    const id = 0;
+    const { container } = renderAlertBox(id);
+    mockDispatch.mockClear();
+    fireEvent.keyDown(container.children[0], {key: "Escape", code: "Escape",
+                                              keyCode: 27, charCode: 27});
+    expect(mockDispatch).toHaveBeenCalledWith(actions.selectBox(id));
+});
+
+test('a box tirggers a menu reveal action', () => {
     const id = 1;
     const { container } = renderAlertBox(id);
 
-    const moveBoxBackAction = actions.moveBoxBack(id);
-    const moveBoxForwardAction = actions.moveBoxForward(id);
-
+    const setMenuVisibleAction = actions.setMenuVisible(true, id);
     mockDispatch.mockClear();
-    // container.children[0].focus();
-    fireEvent.keyDown(container.children[0], {code: 37, charCode: 37});
-    // expect(mockDispatch).toHaveBeenCalledWith(moveBoxBackAction);
-
-    mockDispatch.mockClear();
-    fireEvent.keyDown(container.children[0], {code: 39, charCode: 39});
-    // expect(mockDispatch).toHaveBeenCalledWith(moveBoxForwardAction);
+    fireEvent(container.querySelector('.fas.fa-ellipsis-v')!, 
+        new MouseEvent('click', {bubbles: true, cancelable: true}));
+    expect(mockDispatch).toHaveBeenCalledWith(setMenuVisibleAction);
 });
 
 test('a box tirggers a close action', () => {
@@ -177,6 +174,7 @@ test('a box tirggers a close action', () => {
 
     const removeBoxAction = actions.removeBox(id);
     mockDispatch.mockClear();
-    fireEvent(container.querySelector('.fas.fa-times')!, new MouseEvent('click', {bubbles: true, cancelable: true}));
+    fireEvent(container.querySelector('.fas.fa-times')!, new MouseEvent('click', 
+        {bubbles: true, cancelable: true}));
     expect(mockDispatch).toHaveBeenCalledWith(removeBoxAction);
 });
