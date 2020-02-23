@@ -92,13 +92,9 @@ export default class FinnHub {
             socket.send(JSON.stringify({'type':'subscribe', 'symbol': symbol}));
         });
         socket.addEventListener('message', event => {
-            console.log(event)
             try {
                 onData(JSON.parse(event.data).data[0]);
             } catch (e) {}
-        });
-        socket.addEventListener('open', event => {
-            console.log('Socket opened')
         });
         return socket;
     }
