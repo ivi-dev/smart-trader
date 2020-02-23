@@ -2,28 +2,6 @@ import { Option } from '../redux/store';
 import * as config from '../config';
 import Stock from '../models/Stock';
 
-export type CompanyInfo = {
-    address: string,
-    city: string,
-    country: string,
-    currency: string,
-    cusip: string,
-    description: string,
-    exchange: string,
-    ggroup: string,
-    gind: string,
-    gsector: string,
-    gsubind: string,
-    ipo: string,
-    isin: string,
-    naics: string,
-    name: string,
-    phone: string,
-    state: string,
-    ticker: string,
-    weburl: string
-}
-
 class FinnHubAPILimitError extends Error {
     constructor() {
         super('FinnHub\'s call Limit reached. Wait a bit and try again.');
