@@ -44,7 +44,7 @@ const data = {orderHistory, activities, headlines, headlinesMenuItems:
     displayedAlertsLevel: 'all' as AlertLevel};
 
 let boxes = [new Box(1, 'Box 1', BoxType.ORDER_HISTORY), 
-               new Box(2, 'Box 2', BoxType.RECENT_ACTIVIY), 
+               new Box(2, 'Box 2', BoxType.RECENT_ACTIVITY), 
                new Box(3, 'Box 3', BoxType.HEADLINES), 
                new Box(4, 'Box 4', BoxType.ALERTS)];
 
