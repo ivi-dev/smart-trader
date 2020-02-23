@@ -1,9 +1,4 @@
 import localForage from 'localforage';
-import List from '../models/List';
-import Table from '../models/Table';
-import Alert from '../models/Alert';
-import Box from '../models/Box';
-import Stock from '../models/Stock';
 
 export enum Key {
     ACTIVITIES = 'ACTIVITY',
@@ -24,5 +19,9 @@ export default class DB {
 
     static fetch(key: Key) {
         return localForage.getItem(key);
+    }
+
+    static delete(key: Key) {
+        return localForage.removeItem(key);
     }
 }
