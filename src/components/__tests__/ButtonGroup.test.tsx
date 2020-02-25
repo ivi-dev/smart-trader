@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import ButtonGroup from '../ButtonGroup';
-import { Option } from '../../redux/store';
+import { Option } from '../../redux/store/types';
 
 const mockHandleSelect = jest.fn((data: string | number) => {});
 const mockOnClick = jest.fn((value: string | number) => {});

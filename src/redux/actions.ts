@@ -3,67 +3,31 @@ import Box, { BoxType } from '../models/Box';
 import List from '../models/List';
 import Table from '../models/Table';
 import Alert from '../models/Alert';
-import { ChartOptions } from './store';
+import { ChartOptions, TrackerMode, Option } from './store/types';
 import { isVowel } from '../utility';
-import { Option } from './store';
 
-export const SET_STOCKS_LIST = 'SET_STOCKS_LIST';
-export const SELECT_STOCK = 'SELECT_STOCK';
-export const SEARCH_FOR_STOCK = 'SEARCH_FOR_STOCK';
+// Stocks
+export const SET_STOCK_INDEX = 'SET_STOCK_INDEX';
+export const START_STOCK_TRACK = 'START_STOCK_TRACK';
+export const SET_STOCK_DETAILS = 'SET_STOCK_DETAILS';
+export const SEARCH_MARKET = 'SEARCH_MARKET';
 export const SEARCH_WATCHLIST = 'SEARCH_WATCHLIST';
 export const ADD_TO_WATCHLIST = 'ADD_TO_WATCHLIST';
 export const REMOVE_FROM_WATCHLIST = 'REMOVE_FROM_WATCHLIST';
-export const UPDATE_WATCHLIST = 'UPDATE_WATCHLIST';
-export const UPDATE_EXCHANGES = 'UPDATE_EXCHANGES';
+export const SET_WATCHLIST = 'SET_WATCHLIST';
+export const SET_EXCHANGES = 'SET_EXCHANGES';
 export const SELECT_EXCHANGE = 'SELECT_EXCHANGE';
-export const UPDATE_SELECTED_EXCHANGE = 'UPDATE_SELECTED_EXCHANGE';
-export const UPDATE_STOCK = 'UPDATE_STOCK';
-
-export const SET_CHART_TYPE = 'SET_CHART_TYPE';
-export const SET_CHART_YEAR = 'SET_CHART_SOURCE';
-export const SET_CHART_RESOLUTION = 'SET_CHART_RESOLUTION';
-
-export const ADD_CHART = 'ADD_CHART';
-export const REMOVE_CHART = 'REMOVE_CHART';
-export const SELECT_CHART = 'SELECT_CHART';
-export const ADD_BOX = 'ADD_BOX';
-export const REMOVE_BOX = 'REMOVE_BOX';
-export const SELECT_BOX = 'SELECT_BOX';
-export const MOVE_BOX_BACK = 'MOVE_BOX_BACK';
-export const MOVE_BOX_FORWARD = 'MOVE_BOX_FORWARD';
-export const SET_BOXES = 'SET_BOXES';
-export const DISMISS_ALERT = 'DISMISS_ALERT';
-export const SET_DISPLAYED_ALERTS_LEVEL = 'SET_DISPLAYED_ALERTS_LEVEL';
-export const SET_DISPLAYED_ACTIVITIES_LEVEL = 'SET_DISPLAYED_ACTIVITIES_LEVEL';
-export const SET_DISPLAYED_ORDERS_LEVEL = 'SET_DISPLAYED_ORDERS_LEVEL';
-export const ADD_ALERT = 'ADD_ALERT';
-export const UPDATE_ALERTS = 'UPDATE_ALERTS';
-
-export const BUY = 'BUY';
-export const SELL = 'SELL';
-export const SET_BUY_QTY = 'SET_BUY_QTY';
-export const SET_SELL_QTY = 'SET_SELL_QTY';
-
-export const SET_ORDER_HISTORY = 'SET_ORDER_HISTORY';
-export const UPDATE_ACTIVITIES = 'UPDATE_ACTIVITIES';
-export const UPDATE_HEADLINES = 'UPDATE_HEADLINES';
-
-export const TOGGLE_HELP = 'TOGGLE_HELP';
-
-export const SET_ACTIVE_HELP_SECTION = 'SET_ACTIVE_HELP_SECTION';
-export const UPDATE_BALANCE = 'UPDATE_BALANCE';
-
-export const SELECT_STOCK_START_LETTER = 'SELECT_STOCK_START_LETTER';
-export const SET_STOCK_INDEX = 'SET_STOCK_START_LETTER';
-
-export const UPDATE_CHART_OPTIONS = 'SET_CHART_DATA';
+export const SET_SELECTED_EXCHANGE = 'SET_SELECTED_EXCHANGE';
+export const SET_STOCKS_LIST = 'SET_STOCKS_LIST';
+export const UPDATE_CHART = 'UPDATE_CHART';
 export const TOGGLE_TRACKER = 'TOGGLE_TRACKER';
-export const SWITCH_TRACKER_MODE = 'SWITCH_TRACKER_MODE';
-export const SET_TRACKER_MODE = 'SET_TRACKER_MODE';
+export const TOGGLE_TRACKER_MODE = 'TOGGLE_TRACKER_MODE';
 export const SET_TRACKER = 'SET_TRACKER';
 
+// Company
 export const SET_COMPANY_PROFILE = 'UPDATE_COMPANY_PROFILE';
 export const SET_CEO_INFO = 'UPDATE_CEO_INFO';
+export const SET_EXECUTIVES_LIST = 'UPDATE_EXECUTIVES_LIST';
 export const SET_COMPANY_PRICE_METRIC = 'UPDATE_COMPANY_PRICE_METRIC';
 export const SET_COMPANY_VALUATION_METRIC = 'UPDATE_COMPANY_VALUATION_METRIC';
 export const SET_COMPANY_GROWTH_METRIC = 'UPDATE_COMPANY_GROWTH_METRIC';
@@ -73,10 +37,36 @@ export const SET_COMPANY_FINANCIAL_STRENGTH_METRIC = 'UPDATE_COMPANY_FINANCIAL_S
 export const SET_COMPANY_PER_SHARE_METRIC = 'UPDATE_COMPANY_PER_SHARE_METRIC';
 export const SET_COMPANY_INVESTORS_OWNERSHIP = 'UPDATE_COMPANY_INVESTORS_OWNERSHIP';
 export const SET_COMPANY_FUND_OWNERSHIP = 'UPDATE_COMPANY_FUNDS_OWNERSHIP';
-export const SET_EXECUTIVES_LIST = 'UPDATE_EXECUTIVES_LIST';
-
 export const SET_ACTIVE_COMPANY_SECTION = 'SET_ACTIVE_COMPANY_SECTION';
+
+// Trade
+export const BUY = 'BUY';
+export const SELL = 'SELL';
+export const SET_BUY_QTY = 'SET_BUY_QTY';
+export const SET_SELL_QTY = 'SET_SELL_QTY';
+export const UPDATE_BALANCE = 'UPDATE_BALANCE';
+
+// Reports
+export const ADD_BOX = 'ADD_BOX';
+export const REMOVE_BOX = 'REMOVE_BOX';
+export const SELECT_BOX = 'SELECT_BOX';
+export const MOVE_BOX_BACK = 'MOVE_BOX_BACK';
+export const MOVE_BOX_FORWARD = 'MOVE_BOX_FORWARD';
+export const SET_BOXES = 'SET_BOXES';
+export const ADD_ALERT = 'ADD_ALERT';
+export const SET_ALERTS = 'UPDATE_ALERTS';
+export const DISMISS_ALERT = 'DISMISS_ALERT';
+export const SET_DISPLAYED_ORDERS_LEVEL = 'SET_DISPLAYED_ORDERS_LEVEL';
+export const SET_DISPLAYED_ACTIVITIES_LEVEL = 'SET_DISPLAYED_ACTIVITIES_LEVEL';
+export const SET_DISPLAYED_ALERTS_LEVEL = 'SET_DISPLAYED_ALERTS_LEVEL';
+export const SET_ORDER_HISTORY = 'SET_ORDER_HISTORY';
+export const SET_ACTIVITIES = 'UPDATE_ACTIVITIES';
+export const SET_HEADLINES = 'UPDATE_HEADLINES';
 export const TOGGLE_MENU = 'TOGGLE_MENU';
+
+// Help
+export const TOGGLE_HELP = 'TOGGLE_HELP';
+export const SET_ACTIVE_HELP_SECTION = 'SET_ACTIVE_HELP_SECTION';
 
 export const activityLabels = {
     sell: (amount: number, symbolName: string, price: number) => {
@@ -107,14 +97,14 @@ export const setStocksList = (list: Stock[]) => ({
     arg: list
 });
 
-export const selectStock = (index: Stock) => ({
-    type: SELECT_STOCK,
-    arg: index
+export const startStockTrack = (stock: Stock) => ({
+    type: START_STOCK_TRACK,
+    arg: stock
 });
 
-export const searchForIndex = (name: string) => ({
-    type: SEARCH_FOR_STOCK,
-    arg: name
+export const searchMarket = (by: string) => ({
+    type: SEARCH_MARKET,
+    arg: by
 });
 
 export const searchWatchlist = (name: string) => ({
@@ -193,12 +183,12 @@ export const setOrderHistory = (history: Table) => ({
 });
 
 export const updateActivities = (activity: List) => ({
-    type: UPDATE_ACTIVITIES,
+    type: SET_ACTIVITIES,
     arg: activity
 });
 
 export const updateHeadlines = (headlines: List, category: string) => ({
-    type: UPDATE_HEADLINES,
+    type: SET_HEADLINES,
     arg: { headlines, category }
 });
 
@@ -238,12 +228,12 @@ export const addAlert = (level: string, message: string) => ({
 });
 
 export const updateAlerts = (alerts: Alert[]) => ({
-    type: UPDATE_ALERTS,
+    type: SET_ALERTS,
     arg: alerts
 });
 
-export const updateExchanges = (list: Option[]) => ({
-    type: UPDATE_EXCHANGES,
+export const setExchanges = (list: Option[]) => ({
+    type: SET_EXCHANGES,
     arg: list
 });
 
@@ -252,13 +242,13 @@ export const selectExchange = (exchange: string) => ({
     arg: exchange
 });
 
-export const updateSelectedExchange = (name: string) => ({
-    type: UPDATE_SELECTED_EXCHANGE,
+export const setSelectedExchange = (name: string) => ({
+    type: SET_SELECTED_EXCHANGE,
     arg: name
 });
 
-export const updateWatchList = (watchList: Stock[]) => ({
-    type: UPDATE_WATCHLIST,
+export const setWatchList = (watchList: Stock[]) => ({
+    type: SET_WATCHLIST,
     arg: watchList
 });
 
@@ -267,8 +257,8 @@ export const setStockIndex = (index: string) => ({
     arg: index
 });
 
-export const updateChartOptions = (options: ChartOptions) => ({
-    type: UPDATE_CHART_OPTIONS,
+export const updateChart = (options: ChartOptions) => ({
+    type: UPDATE_CHART,
     arg: options
 });
 
@@ -277,9 +267,9 @@ export const toggleTracker = () => ({
     arg: null
 });
 
-export const setTrackerMode = (mode: boolean) => ({
-    type: SET_TRACKER_MODE,
-    arg: mode
+export const toggleTrackerMode = () => ({
+    type: TOGGLE_TRACKER_MODE,
+    arg: null
 });
 
 export const setTracker = (tracker: any) => ({
@@ -287,8 +277,8 @@ export const setTracker = (tracker: any) => ({
     arg: tracker
 });
 
-export const updateStock = (data: Stock) => ({
-    type: UPDATE_STOCK,
+export const setStockDetails = (data: Stock) => ({
+    type: SET_STOCK_DETAILS,
     arg: data
 });
 
@@ -357,7 +347,7 @@ export const updateCompanyFundOwnership = (info: {}[]) => ({
     arg: info
 });
 
-export const setMenuVisible = (visible: boolean, boxId: number) => ({
+export const toggleMenu = (boxId: number) => ({
     type: TOGGLE_MENU,
-    arg: {visible, boxId}
+    arg: boxId
 });

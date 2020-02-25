@@ -1,10 +1,10 @@
 import React from 'react';
 import './App.css';
 import StocksList  from './StocksList';
-import { Option, Chart as ChartType, HelpType } from '../redux/store';
+import { Option, Chart as ChartType, HelpType, Tracker } from '../redux/store/types';
 import Chart from './Chart';
 import Reports from './Reports';
-import { State, ReportData } from '../redux/store';
+import { State, ReportData } from '../redux/store/types';
 import { connect } from 'react-redux';
 import Stock from '../models/Stock';
 import { Action } from '../redux/actions';
@@ -19,30 +19,30 @@ import Help from './Help';
 import Selector from './Selector';
 
 type AppProp = {
-  stocksList: Stock[],
-  stockStartLetter: string,
+  stockIndex: string,
+  marketList: Stock[],
+  watchList: Stock[],
   marketSearchResultsList: Stock[],
   watchListSearchResultsList: Stock[],
-  watchList: Stock[],
   exchanges: Option[],
   stockIndexOptions: Option[],
   selectedExchange: {name: string, code: string},
 
+  tracker: Tracker,
   chart: ChartType,
-  tracker: WebSocket | number | null,
-  simulateTracker: boolean,
 
   buyButtons: Option[],
   sellButtons: Option[],
+  balance: number,
+  buyQty: number,
+  sellQty: number,
+
   reportButtons: Option[],
   generalButtons: Option[],
   reportData: ReportData,
   boxes: Box[],
   selectedBox: number | null,
-  balance: number,
-  buyQty: number,
-  sellQty: number,
-
+  
   help: HelpType,
 
   dispatch: (action: Action) => void
@@ -70,9 +70,9 @@ const App = (prop: AppProp) => {
                     status='Fetching stocks...' 
                     listType='symbolsList' 
                     data={prop.marketSearchResultsList.length === 0 ? 
-                      prop.stocksList : prop.marketSearchResultsList} 
+                      prop.marketList : prop.marketSearchResultsList} 
                     dispatch={prop.dispatch} 
-                    onSearch={value => prop.dispatch(actions.searchForIndex(value))} />
+                    onSearch={value => prop.dispatch(actions.searchMarket(value))} />
         <StocksList title='Watchlist' 
                     status='Empty' 
                     listType='watchList' 
@@ -96,7 +96,7 @@ const App = (prop: AppProp) => {
                     classes='ml-4' />
           <Selector title='Stock Index:'
                     options={prop.stockIndexOptions} 
-                    selected={prop.stockStartLetter}
+                    selected={prop.stockIndex}
                     handleSelect={value => prop.dispatch(actions.setStockIndex(value))} 
                     classes='ml-4' />
           <Text content={'Balance:'} 
@@ -132,7 +132,6 @@ const App = (prop: AppProp) => {
         <Row>
           <Chart data={prop.chart} 
                  tracker={prop.tracker}
-                 trackerMode={prop.simulateTracker ? 'simulated' : 'live'} 
                  dispatch={prop.dispatch} />
         </Row>
         <Reports boxes={prop.boxes} 
@@ -146,8 +145,8 @@ const App = (prop: AppProp) => {
 
 function mapStateToProps(state: State) {
   return {
-    stocksList: state.stocksList,
-    stockStartLetter: state.stockStartLetter,
+    stockIndex: state.stockIndex,
+    marketList: state.marketList,
     marketSearchResultsList: state.marketSearchResultsList,
     watchListSearchResultsList: state.watchListSearchResultsList,
     watchList: state.watchList,
@@ -156,7 +155,6 @@ function mapStateToProps(state: State) {
     selectedExchange: state.selectedExchange,
 
     chart: state.chart,
-    simulateTracker: state.simulateTracker,
     tracker: state.tracker,
 
     buyButtons: state.buyButtons,

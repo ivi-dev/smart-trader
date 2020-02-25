@@ -23,14 +23,14 @@ const StocksList = (prop: StocksListProp) => {
             if (altKey) {
                 prop.dispatch!(actions.addToWatchlist(data));
             } else {
-                prop.dispatch!(actions.selectStock(data));
+                prop.dispatch!(actions.startStockTrack(data));
             }
         } else {
             /* istanbul ignore next */
             if (altKey) {
                 prop.dispatch!(actions.removeFromWatchlist(data));
             } else {
-                prop.dispatch!(actions.selectStock(data));
+                prop.dispatch!(actions.startStockTrack(data));
             }
         }
     }

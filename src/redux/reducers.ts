@@ -1,6 +1,5 @@
 import * as actions from './actions';
-import { state as initialState, 
-    store, fetchStocks, ChartOptions } from './store';
+import { state as initialState, store } from './store/store';
 import Stock from '../models/Stock';
 import { Action } from './actions';
 import Box, { BoxType } from '../models/Box';
@@ -9,121 +8,137 @@ import ListData, { ListRow } from '../models/List';
 import { time, date } from '../utility';
 import DB, { Key } from '../services/DB';
 import Alert from '../models/Alert';
-import { Option } from './store';
-import { number } from '../randomizer';
-import FinnHub from '../services/FinnHub';
+import { Option, ChartOptions } from './store/types';
+import FinnHub, { CompanyGeneralInfoSections, 
+    CompanyMetricSections } from '../services/FinnHub';
+import { filterStocksByIndex, fetchStocks, clearChart, stopSimulatedTracker, startSimulatedTracker, stopLiveTracker, startLiveTracker, filterStocksByName, stockIsListed, findExchange, determineCompanyInfoType, findCompanySectionByName, selectCompanySection, getLatestBoxId, getBoxType, getLatestAlertId, selectHelpSection, toggleTracker, toggleTrackerMode } from './store/methods';
 
-const getLatestBoxId = (boxList: Box[]) => {
-    return boxList.length !== 0 ? boxList[boxList.length - 1].id : 0;
-}
-
-const getLatestAlertId = (alertList: Alert[]) => {
-    return alertList.length !== 0 ? alertList[0].id : 0;
-}
-
-const getBoxType = (boxes: Box[], id: number) => {
-    for (const box of boxes) {
-        if (box.id === id) {
-            return box.type;
-        }
-    }
-}
-
-const startSimulatedTracker = (stock: Stock, options: ChartOptions) => {
-    return setInterval(() => {
-        options.series[0].name = stock.name;
-        options.series[0].data.push({x: time(new Date()), y: number(50, 100)});
-        store.dispatch(actions.updateChartOptions(options));
-        store.dispatch(actions.updateStock(new Stock(stock.id, stock.name, stock.open, stock.close, stock.high, stock.low, number(50, 100), number(-5, 5), stock.companyName)));
-    }, 2000);
-}
-
-let timestamp = 0;
-const startLiveTracker = (stock: Stock, options: ChartOptions) => {
-    return FinnHub.startTrack(stock.name, data_ => {
-        if (data_.t > timestamp + 2000) {
-            options.series[0].name = stock.name;
-            options.series[0].data.push(
-            {x: time(new Date(data_.t)), y: data_.p});
-            store.dispatch(actions.updateChartOptions(options));
-            store.dispatch(actions.updateStock(new Stock(stock.id, stock.name, 
-            stock.open, stock.close, stock.high > data_.p ? stock.high : data_.p, 
-            stock.low < data_.p ? stock.low : data_.p, data_.p, data_.p - stock.close, 
-            stock.companyName)));
-            timestamp = data_.t;
-        }
-    });
-}
-
-const stopLiveTracker = (tracker: WebSocket, stock: Stock,
-    callback?: () => void) => {
-        FinnHub.stopTrack(tracker, stock.name, callback);
-}
-
-export const main = (state = initialState, action: Action) => {
+export const mainReducer = (state = initialState, action: Action) => {
+    // Stocks
     switch (action.type) {
-        case actions.SET_STOCKS_LIST:
-            const list = action.arg as Array<Stock>;
-            return Object.assign({}, state, {allStocksList: list}, 
-                {stocksList: list.filter(stock => 
-                    stock.name.toLowerCase()
-                    .startsWith(state.stockStartLetter
-                        .toLowerCase()))});
-
-        case actions.SELECT_STOCK_START_LETTER:
-            const letter = action.arg as string;
-            let stocks = state.allStocksList.filter(stock => 
-                stock.name.toLowerCase().startsWith(letter.toLowerCase()));
-            DB.save(Key.STOCK_INDEX, letter);
-            return Object.assign({}, state, {stocksList: stocks});
-
         case actions.SET_STOCK_INDEX:
-            return Object.assign({}, state, {stockStartLetter: action.arg as string});
+            const index = action.arg as string;
+            DB.save(Key.STOCK_INDEX, index);
+            return Object.assign({}, state, {stockIndex: index},
+                                            {marketList: filterStocksByIndex(state.allStocksList, 
+                                                                             index)});
 
-        case actions.SELECT_STOCK:
+        case actions.START_STOCK_TRACK:
             const stock = action.arg as Stock;
-            if (!stock) {
+            if (stock) {
+                let tracker = null;
+                FinnHub.quote(stock.name, quote => {
+                    const stock_ = new Stock(stock.id, stock.name, 
+                                             quote.o, quote.c, 
+                                             quote.h, quote.l, 
+                                             quote.c, quote.pc - quote.c, 
+                                             stock.companyName);
+                    store.dispatch(actions.setStockDetails(stock_));
+                    let options = clearChart(state.chart);
+                    if (state.tracker.mode === 'simulated') {
+                        stopSimulatedTracker(state.tracker.object as number, () => {
+                            tracker = startSimulatedTracker(stock_, options);
+                            store.dispatch(actions.setTracker(tracker));
+                        });
+                    } else {
+                        stopLiveTracker(state.tracker.object as WebSocket, 
+                                        state.chart.stock!, () => {
+                                            tracker = startLiveTracker(stock_, options, () => {});
+                                            store.dispatch(actions.setTracker(tracker));
+                        });
+                    }
+                    FinnHub.companyProfile(stock.name, profile => 
+                        store.dispatch(actions.updateCompanyProfile(profile)), error => {
+                            store.dispatch(actions.addAlert('error', error.message))
+                    });
+                }, 
+                error => {
+                    store.dispatch(actions.addAlert('error', error.message));
+                });
+                DB.save(Key.STOCK, stock);
+                return Object.assign({}, state, {chart: {...state.chart, 
+                                                         options: {...state.chart.options, 
+                                                                   series: [{name: '', data: []}]}, 
+                                                         stock: stock, 
+                                                         status: 'Loading Data...'}});
+            } else {
                 return state;
             }
-            let tracker_ = null;
+
+        case actions.SET_STOCKS_LIST:
+            const list = action.arg as Stock[];
+            return Object.assign({}, state, {allStocksList: list}, 
+                                            {marketList: filterStocksByIndex(list, state.stockIndex)});
+
+        case actions.SET_STOCK_DETAILS:
+            return Object.assign({}, state, {chart: {...state.chart, stock: action.arg as Stock}});
+
+        case actions.SEARCH_MARKET:
+            return Object.assign({}, state, {marketSearchResultsList: 
+                                                filterStocksByName(state.marketList, 
+                                                                   action.arg as string)});
+
+        case actions.SEARCH_WATCHLIST:
+            return Object.assign({}, state, {watchListSearchResultsList: 
+                                                filterStocksByName(state.watchList, 
+                                                                   action.arg as string)});
+
+        case actions.ADD_TO_WATCHLIST:
+            if (!stockIsListed(action.arg as Stock, state.watchList)) {
+                const wacthList = state.watchList.concat([action.arg as Stock]);
+                DB.save(Key.WATCHLIST, wacthList);
+                return Object.assign({}, state, {watchList: wacthList});
+            }
+            return state;
             
-            FinnHub.quote(stock.name, quote => {
-                const stock_ = new Stock(stock.id, 
-                    stock.name, quote.o, quote.c, quote.h, quote.l, 
-                    quote.c, quote.pc - quote.c, stock.companyName);
-                store.dispatch(actions.updateStock(stock_));
+        case actions.REMOVE_FROM_WATCHLIST:
+            const watchList = state.watchList.filter(index => index !== (action.arg as Stock));
+            DB.save(Key.WATCHLIST, watchList);
+            return Object.assign({}, state, {watchList: watchList});
 
-                if (state.simulateTracker) {
-                    clearInterval(state.tracker as number);
-                    let chartOptions = Object.assign({}, state.chart.options);
-                    chartOptions.series[0].data = [];
-                    tracker_ = startSimulatedTracker(stock_, chartOptions);
-                    store.dispatch(actions.setTracker(tracker_));
-                } else {
-                    let chartOptions = Object.assign({}, state.chart.options);
-                    chartOptions.series[0].data = [];
-                    stopLiveTracker(state.tracker as WebSocket, state.chart.stock!, 
-                        () => {
-                            tracker_ = startLiveTracker(stock_, options);
-                            store.dispatch(actions.setTracker(tracker_));
-                        });
-                }
+        case actions.SET_WATCHLIST:
+            return Object.assign({}, state, {watchList: action.arg as Stock[]}); 
 
-            }, error => {
-                if (error) {
-                    store.dispatch(actions.addAlert('error', error.message))
-                }
-            });
-            FinnHub.companyProfile(stock.name, profile => 
-                store.dispatch(actions.updateCompanyProfile(profile)), error => {
-                    if (error) {
-                        store.dispatch(actions.addAlert('error', error.message))
-                    }
-            });
-            DB.save(Key.STOCK, stock);
-            return Object.assign({}, state, {tracker: tracker_}, 
-                {chart: {...state.chart, options: {...state.chart.options, series: [{data: []}]}, stock: stock, status: 'Loading Data...'}});
+        case actions.SET_EXCHANGES:
+            return Object.assign({}, state, {exchanges: action.arg as Option[]});
 
+        /* istanbul ignore next */
+        case actions.SELECT_EXCHANGE:
+            const result = findExchange(state.exchanges, action.arg as string);
+            if (result) {
+                fetchStocks(result.code);
+                DB.save(Key.EXCHANGE, result.exchange);
+                return Object.assign({}, state, {selectedExchange: result.exchange});
+            } else {
+                return state;
+            }
+
+        case actions.SET_SELECTED_EXCHANGE:
+            return Object.assign({}, state, {selectedExchange: {name: action.arg as string}});
+
+        case actions.UPDATE_CHART:
+            const options = action.arg as ChartOptions;
+            return Object.assign({}, state, {chart: {...state.chart, 
+                                                     options: options}});
+
+        case actions.TOGGLE_TRACKER:
+            return Object.assign({}, state, {tracker: {...state.tracker, 
+                                                       object: toggleTracker(state)}});
+
+        case actions.TOGGLE_TRACKER_MODE:
+            const {tracker, mode} = toggleTrackerMode(state);
+            return Object.assign({}, state, {tracker: {object: tracker,
+                                                       mode: mode}},
+                                            {chart: {...state.chart, 
+                                                     options: {...state.chart.options, 
+                                                               series: [{name: '', 
+                                                                         data: []}]}}});
+
+        case actions.SET_TRACKER:
+            return Object.assign({}, state, {tracker: {...state.tracker, 
+                                                       object: action.arg}});
+
+        // Company
         case actions.SET_COMPANY_PROFILE:
             return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, profile: action.arg}}});
 
@@ -158,57 +173,34 @@ export const main = (state = initialState, action: Action) => {
             return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, investors: action.arg}}});
 
         case actions.SET_COMPANY_FUND_OWNERSHIP:
-            return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, funds: action.arg}}});
+            return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, funds: action.arg}}});      
 
-        case actions.UPDATE_STOCK:
-            return Object.assign({}, state, {chart: {...state.chart, stock: action.arg as Stock}});
-
-        case actions.SEARCH_FOR_STOCK:
-            return Object.assign({}, state, {marketSearchResultsList: 
-                state.stocksList.filter(index => 
-                    index.name.toLowerCase().includes(action.arg.toLowerCase() as string))});   
-
-        case actions.SEARCH_WATCHLIST:
-            return Object.assign({}, state, {watchListSearchResultsList: state.watchList.filter(index => index.name.toLowerCase().includes(action.arg.toLowerCase() as string))});    
-
-        case actions.ADD_TO_WATCHLIST:
-            if (!state.watchList.find(item => item.name === (action.arg as Stock).name)) {
-                const watchListAfterAdd = state.watchList.concat([action.arg as Stock]);
-                DB.save(Key.WATCHLIST, watchListAfterAdd);
-                return Object.assign({}, state, {watchList: watchListAfterAdd});
+        /* istanbul ignore next */
+        case actions.SET_ACTIVE_COMPANY_SECTION:
+            const section = action.arg as string;
+            const type = determineCompanyInfoType(section);
+            const handler = findCompanySectionByName(state.chart.company.sections, section!)!.onClick!;
+            if (type === 'general') {
+                FinnHub.companyGeneralInfo(state.chart.stock!.name, 
+                                           CompanyGeneralInfoSections[section.toLowerCase()], 
+                                           data => handler(data), 
+                                           error => store.dispatch(actions.addAlert('error', 
+                                                                    error.message)));
+            } else {
+                FinnHub.companyMetrics(state.chart.stock!.name, 
+                                       CompanyMetricSections[section.toLowerCase()], 
+                                       data => handler(data), 
+                                       error => store.dispatch(actions.addAlert('error', 
+                                                                error.message)));
             }
-            return state;
-            
-        case actions.REMOVE_FROM_WATCHLIST:
-            const watchListAfterRemove = state.watchList.filter(index => index !== (action.arg as Stock));
-            DB.save(Key.WATCHLIST, watchListAfterRemove);
-            return Object.assign({}, state, {watchList: watchListAfterRemove});
+            return Object.assign({}, state, {chart: {...state.chart, 
+                                                     status: 'Loading Data...', 
+                                                     company: {...state.chart.company, 
+                                                               sections: selectCompanySection(state.chart.company.sections.slice(), action.arg as string)}}});
 
-        case actions.UPDATE_WATCHLIST:
-            return Object.assign({}, state, {watchList: action.arg as Stock[]}); 
-
-        case actions.UPDATE_EXCHANGES:
-            return Object.assign({}, state, {exchanges: action.arg as Option[]});
-
-        case actions.SELECT_EXCHANGE:
-            const exchange = action.arg as string;
-            let exchangeCode = '', exchange_ = {name: '', code: ''};
-            for (const exch of state.exchanges) {
-                if (exch.name === exchange) {
-                    exchangeCode = exch.data!.toString();
-                    exchange_ = {name: exch.name, code: exch.data!};
-                    break;
-                }
-            }
-            fetchStocks(exchangeCode);
-            DB.save(Key.EXCHANGE, exchange_);
-            return Object.assign({}, state, {selectedExchange: exchange_});
-
-        case actions.UPDATE_SELECTED_EXCHANGE:
-            return Object.assign({}, state, {selectedExchange: {name: action.arg as string}});
-
+        // Trade
         case actions.BUY:
-            if ((action.arg as number) !== 0) {
+            if (state.buyQty !== 0) {
                 let stockBuy = state.chart.stock;
                 if (stockBuy !== null) {
                     const orderHistory = Object.assign({}, state.reportData.orderHistory);
@@ -221,22 +213,24 @@ export const main = (state = initialState, action: Action) => {
                     orderHistory.rows.push(order);
                     activities.items.push(new ListRow(
                         actions.activityLabels.buy(state.buyQty, 
-                            state.chart.stock!.name.toUpperCase(), 
-                            stockBuy!.current), 'trade', 'fas fa-dollar-sign buy'));
+                                                   state.chart.stock!.name.toUpperCase(), 
+                                                   stockBuy!.current), 
+                                                   'trade', 
+                                                   'fas fa-dollar-sign buy'));
                     DB.save(Key.ORDERS, orderHistory);
                     DB.save(Key.ACTIVITIES, activities);
                     DB.save(Key.BALANCE, state.balance - stockBuy!.current * state.buyQty);
                 return Object.assign({}, state, {reportData: 
-                    {...state.reportData, orderHistory: orderHistory, 
-                        activities: activities}}, 
-                    {balance: state.balance - stockBuy!.current * state.buyQty},
-                    );
+                                                {...state.reportData, 
+                                                 orderHistory: orderHistory, 
+                                                 activities: activities}}, 
+                                                {balance: state.balance - stockBuy!.current * state.buyQty});
                 }
             }
             return state;
 
         case actions.SELL:
-            if ((action.arg as number) !== 0) {
+            if (state.sellQty !== 0) {
                 let stockSell = state.chart.stock;
                 if (stockSell !== null) {
                     const orderHistory = Object.assign({}, state.reportData.orderHistory);
@@ -249,14 +243,17 @@ export const main = (state = initialState, action: Action) => {
                     orderHistory.rows.push(order);
                     activities.items.push(new ListRow(
                         actions.activityLabels.sell(state.sellQty, 
-                            state.chart.stock!.name.toUpperCase(), stockSell!.current), 'trade', 'fas fa-dollar-sign sell'));
+                                                    state.chart.stock!.name.toUpperCase(), 
+                                                    stockSell!.current), 'trade', 
+                                                    'fas fa-dollar-sign sell'));
                     DB.save(Key.ORDERS, orderHistory);
                     DB.save(Key.ACTIVITIES, activities);
                     DB.save(Key.BALANCE, state.balance + stockSell!.current * state.sellQty);
                 return Object.assign({}, state, {reportData: 
-                    {...state.reportData, orderHistory: orderHistory, 
-                        activities: activities}}, 
-                    {balance: state.balance + stockSell!.current * state.sellQty});
+                                                {...state.reportData, 
+                                                 orderHistory: orderHistory, 
+                                                 activities: activities}}, 
+                                                {balance: state.balance + stockSell!.current * state.sellQty});
                 }
             }
             return state;
@@ -267,65 +264,11 @@ export const main = (state = initialState, action: Action) => {
         case actions.SET_SELL_QTY:
             return Object.assign({}, state, {sellQty: action.arg as number});
 
+        case actions.UPDATE_BALANCE:
+            return Object.assign({}, state, {balance: action.arg as number});
 
 
-
-        case actions.UPDATE_CHART_OPTIONS:
-            const options = action.arg as ChartOptions;
-            return Object.assign({}, state, 
-                {chart: {...state.chart, options: options}});
-
-        case actions.TOGGLE_TRACKER:
-            let tracker = null;
-            if (state.simulateTracker) {
-                if (state.tracker) {
-                    clearInterval(state.tracker as number);
-                } else {
-                    let options = Object.assign({}, state.chart.options);
-                    tracker = startSimulatedTracker(state.chart.stock!, options);
-                }
-            } else {
-                if (state.tracker) {
-                    stopLiveTracker(state.tracker as WebSocket, state.chart.stock!);
-                } else {
-                    let options = Object.assign({}, state.chart.options);
-                    tracker = startLiveTracker(state.chart.stock!, options);
-                }
-            }
-            return Object.assign({}, state, {tracker: tracker});
-
-        case actions.SET_TRACKER_MODE:
-            let tracker_2 = null;
-            if (state.simulateTracker) {
-                if (state.tracker) {
-                    clearInterval(state.tracker as number);
-                    let options = Object.assign({}, state.chart.options);
-                    options.series[0].data = [];
-                    tracker_2 = startLiveTracker(state.chart.stock!, options);
-                }
-            } else {
-                if (state.tracker) {
-                    let options = Object.assign({}, state.chart.options);
-                    const stock_ = state.chart.stock;
-                    options.series[0].data = [];
-                    FinnHub.stopTrack(state.tracker as WebSocket, 
-                        state.chart.stock!.name, () => {
-                            store.dispatch(actions.setTracker(
-                                startSimulatedTracker(stock_!, 
-                                options)));
-                    });
-                }
-            }
-            return Object.assign({}, state, {tracker: tracker_2}, 
-                {simulateTracker: action.arg as boolean}, {chart: {...state.chart, 
-                    options: {...state.chart.options, series: [{data: []}]}}});
-
-        case actions.SET_TRACKER:
-            return Object.assign({}, state, {tracker: action.arg});
-
-
-
-
+        // Reports
         case actions.ADD_BOX:
             const boxType = action.arg as BoxType;
             let boxTitle = Box.getTitle(boxType);
@@ -336,7 +279,8 @@ export const main = (state = initialState, action: Action) => {
             const boxesAfterAdd = state.boxes.concat([new Box(
                 getLatestBoxId(state.boxes) + 1, boxTitle, boxType)]);
             DB.save(Key.BOXES, boxesAfterAdd);
-            return Object.assign({}, state, {boxes: boxesAfterAdd}, {selectedBox: null});
+            return Object.assign({}, state, {boxes: boxesAfterAdd}, 
+                                            {selectedBox: null});
         
         case actions.REMOVE_BOX:
             const boxId_ = action.arg as number;
@@ -345,7 +289,8 @@ export const main = (state = initialState, action: Action) => {
             DB.save(Key.ACTIVITIES, activities_);
             const boxesAfterRemove = state.boxes.filter(box => box.id !== boxId_);
             DB.save(Key.BOXES, boxesAfterRemove);
-            return Object.assign({}, state, {boxes: boxesAfterRemove}, {selectedBox: null});
+            return Object.assign({}, state, {boxes: boxesAfterRemove}, 
+                                            {selectedBox: null});
 
         case actions.SET_BOXES:
             return Object.assign({}, state, {boxes: action.arg as Array<Box>});
@@ -355,7 +300,8 @@ export const main = (state = initialState, action: Action) => {
             const boxes_3 = state.boxes.slice();
             boxes_3.find(box => box.id === id1)!.menuVisible = false;
             return Object.assign({}, state, {selectedBox: state.selectedBox === id1 ?
-                 null : id1}, {boxes: boxes_3});
+                 null : id1}, 
+                                            {boxes: boxes_3});
 
         case actions.MOVE_BOX_BACK:
             const id2 = action.arg as number;
@@ -400,17 +346,17 @@ export const main = (state = initialState, action: Action) => {
             }
             return state;
 
-        case actions.SET_DISPLAYED_ALERTS_LEVEL:
-            return Object.assign({}, state, {reportData: {...state.reportData, displayedAlertsLevel: action.arg as string}});
+        case actions.SET_DISPLAYED_ORDERS_LEVEL:
+            return Object.assign({}, state, {reportData: {...state.reportData, displayedOrdersLevel: action.arg as string}});
 
         case actions.SET_DISPLAYED_ACTIVITIES_LEVEL:
             return Object.assign({}, state, {reportData: {...state.reportData, displayedActivitiesLevel: action.arg as string}});
 
-        case actions.SET_DISPLAYED_ORDERS_LEVEL:
-            return Object.assign({}, state, {reportData: {...state.reportData, displayedOrdersLevel: action.arg as string}});
+        case actions.SET_DISPLAYED_ALERTS_LEVEL:
+            return Object.assign({}, state, {reportData: {...state.reportData, displayedAlertsLevel: action.arg as string}});
 
         case actions.TOGGLE_MENU:
-            const {visible, boxId} = action.arg as {visible: boolean, boxId: number};
+            const boxId = action.arg as number;
             const boxes = state.boxes.slice();
             const box_ = boxes.find(box => box.id === boxId);
             boxes.forEach(box => {if (box.id !== boxId) {box.menuVisible = false}});
@@ -426,128 +372,38 @@ export const main = (state = initialState, action: Action) => {
             return Object.assign({}, state, {reportData: {...state.reportData, 
                 alerts: alerts_}});
 
-        case actions.UPDATE_ALERTS:
-            return Object.assign({}, state, {reportData: 
-                {...state.reportData, alerts: action.arg as Alert[]}});
-
         case actions.SET_ORDER_HISTORY:
-            return Object.assign({}, state, {reportData: {...state.reportData, orderHistory: (action.arg as Table)}});
+            return Object.assign({}, state, {reportData: {...state.reportData, 
+                                                          orderHistory: (action.arg as Table)}});
 
-        case actions.UPDATE_ACTIVITIES:
-            return Object.assign({}, state, {reportData: {...state.reportData, activities: (action.arg as ListData)}});
+        case actions.SET_ACTIVITIES:
+            return Object.assign({}, state, {reportData: {...state.reportData, 
+                                                          activities: (action.arg as ListData)}});
 
-        case actions.UPDATE_HEADLINES:
+        case actions.SET_HEADLINES:
             const { headlines, category } = action.arg as { headlines: ListData, category: string };
-            return Object.assign({}, state, {reportData: {...state.reportData, headlines: headlines, headlinesTitle: category}});
+            return Object.assign({}, state, {reportData: {...state.reportData, 
+                                                          headlines: headlines, 
+                                                          headlinesTitle: category}});
 
+        case actions.SET_ALERTS:
+            return Object.assign({}, state, {reportData: 
+                                            {...state.reportData, 
+                                             alerts: action.arg as Alert[]}});
+
+
+        // Help
         case actions.TOGGLE_HELP:
             const option = action.arg as string
-            return Object.assign({}, state, {help: {...state.help, visible: option === 'close' ? false : true}});
+            return Object.assign({}, state, {help: {...state.help, 
+                                                    visible: option === 'close' ? 
+                                                    false : true}});
 
         case actions.SET_ACTIVE_HELP_SECTION:
-            const sections = state.help.sections.slice();
-            sections.forEach(section => {if (section.name === action.arg as string) {section.selected = true} else {delete section.selected}});
-            return Object.assign({}, state, {help: {...state.help, sections: sections}});
-
-        case actions.SET_ACTIVE_COMPANY_SECTION:
-            const sections_ = state.chart.company.sections.slice();
-            const sectionName = action.arg as string, stock_ = state.chart.stock!;
-            sections_.forEach(section => {if (section.name === sectionName) {section.selected = true} else {delete section.selected}});
-
-            switch (sectionName.toLowerCase()) {
-                case 'ceo (us companies only)':
-                    FinnHub.ceo(stock_.name, ceo => 
-                        store.dispatch(actions.updateCEOInfo(ceo)), error => {
-                            if (error) {
-                                store.dispatch(actions.addAlert('error', error.message))
-                            }
-                        });
-                    break;
-                case 'executives':
-                    FinnHub.executives(stock_.name, list => 
-                        store.dispatch(actions.updateExecutivesList(list)), error => {
-                            if (error) {
-                                store.dispatch(actions.addAlert('error', error.message))
-                            }
-                    });
-                    break;
-                case 'investors ownership':
-                    FinnHub.investors(stock_.name, info => 
-                        store.dispatch(actions.updateCompanyInvestorsOwnership(info)), error => {
-                            if (error) {
-                                store.dispatch(actions.addAlert('error', error.message))
-                            }
-                    });
-                    break;
-                case 'fund ownership':
-                    FinnHub.funds(stock_.name, info => 
-                        store.dispatch(actions.updateCompanyFundOwnership(info)), error => {
-                            if (error) {
-                                store.dispatch(actions.addAlert('error', error.message))
-                            }
-                    });
-                    break;
-                case 'price':
-                    FinnHub.metrics(stock_.name, 'price', info => 
-                        store.dispatch(actions.updateCompanyPriceMetric(info)), error => {
-                            if (error) {
-                                store.dispatch(actions.addAlert('error', error.message))
-                            }
-                    });
-                    break;
-                case 'valuation':
-                    FinnHub.metrics(stock_.name, 'valuation', info => 
-                        store.dispatch(actions.updateCompanyValuationMetric(info)), error => {
-                            if (error) {
-                                store.dispatch(actions.addAlert('error', error.message))
-                            }
-                    });
-                    break;
-                case 'growth':
-                    FinnHub.metrics(stock_.name, 'growth', info => 
-                        store.dispatch(actions.updateCompanyGrowthMetric(info)), error => {
-                            if (error) {
-                                store.dispatch(actions.addAlert('error', error.message))
-                            }
-                    });
-                    break;
-                case 'margin':
-                    FinnHub.metrics(stock_.name, 'margin', info => 
-                        store.dispatch(actions.updateCompanyMarginMetric(info)), error => {
-                            if (error) {
-                                store.dispatch(actions.addAlert('error', error.message))
-                            }
-                    });
-                    break;
-                case 'management':
-                    FinnHub.metrics(stock_.name, 'management', info => 
-                        store.dispatch(actions.updateCompanyManagementMetric(info)), error => {
-                            if (error) {
-                                store.dispatch(actions.addAlert('error', error.message))
-                            }
-                    });
-                    break;
-                case 'financial strength':
-                    FinnHub.metrics(stock_.name, 'financialStrength', info => 
-                        store.dispatch(actions.updateCompanyFinancialStrengthMetric(info)), error => {
-                            if (error) {
-                                store.dispatch(actions.addAlert('error', error.message))
-                            }
-                    });
-                    break;
-                default:
-                    FinnHub.metrics(stock_.name, 'perShare', info => 
-                        store.dispatch(actions.updateCompanyPerShareMetric(info)), error => {
-                            if (error) {
-                                store.dispatch(actions.addAlert('error', error.message))
-                            }
-                    });
-            }
-
-            return Object.assign({}, state, {chart: {...state.chart, status: 'Loading Data...', company: {...state.chart.company, sections: sections_}}});
-
-        case actions.UPDATE_BALANCE:
-            return Object.assign({}, state, {balance: action.arg as number});
+            return Object.assign({}, state, {help: {...state.help, 
+                                                    sections: 
+                                                        selectHelpSection(state.help.sections.slice(), 
+                                                        action.arg)}});
 
         default:
             return state;

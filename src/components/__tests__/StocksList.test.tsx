@@ -63,7 +63,7 @@ test('react on stock click in a symbols list', () => {
     const { container } = renderStocksList('symbolsList');
     fireEvent(container.querySelectorAll('.stock')[0], 
         new MouseEvent('click', {cancelable: true, bubbles: true}));
-    expect(mockDispatch).toHaveBeenCalledWith(actions.selectStock(data_[0]));
+    expect(mockDispatch).toHaveBeenCalledWith(actions.startStockTrack(data_[0]));
 });
 
 test('react on stock click in a watchlist', () => {
@@ -71,5 +71,5 @@ test('react on stock click in a watchlist', () => {
     mockDispatch.mockReset();
     fireEvent(container.querySelectorAll('.stock')[0], 
         new MouseEvent('click', {cancelable: true, bubbles: true}));
-    expect(mockDispatch).toHaveBeenCalledWith(actions.selectStock(data_[0]));
+    expect(mockDispatch).toHaveBeenCalledWith(actions.startStockTrack(data_[0]));
 });

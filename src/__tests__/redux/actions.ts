@@ -14,12 +14,12 @@ test('creates a \'setStocksList\' action', () => {
 
 test('creates a \'selectStock\' action', () => {
     const stock = new Stock(1, 'ABC', 0, 0, 0, 0, 0, 0, '');
-    expect(actions.selectStock(stock)).toStrictEqual({type: actions.SELECT_STOCK, arg: stock});
+    expect(actions.startStockTrack(stock)).toStrictEqual({type: actions.START_STOCK_TRACK, arg: stock});
 });
 
 test('creates a \'searchForIndex\' action', () => {
     const name = 'ABC';
-    expect(actions.searchForIndex(name)).toStrictEqual({type: actions.SEARCH_FOR_STOCK, arg: name});
+    expect(actions.searchMarket(name)).toStrictEqual({type: actions.SEARCH_MARKET, arg: name});
 });
 
 test('creates a \'searchWatchlist\' action', () => {
@@ -97,12 +97,12 @@ test('creates a \'setOrderHistory\' action', () => {
 
 test('creates a \'updateActivities\' action', () => {
     const activities = new List([new ListRow('')]);
-    expect(actions.updateActivities(activities)).toStrictEqual({type: actions.UPDATE_ACTIVITIES, arg: activities});
+    expect(actions.updateActivities(activities)).toStrictEqual({type: actions.SET_ACTIVITIES, arg: activities});
 });
 
 test('creates a \'updateHeadlines\' action', () => {
     const headlines = new List([new ListRow('')]), category = 'business';
-    expect(actions.updateHeadlines(headlines, category)).toStrictEqual({type: actions.UPDATE_HEADLINES, arg: {headlines, category}});
+    expect(actions.updateHeadlines(headlines, category)).toStrictEqual({type: actions.SET_HEADLINES, arg: {headlines, category}});
 });
 
 test('creates a \'toggleHelp\' action', () => {
@@ -142,12 +142,12 @@ test('creates a \'addAlert\' action', () => {
 
 test('creates a \'updateAlerts\' action', () => {
     const alerts = [new Alert(1, 'Info')];
-    expect(actions.updateAlerts(alerts)).toStrictEqual({type: actions.UPDATE_ALERTS, arg: alerts});
+    expect(actions.updateAlerts(alerts)).toStrictEqual({type: actions.SET_ALERTS, arg: alerts});
 });
 
 test('creates a \'updateExchanges\' action', () => {
     const exchanges = [{name: 'Exchange 1'}];
-    expect(actions.updateExchanges(exchanges)).toStrictEqual({type: actions.UPDATE_EXCHANGES, arg: exchanges});
+    expect(actions.setExchanges(exchanges)).toStrictEqual({type: actions.SET_EXCHANGES, arg: exchanges});
 });
 
 test('creates a \'selectExchange\' action', () => {
@@ -157,12 +157,12 @@ test('creates a \'selectExchange\' action', () => {
 
 test('creates a \'updateSelectedExchange\' action', () => {
     const exchange = 'Exchange 1';
-    expect(actions.updateSelectedExchange(exchange)).toStrictEqual({type: actions.UPDATE_SELECTED_EXCHANGE, arg: exchange});
+    expect(actions.setSelectedExchange(exchange)).toStrictEqual({type: actions.SET_SELECTED_EXCHANGE, arg: exchange});
 });
 
 test('creates a \'updateWatchList\' action', () => {
     const stocks = [new Stock(1, 'ABC', 0, 0, 0, 0, 0, 0, 'def')];
-    expect(actions.updateWatchList(stocks)).toStrictEqual({type: actions.UPDATE_WATCHLIST, arg: stocks});
+    expect(actions.setWatchList(stocks)).toStrictEqual({type: actions.SET_WATCHLIST, arg: stocks});
 });
 
 test('creates a \'setStockStartLetter\' action', () => {
@@ -180,16 +180,15 @@ test('creates a \'updateChartOptions\' action', () => {
             series: [{name: '',
                     data: [{x: '', y: 0}]}]
     }
-    expect(actions.updateChartOptions(options)).toStrictEqual({type: actions.UPDATE_CHART_OPTIONS, arg: options});
+    expect(actions.updateChart(options)).toStrictEqual({type: actions.UPDATE_CHART, arg: options});
 });
 
 test('creates a \'toggleTracker\' action', () => {
     expect(actions.toggleTracker()).toStrictEqual({type: actions.TOGGLE_TRACKER, arg: null});
 });
 
-test('creates a \'setTrackerMode\' action', () => {
-    const mode = false;
-    expect(actions.setTrackerMode(mode)).toStrictEqual({type: actions.SET_TRACKER_MODE, arg: mode});
+test('creates a \'toggleTrackerMode\' action', () => {
+    expect(actions.toggleTrackerMode()).toStrictEqual({type: actions.TOGGLE_TRACKER_MODE, arg: null});
 });
 
 test('creates a \'setTracker\' action', () => {
@@ -199,7 +198,7 @@ test('creates a \'setTracker\' action', () => {
 
 test('creates a \'updateStock\' action', () => {
     const stock = new Stock(1, 'ABC', 0, 0, 0, 0, 0, 0, 'def');
-    expect(actions.updateStock(stock)).toStrictEqual({type: actions.UPDATE_STOCK, arg: stock});
+    expect(actions.setStockDetails(stock)).toStrictEqual({type: actions.SET_STOCK_DETAILS, arg: stock});
 });
 
 test('creates a \'updateCompanyProfile\' action', () => {
@@ -268,8 +267,8 @@ test('creates a \'updateCompanyFundOwnership\' action', () => {
 });
 
 test('creates a \'setMenuVisible\' action', () => {
-    const data = {visible: true, boxId: 1};
-    expect(actions.setMenuVisible(data.visible, data.boxId)).toStrictEqual({type: actions.TOGGLE_MENU, arg: data});
+    const boxId = 1;
+    expect(actions.toggleMenu(boxId)).toStrictEqual({type: actions.TOGGLE_MENU, arg: boxId});
 });
 
 test('correct activity labels are generated', () => {

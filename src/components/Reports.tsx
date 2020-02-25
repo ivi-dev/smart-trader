@@ -2,7 +2,7 @@ import React from 'react';
 import './Reports.css';
 import BoxModel, { BoxType } from '../models/Box';
 import Box from './Box';
-import { ReportData } from '../redux/store';
+import { ReportData } from '../redux/store/types';
 import { Action } from '../redux/actions';
 import List from '../models/List';
 import Table from '../models/Table';

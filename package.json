@@ -17,7 +17,12 @@
       "!src/models/Alert.ts",
       "!src/models/List.ts",
       "!src/models/Stock.ts",
-      "!src/models/Table.ts"
+      "!src/models/Table.ts",
+      "!src/services/FinnHub.ts",
+      "!src/services/News.ts",
+      "!src/redux/store/data.ts",
+      "!src/redux/store/store.ts",
+      "!src/redux/store/types.ts"
     ]
   },
   "version": "1.0.0",

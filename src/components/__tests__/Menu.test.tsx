@@ -31,7 +31,7 @@ test('menu reacts on item click', () => {
     const { container } = renderMenu(true);
     fireEvent(container.children[0].querySelectorAll('a')[0], 
         new MouseEvent('click', {bubbles: true, cancelable: true}));
-    expect(mockDispatch).toHaveBeenCalledWith(actions.setMenuVisible(false, boxId as number));
+    expect(mockDispatch).toHaveBeenCalledWith(actions.toggleMenu(boxId as number));
     expect(mockOnClick).toHaveBeenCalledWith(items[0].name);
 });
 
@@ -62,7 +62,7 @@ test('menu reacts on Escape key press', () => {
     mockDispatch.mockReset();
     fireEvent.keyDown(container.children[0], {key: "Escape", code: "Escape", 
         keyCode: 27, charCode: 27});
-    expect(mockDispatch).toHaveBeenCalledWith(actions.setMenuVisible(false, boxId as number));
+    expect(mockDispatch).toHaveBeenCalledWith(actions.toggleMenu(boxId as number));
 });
 
 test('menu reacts on Escape key press, with no boxId property', () => {

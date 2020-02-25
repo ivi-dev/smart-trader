@@ -3,7 +3,7 @@ import ApexCharts from 'apexcharts';
 import './Chart.css';
 import { Action } from '../redux/actions';
 import StockDetails from './StockDetails';
-import { Chart as ChartType } from '../redux/store';
+import { Chart as ChartType, Tracker } from '../redux/store/types';
 import * as actions from '../redux/actions';
 import { capitalize } from '../utility';
 import Selector from './Selector';
@@ -12,8 +12,7 @@ import Row from './Row';
 type ChartProp = {
     testMode?: boolean,
     data: ChartType,
-    tracker: WebSocket | number | null,
-    trackerMode: 'live' | 'simulated',
+    tracker: Tracker,
     dispatch: (action: Action) => void
 }
 
@@ -108,7 +107,6 @@ const Chart = (prop: ChartProp) => {
                 align-items-center no-gutters col-12">
                 <StockDetails data={prop.data.stock} 
                               tracker={prop.tracker}
-                              trackerMode={prop.trackerMode}
                               dispatch={prop.dispatch} />
             </div>
             <div ref={chartBox} className="col-9 graph border rounded"></div>

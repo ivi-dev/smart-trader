@@ -4,19 +4,22 @@ import Stock from '../../models/Stock';
 import StockDetails from '../StockDetails';
 import { Action } from '../../redux/actions';
 import * as actions from '../../redux/actions';
+import { Tracker } from '../../redux/store/types';
 
 let data: Stock | null = new Stock(0, 'ABC', 1, 1.1, 1.2, 0.5, 0.8, -0.10, 'Company Name');
 const trendValue = Number(Math.abs(data.trend).toFixed(2));
 const trendPercentage = Number(Math.abs(trendValue / data.current * 100).toFixed(2));
+const tracker: Tracker = {
+    object: 1,
+    mode: 'simulated'
+}
 const mockDispatch = jest.fn((action: Action) => {});
 
-const renderStockDetails = (mode: 'simulated' | 'live' = 'simulated', dispatch?: boolean) => {
+const renderStockDetails = (dispatch?: boolean) => {
     return !dispatch ? render(<StockDetails data={data} 
-                                            tracker={1} 
-                                            trackerMode={mode} />) : 
+                                            tracker={tracker} />) : 
                        render(<StockDetails data={data} 
-                                            tracker={1} 
-                                            trackerMode={mode}
+                                            tracker={tracker}
                                             dispatch={mockDispatch} />);
 }
 
@@ -32,13 +35,21 @@ test('render an element in simulation mode', () => {
 });
 
 test('render an element in live mode', () => {
-    const { container } = renderStockDetails('live');
+    tracker.mode = 'live';
+    const { container } = renderStockDetails();
     expect(container.children[0].querySelector('button')?.innerHTML).toBe('Live');
+});
+
+test('render an element in pause', () => {
+    tracker.object = null;
+    const { container } = renderStockDetails();
+    expect(container.children[0].querySelector('button')?.innerHTML).toBe('Paused');
 });
 
 test('render an element with null data', () => {
     data = null;
-    const { container } = renderStockDetails('live');
+    tracker.mode = 'live';
+    const { container } = renderStockDetails();
     expect(container.children[0].querySelector('.name')?.innerHTML).toBe('---');
     expect(container.children[0].querySelector('.company-name')?.innerHTML).toBe('---');
     expect(container.children[0].querySelectorAll('.stat')[0]?.querySelector('.value')?.innerHTML).toBe(Number(0).toFixed(3));
@@ -49,13 +60,15 @@ test('render an element with null data', () => {
 });
 
 test('element\'s button reacts on click, with dispatch property', () => {
-    const { container } = renderStockDetails('live', true);
+    tracker.mode = 'live';
+    const { container } = renderStockDetails(true);
     fireEvent(container.children[0].querySelector('button')!, new MouseEvent('click', {bubbles: true, cancelable: true}));
     expect(mockDispatch).toHaveBeenCalledWith(actions.toggleTracker());
 });
 
 test('element\'s button does not reacts on click, without dispatch property', () => {
-    const { container } = renderStockDetails('live', false);
+    tracker.mode = 'live';
+    const { container } = renderStockDetails(false);
     mockDispatch.mockReset();
     fireEvent(container.children[0].querySelector('button')!, new MouseEvent('click', {bubbles: true, cancelable: true}));
     expect(mockDispatch).not.toHaveBeenCalledWith(actions.toggleTracker());

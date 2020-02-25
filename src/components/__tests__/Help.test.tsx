@@ -3,7 +3,7 @@ import { render, fireEvent } from '@testing-library/react';
 import Help from '../Help';
 import { Action } from '../../redux/actions';
 import * as actions from '../../redux/actions';
-import { Option } from '../../redux/store';
+import { Option } from '../../redux/store/types';
 
 const mockDispatch = jest.fn((action: Action) => {});
 const sections: Option[] = [{name: 'Section 1'}, {name: 'Section 2'}, {name: 'Section 3'}];

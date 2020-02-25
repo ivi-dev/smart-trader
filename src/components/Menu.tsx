@@ -1,6 +1,6 @@
 import React, { useEffect, RefObject } from 'react';
 import {capitalize} from '../utility';
-import { Option } from '../redux/store';
+import { Option } from '../redux/store/types';
 import './Menu.css';
 import { Action } from '../redux/actions';
 import * as actions from '../redux/actions';
@@ -21,13 +21,13 @@ const Menu = (prop: MenuProp) => {
     const handleKeyPress = (keyCode: number) => {
         if (keyCode === 27) {
             if (prop.boxId) {
-                prop.dispatch(actions.setMenuVisible(false, prop.boxId));
+                prop.dispatch(actions.toggleMenu(prop.boxId));
             }
         }
     }
     const handleItemSelect = () => {
         if (prop.boxId) {
-            prop.dispatch(actions.setMenuVisible(false, prop.boxId!));
+            prop.dispatch(actions.toggleMenu(prop.boxId!));
         }
     }
     return (

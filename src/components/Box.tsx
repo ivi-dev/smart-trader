@@ -5,7 +5,7 @@ import Alert from '../models/Alert';
 import './Box.css';
 import { Action } from '../redux/actions';
 import * as actions from '../redux/actions';
-import { Option } from '../redux/store';
+import { Option } from '../redux/store/types';
 import Menu from './Menu';
 import { capitalize } from '../utility';
 
@@ -72,7 +72,7 @@ const Box = (prop: BoxProp) => {
                    href={item.href} 
                    target="_blank" 
                    rel="noopener noreferrer" 
-                   onClick={e => {if (item.href) {e.stopPropagation()}}}>
+                   onClick={e => e.stopPropagation()}>
                     {item.graphic && <i className={`row no-gutters col-auto ${item.graphic} align-items-center`}></i>}
                     <div className="col">
                         <div className="row no-gutters col-12">
@@ -112,15 +112,19 @@ const Box = (prop: BoxProp) => {
                                style={{color: color}}></i>
                             <span className="pl-1 col-10">{alert.text}</span>
                             <i className="fas fa-times position-absolute" 
-                               onClick={e => {e.stopPropagation(); 
-                               prop.dispatch(actions.dismissAlert!(!e.altKey ? 
-                                alert.id : -1))}}></i>
+                               onClick={e => {
+                                   e.stopPropagation();
+                                   /* istanbul ignore next */
+                                   prop.dispatch(actions.dismissAlert!(!e.altKey ? 
+                                                                        alert.id : -1))}}>
+                            </i>
                         </div>
                     )
                 })}
             </div>
         }
     }
+    /* istanbul ignore next */
     const handleKeyDown = (keyCode: number, altKey: boolean) => {
         if (prop.selectedBox === prop.id) {
             if (altKey) {
@@ -137,7 +141,7 @@ const Box = (prop: BoxProp) => {
                 }
             }
             if (keyCode === 27) {
-                prop.dispatch(actions.selectBox(prop.id))
+                prop.dispatch(actions.selectBox(prop.id));
             }
         }
     }
@@ -158,7 +162,7 @@ const Box = (prop: BoxProp) => {
                 <i className="fas fa-ellipsis-v px-2 py-1 ml-auto rounded" 
                     onClick={e => {
                         e.stopPropagation(); 
-                        prop.dispatch(actions.setMenuVisible(true, prop.id))}}></i>
+                        prop.dispatch(actions.toggleMenu(prop.id))}}></i>
                 <i className="fas fa-times px-2 py-1 rounded" 
                    onClick={e => {
                        e.stopPropagation(); 

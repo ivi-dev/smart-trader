@@ -1,5 +1,5 @@
 import React from 'react';
-import { Option } from '../redux/store';
+import { Option } from '../redux/store/types';
 import './ButtonGroup.css';
 
 type ButtonGroupProp = {

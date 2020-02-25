@@ -1,6 +1,6 @@
 import React from 'react';
 import { capitalize } from '../utility';
-import { Option } from '../redux/store';
+import { Option } from '../redux/store/types';
 import './Selector.css';
 
 type SelectorProp = {

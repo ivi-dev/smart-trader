@@ -4,11 +4,11 @@ import Stock from '../models/Stock';
 import Button from './Button';
 import { Action } from '../redux/actions';
 import * as actions from '../redux/actions';
+import { Tracker } from '../redux/store/types';
 
 type StockDetailsProp = {
     data: Stock | null,
-    tracker: WebSocket | number | null,
-    trackerMode: 'live' | 'simulated',
+    tracker: Tracker,
     dispatch?: (action: Action) => void
 }
 
@@ -31,13 +31,12 @@ const StockDetails = (prop: StockDetailsProp) => {
             } 
             /* istanbul ignore next */
             else {
-                prop.dispatch(actions.setTrackerMode(prop.trackerMode ===
-                     'simulated' ? false : true));
+                prop.dispatch(actions.toggleTrackerMode());
             }
         }
     }
     const title = () => {
-        return !prop.tracker ? 'Paused' : (prop.trackerMode === 'simulated' ?
+        return !prop.tracker.object ? 'Paused' : (prop.tracker.mode === 'simulated' ?
             'Simulation' : 'Live');
     }
     return (
@@ -63,7 +62,7 @@ const StockDetails = (prop: StockDetailsProp) => {
                 ${trendValue > 0 ? 'negative' : 'positive'}`}>{`${trendValue > 0 ? '-' : ''}${trendValue.toFixed(3)} (${trendPercentage.toFixed(3)}%)`}</div>
             </div>
             {prop.data && <Button title={title()} 
-                                  classes={prop.trackerMode}
+                                  classes={prop.tracker.mode}
                                   onClick={e => handleClick(e.altKey)} />}
         </div>
     )

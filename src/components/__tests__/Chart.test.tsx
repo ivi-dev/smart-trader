@@ -5,6 +5,7 @@ import { Action } from '../../redux/actions';
 import * as actions from '../../redux/actions';
 import Chart from '../Chart';
 import { capitalize } from '../../utility';
+import { Tracker } from '../../redux/store/types';
 
 window.matchMedia = window.matchMedia || function() {
     return {
@@ -47,13 +48,16 @@ const data = {
                    data: 'investors'}]
     }
 }
+const tracker: Tracker = {
+    object: 1,
+    mode: 'simulated'
+}
 const mockDispatch = jest.fn((action: Action) => {});
 
 const renderChart = () => {
     return render(<Chart testMode={true}
                          data={data}
-                         tracker={null}
-                         trackerMode='simulated'
+                         tracker={tracker}
                          dispatch={mockDispatch} />);
 }
 
