@@ -3,7 +3,7 @@ import Box, { BoxType } from '../models/Box';
 import List from '../models/List';
 import Table from '../models/Table';
 import Alert from '../models/Alert';
-import { ChartOptions, TrackerMode, Option } from './store/types';
+import { ChartOptions, Option } from './store/types';
 import { isVowel } from '../utility';
 
 // Stocks
