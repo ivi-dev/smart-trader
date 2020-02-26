@@ -1,5 +1,5 @@
 import React from 'react';
-import './Column.css';
+import './style/Column.css';
 
 type ColumnProp = {
     classes?: string,

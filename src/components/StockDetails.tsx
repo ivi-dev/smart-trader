@@ -1,5 +1,5 @@
 import React from 'react';
-import './StockDetails.css';
+import './style/StockDetails.css';
 import Stock from '../models/Stock';
 import Button from './Button';
 import { Action } from '../redux/actions';

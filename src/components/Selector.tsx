@@ -1,7 +1,7 @@
 import React from 'react';
 import { capitalize } from '../utility';
 import { Option } from '../redux/store/types';
-import './Selector.css';
+import './style/Selector.css';
 
 type SelectorProp = {
     title: string,

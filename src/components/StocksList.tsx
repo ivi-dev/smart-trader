@@ -1,7 +1,7 @@
 import React from 'react';
 import StockModel from '../models/Stock';
 import Stock from './Stock';
-import './StocksList.css';
+import './style/StocksList.css';
 import Search from './Search';
 import { Action } from '../redux/actions';
 import * as actions from '../redux/actions';

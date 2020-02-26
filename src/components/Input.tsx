@@ -1,5 +1,5 @@
 import React from 'react';
-import './Input.css';
+import './style/Input.css';
 
 type InputProp = {
     type: string,

@@ -1,5 +1,5 @@
 import React from 'react';
-import './Reports.css';
+import './style/Reports.css';
 import BoxModel, { BoxType } from '../models/Box';
 import Box from './Box';
 import { ReportData } from '../redux/store/types';

@@ -1,6 +1,6 @@
 import React, { useEffect, RefObject } from 'react';
 import ApexCharts from 'apexcharts';
-import './Chart.css';
+import './style/Chart.css';
 import { Action } from '../redux/actions';
 import StockDetails from './StockDetails';
 import { Chart as ChartType, Tracker } from '../redux/store/types';

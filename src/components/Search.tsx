@@ -1,5 +1,5 @@
 import React, { RefObject } from 'react';
-import './Search.css';
+import './style/Search.css';
 
 type SearchProp = {
     placeholder?: string,

@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+import './style/App.css';
 import StocksList  from './StocksList';
 import { Option, Chart as ChartType, HelpType, Tracker } from '../redux/store/types';
 import Chart from './Chart';

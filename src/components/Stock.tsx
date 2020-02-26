@@ -1,6 +1,6 @@
 import React from 'react';
 import StockModel from '../models/Stock';
-import './Stock.css';
+import './style/Stock.css';
 
 type IndexProp = {
     data: StockModel,

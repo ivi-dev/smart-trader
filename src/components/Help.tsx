@@ -1,5 +1,5 @@
 import React from 'react';
-import './Help.css';
+import './style/Help.css';
 import { Option } from '../redux/store/types';
 import { Action } from '../redux/actions';
 import * as actions from '../redux/actions';

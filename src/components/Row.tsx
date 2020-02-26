@@ -1,5 +1,5 @@
 import React from 'react';
-import './Row.css';
+import './style/Row.css';
 
 type RowProp = {
     children?: {},

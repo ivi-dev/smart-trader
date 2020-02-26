@@ -2,7 +2,7 @@ import React from 'react';
 import Table from '../models/Table';
 import List from '../models/List';
 import Alert from '../models/Alert';
-import './Box.css';
+import './style/Box.css';
 import { Action } from '../redux/actions';
 import * as actions from '../redux/actions';
 import { Option } from '../redux/store/types';
