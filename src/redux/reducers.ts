@@ -11,7 +11,7 @@ import Alert from '../models/Alert';
 import { Option, ChartOptions } from './store/types';
 import FinnHub, { CompanyGeneralInfoSections, 
     CompanyMetricSections } from '../services/FinnHub';
-import { filterStocksByIndex, fetchStocks, clearChart, stopSimulatedTracker, startSimulatedTracker, stopLiveTracker, startLiveTracker, filterStocksByName, stockIsListed, findExchange, determineCompanyInfoType, findCompanySectionByName, selectCompanySection, getLatestBoxId, getBoxType, getLatestAlertId, selectHelpSection, toggleTracker, toggleTrackerMode } from './store/methods';
+import { filterStocksByIndex, fetchStocks, clearChart, stopSimulatedTracker, startSimulatedTracker, stopLiveTracker, startLiveTracker, filterStocksByName, stockIsListed, findExchange, determineCompanyInfoType, findCompanySectionByName, getLatestBoxId, getBoxType, getLatestAlertId, toggleTracker, toggleTrackerMode, selectSection } from './store/methods';
 
 export const mainReducer = (state = initialState, action: Action) => {
     // Stocks
@@ -27,6 +27,7 @@ export const mainReducer = (state = initialState, action: Action) => {
             const stock = action.arg as Stock;
             if (stock) {
                 let tracker = null;
+                /* istanbul ignore next */
                 FinnHub.quote(stock.name, quote => {
                     const stock_ = new Stock(stock.id, stock.name, 
                                              quote.o, quote.c, 
@@ -196,7 +197,7 @@ export const mainReducer = (state = initialState, action: Action) => {
             return Object.assign({}, state, {chart: {...state.chart, 
                                                      status: 'Loading Data...', 
                                                      company: {...state.chart.company, 
-                                                               sections: selectCompanySection(state.chart.company.sections.slice(), action.arg as string)}}});
+                                                               sections: selectSection(state.chart.company.sections.slice(), action.arg as string)}}});
 
         // Trade
         case actions.BUY:
@@ -402,7 +403,7 @@ export const mainReducer = (state = initialState, action: Action) => {
         case actions.SET_ACTIVE_HELP_SECTION:
             return Object.assign({}, state, {help: {...state.help, 
                                                     sections: 
-                                                        selectHelpSection(state.help.sections.slice(), 
+                                                        selectSection(state.help.sections.slice(), 
                                                         action.arg)}});
 
         default:

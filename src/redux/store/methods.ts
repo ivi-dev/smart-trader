@@ -17,10 +17,6 @@ export const getLatestBoxId = (boxList: Box[]) => {
     return boxList.length !== 0 ? boxList[boxList.length - 1].id : 0;
 }
 
-export const getLatestAlertId = (alertList: Alert[]) => {
-    return alertList.length !== 0 ? alertList[0].id : 0;
-}
-
 export const getBoxType = (boxes: Box[], id: number) => {
     for (const box of boxes) {
         if (box.id === id) {
@@ -29,7 +25,13 @@ export const getBoxType = (boxes: Box[], id: number) => {
     }
 }
 
+export const getLatestAlertId = (alertList: Alert[]) => {
+    return alertList.length !== 0 ? alertList[0].id : 0;
+}
+
+
 export const startSimulatedTracker = (stock: Stock, options: ChartOptions) => {
+    /* istanbul ignore next */
     return setInterval(() => {
         options.series[0].name = stock.name;
         options.series[0].data.push({x: time(new Date()), 
@@ -52,6 +54,7 @@ export const stopSimulatedTracker = (tracker: number, onStop: () => void) => {
     onStop();
 }
 
+/* istanbul ignore next */
 export const startLiveTracker = (stock: Stock, options: ChartOptions, onStart: () => void) => {
     return FinnHub.startTrack(stock.name, data => {
         if (data.t > trackers.live.timestamp + trackers.live.governor) {
@@ -70,9 +73,10 @@ export const startLiveTracker = (stock: Stock, options: ChartOptions, onStart: (
     }, onStart);
 }
 
+/* istanbul ignore next */
 export const stopLiveTracker = (tracker: WebSocket, 
-                         stock: Stock,
-                         callback: () => void) => {
+                                stock: Stock,
+                                callback: () => void) => {
         FinnHub.stopTrack(tracker, stock.name, callback);
 }
 
@@ -108,6 +112,7 @@ export const clearChart = (chart: Chart) => {
     return cleared;
 }
 
+/* istanbul ignore next */
 export const toggleTracker = (state: State) => {
     let tracker = null;
     if (state.tracker.mode === 'simulated') {
@@ -128,6 +133,7 @@ export const toggleTracker = (state: State) => {
     return tracker;
 }
 
+/* istanbul ignore next */
 export const toggleTrackerMode = (state: State) => {
     let tracker = null, mode = '';
     if (state.tracker.mode === 'simulated') {
@@ -152,21 +158,10 @@ export const toggleTrackerMode = (state: State) => {
     return {tracker, mode};
 }
 
-export const selectHelpSection = (sections: Option[], sectionName: string) => {
+export const selectSection = (sections: Option[], name: string) => {
     const sections_ = sections.slice();
     sections_.forEach(section => {
-        if (section.name === sectionName) {
-            section.selected = true;
-        } else {
-            delete section.selected;
-        }});
-    return sections_;
-}
-
-export const selectCompanySection = (sections: Option[], sectionName: string) => {
-    const sections_ = sections.slice();
-    sections_.forEach(section => {
-        if (section.name === sectionName) {
+        if (section.name === name) {
             section.selected = true;
         } else {
             delete section.selected;
@@ -192,6 +187,7 @@ export const findCompanySectionByName = (sections: Option[], name: string) => {
     }
 }
 
+/* istanbul ignore next */
 export const fetchHeadlines = (category: Category) =>
     News.headlines(category, articles => {
         const headlines: ListRow[] = [];
@@ -199,6 +195,7 @@ export const fetchHeadlines = (category: Category) =>
         store.dispatch(actions.updateHeadlines(new List(headlines), category));
     }, () => store.dispatch(actions.updateHeadlines(new List([new ListRow('An error occurred while trying get the latest headlines.')]), category)));
 
+/* istanbul ignore next */
 const fetchExchanges = () => {
     FinnHub.listExchanges(list => store.dispatch(actions.setExchanges(list)), 
         error => {
@@ -208,7 +205,8 @@ const fetchExchanges = () => {
     });
 }
 
-const fetchSelectedExchange = () => {
+/* istanbul ignore next */
+export const fetchSelectedExchange = () => {
     DB.fetch(Key.EXCHANGE).then(exchange => {
         if (exchange) {
             const exchange_ = exchange as {name: string, code: string};
@@ -221,6 +219,7 @@ const fetchSelectedExchange = () => {
     });
 }
 
+/* istanbul ignore next */
 export const fetchStocks = (exchange: string) => {
     FinnHub.listStocks(exchange, list => {store.dispatch(actions.setStocksList(list))},
         error => {
@@ -230,6 +229,7 @@ export const fetchStocks = (exchange: string) => {
     });
 }
 
+/* istanbul ignore next */
 export const initializeData = () => {
     DB.fetch(Key.ORDERS).then(orders => { 
         if (orders) {

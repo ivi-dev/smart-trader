@@ -2,7 +2,6 @@ import * as actions from '../../redux/actions';
 import Stock from '../../models/Stock';
 import { filterStocksByIndex, filterStocksByName } from '../../redux/store/methods';
 import { store } from '../../redux/store/store';
-import { time } from '../../utility';
 import Table, { TableCell, TableRow } from '../../models/Table';
 import Box, { BoxType } from '../../models/Box';
 import Alert from '../../models/Alert';
@@ -27,10 +26,11 @@ test('start tracking a stock in simulated mode', () => {
     expect(store.getState().chart.options.series).toStrictEqual([{name: '', data: []}]);
 });
 
-test('start tracking a stock in live mode', done => {
+test('start tracking a stock in live mode', () => {
     const stock = new Stock(0, 'ABC', 0, 0, 0, 0, 0, 0);
     store.getState().tracker.mode = 'live';
     store.dispatch(actions.startStockTrack(stock));
+    store.getState().tracker.mode = 'simulated';
 });
 
 test('set the stock list', () => {
@@ -226,6 +226,7 @@ test('buy a stock', () => {
     const balanceBefore = store.getState().balance;
     store.dispatch(actions.buy());
     expect(store.getState().balance).toBe(balanceBefore - (store.getState().chart.stock?.current! * store.getState().buyQty));
+
     const latestOrder = store.getState().reportData.orderHistory.rows[store.getState().reportData.orderHistory.rows.length - 1];
     expect(latestOrder.cells[0].content).toBeTruthy();
     expect(latestOrder.cells[1].content).toBe(store.getState().chart.stock?.name);
@@ -239,6 +240,14 @@ test('buy a stock', () => {
         store.getState().chart.stock!.current));
     expect(latestAcitvity.data).toBe('trade');
     expect(latestAcitvity.graphic).toBe('fas fa-dollar-sign buy');
+});
+
+test('try buying a stock with no stock slected', () => {
+    const balanceBefore = store.getState().balance;
+    store.getState().chart.stock = null;
+    store.dispatch(actions.buy());
+    expect(store.getState().balance).toBe(balanceBefore);
+    store.getState().chart.stock = new Stock(0, 'ABC', 0, 0, 0, 0, 0, 0);
 });
 
 test('try buying a stock with the buy quantity set to 0', () => {
@@ -274,6 +283,14 @@ test('try selling a stock with the sell quantity set to 0', () => {
     store.dispatch(actions.sell());
     expect(store.getState().balance).toBe(balanceBefore);
     store.dispatch(actions.setSellQty(1));
+});
+
+test('try selling a stock with no stock slected', () => {
+    const balanceBefore = store.getState().balance;
+    store.getState().chart.stock = null;
+    store.dispatch(actions.sell());
+    expect(store.getState().balance).toBe(balanceBefore);
+    store.getState().chart.stock = new Stock(0, 'ABC', 0, 0, 0, 0, 0, 0);
 });
 
 test('set the buy quantity', () => {
@@ -331,10 +348,14 @@ describe('Reports', () => {
         const id = 2;
         store.dispatch(actions.moveBoxBack(id));
         expect(store.getState().boxes[0].id).toBe(2);
+        store.dispatch(actions.moveBoxBack(id));
+        expect(store.getState().boxes[0].id).toBe(2);
     });
 
     test('move a box forward', () => {
         const id = 2;
+        store.dispatch(actions.moveBoxForward(id));
+        expect(store.getState().boxes[0].id).toBe(1);
         store.dispatch(actions.moveBoxForward(id));
         expect(store.getState().boxes[0].id).toBe(1);
     });
