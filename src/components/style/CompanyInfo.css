@@ -1,0 +1,15 @@
+.company-info.border-left {
+    border-left: 1px solid rgba(255, 255, 2555, 0.2) !important;
+}
+
+.company-info {
+    height: 95%;
+}
+
+.company-info .content {
+    max-height: 92%;
+    font-size: 90%;
+    line-height: 1.8;
+    overflow: auto;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 1);
+}

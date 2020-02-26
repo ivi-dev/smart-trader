@@ -14,39 +14,39 @@ test('set the stock index and filter the market list marketList', () => {
                   new Stock(1, 'BCD', 0, 0, 0, 0, 0, 0)];
     store.dispatch(actions.setStocksList(list));
     store.dispatch(actions.setStockIndex(index));
-    expect(store.getState().stockIndex).toBe(index);
-    expect(store.getState().marketList).toStrictEqual(filterStocksByIndex(list, index));
+    expect(store.getState().stocks.stockIndex).toBe(index);
+    expect(store.getState().stocks.marketList).toStrictEqual(filterStocksByIndex(list, index));
 });
 
 test('start tracking a stock in simulated mode', () => {
     const stock = new Stock(0, 'ABC', 0, 0, 0, 0, 0, 0);
     store.dispatch(actions.startStockTrack(stock));
-    expect(store.getState().chart.stock).toStrictEqual(stock);
-    expect(store.getState().chart.status).toBe('Loading Data...');
-    expect(store.getState().chart.options.series).toStrictEqual([{name: '', data: []}]);
+    expect(store.getState().stocks.chart.stock).toStrictEqual(stock);
+    expect(store.getState().stocks.chart.status).toBe('Loading Data...');
+    expect(store.getState().stocks.chart.options.series).toStrictEqual([{name: '', data: []}]);
 });
 
 test('start tracking a stock in live mode', () => {
     const stock = new Stock(0, 'ABC', 0, 0, 0, 0, 0, 0);
-    store.getState().tracker.mode = 'live';
+    store.getState().stocks.tracker.mode = 'live';
     store.dispatch(actions.startStockTrack(stock));
-    store.getState().tracker.mode = 'simulated';
+    store.getState().stocks.tracker.mode = 'simulated';
 });
 
 test('set the stock list', () => {
     const list = [new Stock(0, 'ABC', 0, 0, 0, 0, 0, 0),
                   new Stock(1, 'BCD', 0, 0, 0, 0, 0, 0)];
     store.dispatch(actions.setStocksList(list));
-    expect(store.getState().allStocksList).toStrictEqual(list);
-    expect(store.getState().marketList).toStrictEqual(filterStocksByIndex(list, 
+    expect(store.getState().stocks.allStocksList).toStrictEqual(list);
+    expect(store.getState().stocks.marketList).toStrictEqual(filterStocksByIndex(list, 
                                                                           store.getState()
-                                                                          .stockIndex));
+                                                                          .stocks.stockIndex));
 });
 
 test('set the stock details', () => {
     const stock = new Stock(0, 'ABC', 0, 0, 0, 0, 0, 0);
     store.dispatch(actions.setStockDetails(stock));
-    expect(store.getState().chart.stock).toStrictEqual(stock);
+    expect(store.getState().stocks.chart.stock).toStrictEqual(stock);
 });
 
 test('set the market search results', () => {
@@ -55,7 +55,7 @@ test('set the market search results', () => {
     const name = 'a';
     store.dispatch(actions.setStocksList(list));
     store.dispatch(actions.searchMarket(name));
-    expect(store.getState().marketSearchResultsList)
+    expect(store.getState().stocks.marketSearchResultsList)
         .toStrictEqual(filterStocksByName(list, name));
 });
 
@@ -66,188 +66,188 @@ test('set the watchlist search results', () => {
     store.dispatch(actions.addToWatchlist(list[0]));
     store.dispatch(actions.addToWatchlist(list[1]));
     store.dispatch(actions.searchWatchlist(name));
-    expect(store.getState().watchListSearchResultsList)
+    expect(store.getState().stocks.watchListSearchResultsList)
         .toStrictEqual(filterStocksByName(list, name));
 });
 
 test('add stocks to the watchlist', () => {
     const list = [new Stock(0, 'B', 0, 0, 0, 0, 0, 0),
                   new Stock(1, 'BA', 0, 0, 0, 0, 0, 0)];
-    for (let index = 0; store.getState().watchList.length; index++) {
-        store.dispatch(actions.removeFromWatchlist(store.getState().watchList[0]));
+    for (let index = 0; store.getState().stocks.watchList.length; index++) {
+        store.dispatch(actions.removeFromWatchlist(store.getState().stocks.watchList[0]));
     }
     store.dispatch(actions.addToWatchlist(list[0]));
     store.dispatch(actions.addToWatchlist(list[1]));
-    expect(store.getState().watchList).toStrictEqual(list);
+    expect(store.getState().stocks.watchList).toStrictEqual(list);
 });
 
 test('try adding already existing stocks to the watchlist', () => {
-    const watchlistBefore = store.getState().watchList;
+    const watchlistBefore = store.getState().stocks.watchList;
     const list = [new Stock(0, 'B', 0, 0, 0, 0, 0, 0),
                   new Stock(1, 'BA', 0, 0, 0, 0, 0, 0)];
     store.dispatch(actions.addToWatchlist(list[0]));
     store.dispatch(actions.addToWatchlist(list[1]));
-    expect(store.getState().watchList).toStrictEqual(watchlistBefore);
+    expect(store.getState().stocks.watchList).toStrictEqual(watchlistBefore);
 });
 
 test('remove a stock from the watchlist', () => {
-    for (let index = 0; store.getState().watchList.length; index++) {
-        store.dispatch(actions.removeFromWatchlist(store.getState().watchList[0]));
+    for (let index = 0; store.getState().stocks.watchList.length; index++) {
+        store.dispatch(actions.removeFromWatchlist(store.getState().stocks.watchList[0]));
     }
-    expect(store.getState().watchList).toStrictEqual([]);
+    expect(store.getState().stocks.watchList).toStrictEqual([]);
 });
 
 test('set the watchlist', () => {
     const list = [new Stock(0, 'B', 0, 0, 0, 0, 0, 0),
                   new Stock(1, 'BA', 0, 0, 0, 0, 0, 0)];
-    for (let index = 0; store.getState().watchList.length; index++) {
-        store.dispatch(actions.removeFromWatchlist(store.getState().watchList[0]));
+    for (let index = 0; store.getState().stocks.watchList.length; index++) {
+        store.dispatch(actions.removeFromWatchlist(store.getState().stocks.watchList[0]));
     }
     store.dispatch(actions.setWatchList(list));
-    expect(store.getState().watchList).toStrictEqual(list);
+    expect(store.getState().stocks.watchList).toStrictEqual(list);
 });
 
 test('set the exchanges list', () => {
     const list = [{name: 'Exchange 1', code: '1'},
                   {name: 'Exchange 2', code: '2'}];
     store.dispatch(actions.setExchanges(list));
-    expect(store.getState().exchanges).toStrictEqual(list);
+    expect(store.getState().stocks.exchanges).toStrictEqual(list);
 });
 
 test('set the selected exchange', () => {
     const exchange = {name: 'Exchange 1', code: '1'};
     store.dispatch(actions.setSelectedExchange(exchange.name));
-    expect(store.getState().selectedExchange).toStrictEqual({name: exchange.name});
+    expect(store.getState().stocks.selectedExchange).toStrictEqual({name: exchange.name});
 });
 
 test('update the chart', () => {
     const stroke = 1;
-    const options = Object.assign({}, store.getState().chart.options);
+    const options = Object.assign({}, store.getState().stocks.chart.options);
     options.stroke = stroke;
     store.dispatch(actions.updateChart(options));
-    expect(store.getState().chart.options.stroke).toBe(stroke);
+    expect(store.getState().stocks.chart.options.stroke).toBe(stroke);
 });
 
 test('toggle a simulated tracker', () => {
     store.dispatch(actions.toggleTracker());
-    expect(store.getState().tracker.object).toBeTruthy();
+    expect(store.getState().stocks.tracker.object).toBeTruthy();
     store.dispatch(actions.toggleTracker());
-    expect(store.getState().tracker.object).toBeFalsy();
+    expect(store.getState().stocks.tracker.object).toBeFalsy();
 });
 
 test('toggle the tracker\'s mode', () => {
-    store.getState().tracker.object = 1;
-    expect(store.getState().tracker.object).toBe(1);
+    store.getState().stocks.tracker.object = 1;
+    expect(store.getState().stocks.tracker.object).toBe(1);
     store.dispatch(actions.toggleTrackerMode());
-    expect(store.getState().tracker.object).toBeInstanceOf(WebSocket);
+    expect(store.getState().stocks.tracker.object).toBeInstanceOf(WebSocket);
 });
 
 test('set a simulated tracker', () => {
     const tracker = 1;
     store.dispatch(actions.setTracker(tracker));
-    expect(store.getState().tracker.object).toBe(tracker);
+    expect(store.getState().stocks.tracker.object).toBe(tracker);
 });
 
 describe('Company info section', () => {
     test('set a company\'s profile', () => {
         const profile = {value: 'Company'};
         store.dispatch(actions.updateCompanyProfile(profile));
-        expect(store.getState().chart.company.profile).toStrictEqual(profile);
+        expect(store.getState().stocks.company.profile).toStrictEqual(profile);
     });
     
     test('set a company\'s ceo info', () => {
         const ceo = {value: 'CEO'};
         store.dispatch(actions.updateCEOInfo(ceo));
-        expect(store.getState().chart.company.ceo).toStrictEqual(ceo);
+        expect(store.getState().stocks.company.ceo).toStrictEqual(ceo);
     });
 
     test('set a company\'s executives info', () => {
         const executives = [{name: 'Executive 1'}, {name: 'Executive 2'}];
         store.dispatch(actions.updateExecutivesList(executives));
-        expect(store.getState().chart.company.executives).toStrictEqual(executives);
+        expect(store.getState().stocks.company.executives).toStrictEqual(executives);
     });
 
     test('set a company\'s price', () => {
         const price = {value: 1};
         store.dispatch(actions.updateCompanyPriceMetric(price));
-        expect(store.getState().chart.company.price).toStrictEqual(price);
+        expect(store.getState().stocks.company.price).toStrictEqual(price);
     });
 
     test('set a company\'s valuation', () => {
         const valuation = {value: 1};
         store.dispatch(actions.updateCompanyValuationMetric(valuation));
-        expect(store.getState().chart.company.valuation).toStrictEqual(valuation);
+        expect(store.getState().stocks.company.valuation).toStrictEqual(valuation);
     });
 
     test('set a company\'s growth', () => {
         const growth = {value: 1};
         store.dispatch(actions.updateCompanyGrowthMetric(growth));
-        expect(store.getState().chart.company.growth).toStrictEqual(growth);
+        expect(store.getState().stocks.company.growth).toStrictEqual(growth);
     });
 
     test('set a company\'s margin', () => {
         const margin = {value: 1};
         store.dispatch(actions.updateCompanyMarginMetric(margin));
-        expect(store.getState().chart.company.margin).toStrictEqual(margin);
+        expect(store.getState().stocks.company.margin).toStrictEqual(margin);
     });
 
     test('set a company\'s management', () => {
         const management = {value: 1};
         store.dispatch(actions.updateCompanyManagementMetric(management));
-        expect(store.getState().chart.company.management).toStrictEqual(management);
+        expect(store.getState().stocks.company.management).toStrictEqual(management);
     });
 
     test('set a company\'s financial strength', () => {
         const financialStrength = {value: 1};
         store.dispatch(actions.updateCompanyFinancialStrengthMetric(financialStrength));
-        expect(store.getState().chart.company.financialStrength).toStrictEqual(financialStrength);
+        expect(store.getState().stocks.company.financialStrength).toStrictEqual(financialStrength);
     });
 
     test('set a company\'s per share', () => {
         const perShare = {value: 1};
         store.dispatch(actions.updateCompanyPerShareMetric(perShare));
-        expect(store.getState().chart.company.perShare).toStrictEqual(perShare);
+        expect(store.getState().stocks.company.perShare).toStrictEqual(perShare);
     });
 
     test('set a company\'s investors ownership', () => {
         const investors = [{value: 'Investor 1'}, {value: 'Investor 2'}];
         store.dispatch(actions.updateCompanyInvestorsOwnership(investors));
-        expect(store.getState().chart.company.investors).toStrictEqual(investors);
+        expect(store.getState().stocks.company.investors).toStrictEqual(investors);
     });
 
     test('set a company\'s fund ownership', () => {
         const funds = [{value: 'Fund 1'}, {value: 'Fund 2'}];
         store.dispatch(actions.updateCompanyFundOwnership(funds));
-        expect(store.getState().chart.company.funds).toStrictEqual(funds);
+        expect(store.getState().stocks.company.funds).toStrictEqual(funds);
     });
 });
 
 test('buy a stock', () => {
     const balanceBefore = store.getState().balance;
     store.dispatch(actions.buy());
-    expect(store.getState().balance).toBe(balanceBefore - (store.getState().chart.stock?.current! * store.getState().buyQty));
+    expect(store.getState().balance).toBe(balanceBefore - (store.getState().stocks.chart.stock?.current! * store.getState().buyQty));
 
     const latestOrder = store.getState().reportData.orderHistory.rows[store.getState().reportData.orderHistory.rows.length - 1];
     expect(latestOrder.cells[0].content).toBeTruthy();
-    expect(latestOrder.cells[1].content).toBe(store.getState().chart.stock?.name);
-    expect(latestOrder.cells[2].content).toBe((store.getState().chart.stock?.current! * store.getState().buyQty).toString());
+    expect(latestOrder.cells[1].content).toBe(store.getState().stocks.chart.stock?.name);
+    expect(latestOrder.cells[2].content).toBe((store.getState().stocks.chart.stock?.current! * store.getState().buyQty).toString());
     expect(latestOrder.cells[3].content).toBe(store.getState().buyQty.toString());
     expect(latestOrder.cells[4].content).toBe('BUY');
 
     const latestAcitvity = store.getState().reportData.activities.items[store.getState().reportData.activities.items.length - 1];
     expect(latestAcitvity.main).toBe(actions.activityLabels.buy(store.getState().buyQty, 
-        store.getState().chart.stock!.name.toUpperCase(), 
-        store.getState().chart.stock!.current));
+        store.getState().stocks.chart.stock!.name.toUpperCase(), 
+        store.getState().stocks.chart.stock!.current));
     expect(latestAcitvity.data).toBe('trade');
     expect(latestAcitvity.graphic).toBe('fas fa-dollar-sign buy');
 });
 
 test('try buying a stock with no stock slected', () => {
     const balanceBefore = store.getState().balance;
-    store.getState().chart.stock = null;
+    store.getState().stocks.chart.stock = null;
     store.dispatch(actions.buy());
     expect(store.getState().balance).toBe(balanceBefore);
-    store.getState().chart.stock = new Stock(0, 'ABC', 0, 0, 0, 0, 0, 0);
+    store.getState().stocks.chart.stock = new Stock(0, 'ABC', 0, 0, 0, 0, 0, 0);
 });
 
 test('try buying a stock with the buy quantity set to 0', () => {
@@ -261,18 +261,18 @@ test('try buying a stock with the buy quantity set to 0', () => {
 test('sell a stock', () => {
     const balanceBefore = store.getState().balance;
     store.dispatch(actions.sell());
-    expect(store.getState().balance).toBe(balanceBefore + (store.getState().chart.stock?.current! * store.getState().buyQty));
+    expect(store.getState().balance).toBe(balanceBefore + (store.getState().stocks.chart.stock?.current! * store.getState().buyQty));
     const latestRow = store.getState().reportData.orderHistory.rows[store.getState().reportData.orderHistory.rows.length - 1];
     expect(latestRow.cells[0].content).toBeTruthy();
-    expect(latestRow.cells[1].content).toBe(store.getState().chart.stock?.name);
-    expect(latestRow.cells[2].content).toBe((store.getState().chart.stock?.current! * store.getState().sellQty).toString());
+    expect(latestRow.cells[1].content).toBe(store.getState().stocks.chart.stock?.name);
+    expect(latestRow.cells[2].content).toBe((store.getState().stocks.chart.stock?.current! * store.getState().sellQty).toString());
     expect(latestRow.cells[3].content).toBe(store.getState().buyQty.toString());
     expect(latestRow.cells[4].content).toBe('SELL');
 
     const latestAcitvity = store.getState().reportData.activities.items[store.getState().reportData.activities.items.length - 1];
     expect(latestAcitvity.main).toBe(actions.activityLabels.sell(store.getState().sellQty, 
-        store.getState().chart.stock!.name.toUpperCase(), 
-        store.getState().chart.stock!.current));
+        store.getState().stocks.chart.stock!.name.toUpperCase(), 
+        store.getState().stocks.chart.stock!.current));
     expect(latestAcitvity.data).toBe('trade');
     expect(latestAcitvity.graphic).toBe('fas fa-dollar-sign sell');
 });
@@ -287,10 +287,10 @@ test('try selling a stock with the sell quantity set to 0', () => {
 
 test('try selling a stock with no stock slected', () => {
     const balanceBefore = store.getState().balance;
-    store.getState().chart.stock = null;
+    store.getState().stocks.chart.stock = null;
     store.dispatch(actions.sell());
     expect(store.getState().balance).toBe(balanceBefore);
-    store.getState().chart.stock = new Stock(0, 'ABC', 0, 0, 0, 0, 0, 0);
+    store.getState().stocks.chart.stock = new Stock(0, 'ABC', 0, 0, 0, 0, 0, 0);
 });
 
 test('set the buy quantity', () => {

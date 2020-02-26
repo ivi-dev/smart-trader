@@ -19,9 +19,10 @@ export const mainReducer = (state = initialState, action: Action) => {
         case actions.SET_STOCK_INDEX:
             const index = action.arg as string;
             DB.save(Key.STOCK_INDEX, index);
-            return Object.assign({}, state, {stockIndex: index},
-                                            {marketList: filterStocksByIndex(state.allStocksList, 
-                                                                             index)});
+            return Object.assign({}, state, {stocks: {...state.stocks, 
+                                                     stockIndex: index,
+                                                     marketList: filterStocksByIndex(state.stocks.allStocksList, 
+                                                                             index)}});
 
         case actions.START_STOCK_TRACK:
             const stock = action.arg as Stock;
@@ -35,15 +36,15 @@ export const mainReducer = (state = initialState, action: Action) => {
                                              quote.c, quote.pc - quote.c, 
                                              stock.companyName);
                     store.dispatch(actions.setStockDetails(stock_));
-                    let options = clearChart(state.chart);
-                    if (state.tracker.mode === 'simulated') {
-                        stopSimulatedTracker(state.tracker.object as number, () => {
+                    let options = clearChart(state.stocks.chart);
+                    if (state.stocks.tracker.mode === 'simulated') {
+                        stopSimulatedTracker(state.stocks.tracker.object as number, () => {
                             tracker = startSimulatedTracker(stock_, options);
                             store.dispatch(actions.setTracker(tracker));
                         });
                     } else {
-                        stopLiveTracker(state.tracker.object as WebSocket, 
-                                        state.chart.stock!, () => {
+                        stopLiveTracker(state.stocks.tracker.object as WebSocket, 
+                                        state.stocks.chart.stock!, () => {
                                             tracker = startLiveTracker(stock_, options, () => {});
                                             store.dispatch(actions.setTracker(tracker));
                         });
@@ -57,164 +58,204 @@ export const mainReducer = (state = initialState, action: Action) => {
                     store.dispatch(actions.addAlert('error', error.message));
                 });
                 DB.save(Key.STOCK, stock);
-                return Object.assign({}, state, {chart: {...state.chart, 
-                                                         options: {...state.chart.options, 
-                                                                   series: [{name: '', data: []}]}, 
-                                                         stock: stock, 
-                                                         status: 'Loading Data...'}});
+                return Object.assign({}, state, {stocks: {...state.stocks, 
+                                                         chart: {...state.stocks.chart, 
+                                                                options: {...state.stocks.chart.options, 
+                                                                         series: [{name: '', data: []}]}, 
+                                                                stock: stock, 
+                                                                status: 'Loading Data...'}}});
             } else {
                 return state;
             }
 
         case actions.SET_STOCKS_LIST:
             const list = action.arg as Stock[];
-            return Object.assign({}, state, {allStocksList: list}, 
-                                            {marketList: filterStocksByIndex(list, state.stockIndex)});
+            return Object.assign({}, state, {stocks: {...state.stocks, 
+                                                     allStocksList: list, 
+                                                     marketList: filterStocksByIndex(list, state.stocks.stockIndex)}});
 
         case actions.SET_STOCK_DETAILS:
-            return Object.assign({}, state, {chart: {...state.chart, stock: action.arg as Stock}});
+            return Object.assign({}, state, {stocks: {...state.stocks,
+                                                     chart: {...state.stocks.chart, 
+                                                            stock: action.arg as Stock}}});
 
         case actions.SEARCH_MARKET:
-            return Object.assign({}, state, {marketSearchResultsList: 
-                                                filterStocksByName(state.marketList, 
-                                                                   action.arg as string)});
+            return Object.assign({}, state, {stocks: {...state.stocks, 
+                                                     marketSearchResultsList: 
+                                                        filterStocksByName(state.stocks.marketList, 
+                                                                           action.arg as string)}});
 
         case actions.SEARCH_WATCHLIST:
-            return Object.assign({}, state, {watchListSearchResultsList: 
-                                                filterStocksByName(state.watchList, 
-                                                                   action.arg as string)});
+            return Object.assign({}, state, {stocks: {...state.stocks,
+                                                     watchListSearchResultsList: 
+                                                        filterStocksByName(state.stocks.watchList, 
+                                                                           action.arg as string)}});
 
         case actions.ADD_TO_WATCHLIST:
-            if (!stockIsListed(action.arg as Stock, state.watchList)) {
-                const wacthList = state.watchList.concat([action.arg as Stock]);
+            if (!stockIsListed(action.arg as Stock, state.stocks.watchList)) {
+                const wacthList = state.stocks.watchList.concat([action.arg as Stock]);
                 DB.save(Key.WATCHLIST, wacthList);
-                return Object.assign({}, state, {watchList: wacthList});
+                return Object.assign({}, state, {stocks: {...state.stocks, 
+                                                         watchList: wacthList}});
             }
             return state;
             
         case actions.REMOVE_FROM_WATCHLIST:
-            const watchList = state.watchList.filter(index => index !== (action.arg as Stock));
+            const watchList = state.stocks.watchList.filter(index => index !== (action.arg as Stock));
             DB.save(Key.WATCHLIST, watchList);
-            return Object.assign({}, state, {watchList: watchList});
+            return Object.assign({}, state, {stocks: {...state.stocks, 
+                                                     watchList: watchList}});
 
         case actions.SET_WATCHLIST:
-            return Object.assign({}, state, {watchList: action.arg as Stock[]}); 
+            return Object.assign({}, state, {stocks: {...state.stocks, 
+                                                     watchList: action.arg as Stock[]}}); 
 
         case actions.SET_EXCHANGES:
-            return Object.assign({}, state, {exchanges: action.arg as Option[]});
+            return Object.assign({}, state, {stocks: {...state.stocks, 
+                                                     exchanges: action.arg as Option[]}});
 
         /* istanbul ignore next */
         case actions.SELECT_EXCHANGE:
-            const result = findExchange(state.exchanges, action.arg as string);
+            const result = findExchange(state.stocks.exchanges, action.arg as string);
             if (result) {
                 fetchStocks(result.code);
                 DB.save(Key.EXCHANGE, result.exchange);
-                return Object.assign({}, state, {selectedExchange: result.exchange});
+                return Object.assign({}, state, {stocks: {...state.stocks, 
+                                                         selectedExchange: result.exchange}});
             } else {
                 return state;
             }
 
         case actions.SET_SELECTED_EXCHANGE:
-            return Object.assign({}, state, {selectedExchange: {name: action.arg as string}});
+            return Object.assign({}, state, {stocks: {...state.stocks, 
+                                                     selectedExchange: {name: action.arg as string}}});
 
         case actions.UPDATE_CHART:
             const options = action.arg as ChartOptions;
-            return Object.assign({}, state, {chart: {...state.chart, 
-                                                     options: options}});
+            return Object.assign({}, state, {stocks: {...state.stocks,
+                                                     chart: {...state.stocks.chart, 
+                                                            options: options}}});
 
         case actions.TOGGLE_TRACKER:
-            return Object.assign({}, state, {tracker: {...state.tracker, 
-                                                       object: toggleTracker(state)}});
+            return Object.assign({}, state, {stocks: {...state.stocks, 
+                                                     tracker: {...state.stocks.tracker, 
+                                                              object: toggleTracker(state)}}});
 
         case actions.TOGGLE_TRACKER_MODE:
             const {tracker, mode} = toggleTrackerMode(state);
-            return Object.assign({}, state, {tracker: {object: tracker,
-                                                       mode: mode}},
-                                            {chart: {...state.chart, 
-                                                     options: {...state.chart.options, 
-                                                               series: [{name: '', 
-                                                                         data: []}]}}});
+            return Object.assign({}, state, {stocks: {...state.stocks,
+                                                     tracker: {object: tracker, mode: mode},
+                                                     chart: {...state.stocks.chart,
+                                                     options: {...state.stocks.chart.options, 
+                                                               series: [{name: '', data: []}]}}}});
 
         case actions.SET_TRACKER:
-            return Object.assign({}, state, {tracker: {...state.tracker, 
-                                                       object: action.arg}});
+            return Object.assign({}, state, {stocks: {...state.stocks, 
+                                                     tracker: {...state.stocks.tracker, 
+                                                              object: action.arg}}});
 
         // Company
         case actions.SET_COMPANY_PROFILE:
-            return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, profile: action.arg}}});
+            return Object.assign({}, state, {stocks: {...state.stocks,
+                                                     company: {...state.stocks.company, 
+                                                              profile: action.arg}}});
 
         case actions.SET_CEO_INFO:
-            return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, ceo: action.arg}}});
+            return Object.assign({}, state, {stocks: {...state.stocks,
+                                                     company: {...state.stocks.company, 
+                                                              ceo: action.arg}}});
 
         case actions.SET_EXECUTIVES_LIST:
-            return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, executives: action.arg as {}[]}}});
+            return Object.assign({}, state, {stocks: {...state.stocks,
+                                                     company: {...state.stocks.company, 
+                                                              executives: action.arg as {}[]}}});
 
         case actions.SET_COMPANY_PRICE_METRIC:
-            return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company,  price: action.arg}}});
+            return Object.assign({}, state, {stocks: {...state.stocks, 
+                                                     company: {...state.stocks.company,  
+                                                              price: action.arg}}});
             
         case actions.SET_COMPANY_VALUATION_METRIC:
-            return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, valuation: action.arg}}});
+            return Object.assign({}, state, {stocks: {...state.stocks,
+                                                     company: {...state.stocks.company, 
+                                                              valuation: action.arg}}});
 
         case actions.SET_COMPANY_GROWTH_METRIC:
-            return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, growth: action.arg}}});
+            return Object.assign({}, state, {stocks: {...state.stocks,
+                                                     company: {...state.stocks.company, 
+                                                              growth: action.arg}}});
 
         case actions.SET_COMPANY_MARGIN_METRIC:
-            return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, margin: action.arg}}});
+            return Object.assign({}, state, {stocks: {...state.stocks,
+                                                     company: {...state.stocks.company, 
+                                                              margin: action.arg}}});
 
         case actions.SET_COMPANY_MANAGEMENT_METRIC:
-            return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, management: action.arg}}});
+            return Object.assign({}, state, {stocks: {...state.stocks,
+                                                     company: {...state.stocks.company, 
+                                                              management: action.arg}}});
 
         case actions.SET_COMPANY_FINANCIAL_STRENGTH_METRIC:
-            return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, financialStrength: action.arg}}});
+            return Object.assign({}, state, {stocks: {...state.stocks,
+                                                     company: {...state.stocks.company, 
+                                                              financialStrength: action.arg}}});
 
         case actions.SET_COMPANY_PER_SHARE_METRIC:
-            return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, perShare: action.arg}}});
+            return Object.assign({}, state, {stocks: {...state.stocks,
+                                                     company: {...state.stocks.company, 
+                                                              perShare: action.arg}}});
 
         case actions.SET_COMPANY_INVESTORS_OWNERSHIP:
-            return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, investors: action.arg}}});
+            return Object.assign({}, state, {stocks: {...state.stocks,
+                                                     company: {...state.stocks.company, 
+                                                              investors: action.arg}}});
 
         case actions.SET_COMPANY_FUND_OWNERSHIP:
-            return Object.assign({}, state, {chart: {...state.chart, company: {...state.chart.company, funds: action.arg}}});      
+            return Object.assign({}, state, {stocks: {...state.stocks, 
+                                                     company: {...state.stocks.company, 
+                                                              funds: action.arg}}});      
 
         /* istanbul ignore next */
         case actions.SET_ACTIVE_COMPANY_SECTION:
             const section = action.arg as string;
             const type = determineCompanyInfoType(section);
-            const handler = findCompanySectionByName(state.chart.company.sections, section!)!.onClick!;
+            const handler = findCompanySectionByName(state.stocks.company.sections, section!)!.onClick!;
             if (type === 'general') {
-                FinnHub.companyGeneralInfo(state.chart.stock!.name, 
+                FinnHub.companyGeneralInfo(state.stocks.chart.stock!.name, 
                                            CompanyGeneralInfoSections[section.toLowerCase()], 
                                            data => handler(data), 
                                            error => store.dispatch(actions.addAlert('error', 
                                                                     error.message)));
             } else {
-                FinnHub.companyMetrics(state.chart.stock!.name, 
+                FinnHub.companyMetrics(state.stocks.chart.stock!.name, 
                                        CompanyMetricSections[section.toLowerCase()], 
                                        data => handler(data), 
                                        error => store.dispatch(actions.addAlert('error', 
                                                                 error.message)));
             }
-            return Object.assign({}, state, {chart: {...state.chart, 
-                                                     status: 'Loading Data...', 
-                                                     company: {...state.chart.company, 
-                                                               sections: selectSection(state.chart.company.sections.slice(), action.arg as string)}}});
+            return Object.assign({}, state, {stocks: {...state.stocks,
+                                                     chart: {...state.stocks.chart,
+                                                            status: 'Loading Data...', 
+                                                            company: {...state.stocks.company, 
+                                                                      sections: selectSection(state.stocks.company.sections.slice(), 
+                                                                      action.arg as string)}}}});
 
         // Trade
         case actions.BUY:
             if (state.buyQty !== 0) {
-                let stockBuy = state.chart.stock;
+                let stockBuy = state.stocks.chart.stock;
                 if (stockBuy !== null) {
                     const orderHistory = Object.assign({}, state.reportData.orderHistory);
                     const activities = Object.assign({}, state.reportData.activities);
                     const order = new TableRow([new TableCell(time(new Date())),
-                        new TableCell(state.chart.stock!.name.toUpperCase()),
+                        new TableCell(state.stocks.chart.stock!.name.toUpperCase()),
                         new TableCell((stockBuy!.current * state.buyQty).toString()),
                         new TableCell(state.buyQty.toString()),
                         new TableCell('BUY', 'buy')], 'buy');
                     orderHistory.rows.push(order);
                     activities.items.push(new ListRow(
                         actions.activityLabels.buy(state.buyQty, 
-                                                   state.chart.stock!.name.toUpperCase(), 
+                                                   state.stocks.chart.stock!.name.toUpperCase(), 
                                                    stockBuy!.current), 
                                                    'trade', 
                                                    'fas fa-dollar-sign buy'));
@@ -232,19 +273,19 @@ export const mainReducer = (state = initialState, action: Action) => {
 
         case actions.SELL:
             if (state.sellQty !== 0) {
-                let stockSell = state.chart.stock;
+                let stockSell = state.stocks.chart.stock;
                 if (stockSell !== null) {
                     const orderHistory = Object.assign({}, state.reportData.orderHistory);
                     const activities = Object.assign({}, state.reportData.activities);
                     const order = new TableRow([new TableCell(time(new Date())),
-                        new TableCell(state.chart.stock!.name.toUpperCase()),
+                        new TableCell(state.stocks.chart.stock!.name.toUpperCase()),
                         new TableCell((stockSell!.current * state.sellQty).toString()),
                         new TableCell(state.sellQty.toString()),
                         new TableCell('SELL', 'sell')], 'sell');
                     orderHistory.rows.push(order);
                     activities.items.push(new ListRow(
                         actions.activityLabels.sell(state.sellQty, 
-                                                    state.chart.stock!.name.toUpperCase(), 
+                                                    state.stocks.chart.stock!.name.toUpperCase(), 
                                                     stockSell!.current), 'trade', 
                                                     'fas fa-dollar-sign sell'));
                     DB.save(Key.ORDERS, orderHistory);

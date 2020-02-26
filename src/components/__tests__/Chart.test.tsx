@@ -61,51 +61,7 @@ const renderChart = () => {
                          dispatch={mockDispatch} />);
 }
 
-test('render a graph and a company info with a non-array section selected', () => {
-    data.company.profile = {name: ''};
+test('render a graph', () => {
     const { container } = renderChart();
-    expect(container.children[0].querySelector('.content .text-muted')?.innerHTML)
-    .toBe(`${capitalize(Object.entries(data.company.profile)[0][0])}:`);
-});
-
-test('render a graph and a company info with a non-array empty section selected', () => {
-    data.company.profile = {};
-    const { container } = renderChart();
-    expect(container.children[0].querySelector('.content .text-muted')?.innerHTML)
-    .toBe(status);
-});
-
-test('render a graph and a company info with an empty array section selected', () => {
-    delete data.company.sections[0].selected;
-    data.company.investors = [];
-    data.company.sections[1].selected = true;
-    const { container } = renderChart();
-    expect(container.children[0].querySelector('.content .text-muted')?.innerHTML)
-    .toBe(status);
-});
-
-test('render a graph and a company info with an array section selected', () => {
-    data.company.investors = [{name: 'name'}];
-    const { container } = renderChart();
-    expect(container.children[0].querySelectorAll('.content .text-muted')[0]?.innerHTML)
-    .toBe('#1');
-    expect(container.children[0].querySelectorAll('.content .text-muted')[1]?.innerHTML)
-    .toBe(`${capitalize(Object.entries(data.company.investors[0])[0][0])}:`);
-});
-
-test('render a graph and a company info with an array section selected, and an element of a section is null', () => {
-    data.company.investors = [{name: null}];
-    const { container } = renderChart();
-    expect(container.children[0].querySelectorAll('.content .text-muted')[0]?.innerHTML)
-    .toBe('#1');
-    expect(container.children[0].querySelectorAll('.content .text-muted')[1]?.innerHTML)
-    .toBe(`${capitalize(Object.entries(data.company.investors[0])[0][0])}:`);
-});
-
-test('a chart container reacts on company section selection', () => {
-    const { container } = renderChart();
-    const selector = container.querySelector('select');
-    mockDispatch.mockReset();
-    fireEvent.change(selector!, {bubbles: true, cancelable: false});
-    expect(mockDispatch).toHaveBeenCalledWith(actions.setActiveCompanySection('investors'));
+    expect(container.children[0].querySelector('.graph')).toBeTruthy();
 });

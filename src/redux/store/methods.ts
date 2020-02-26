@@ -115,19 +115,19 @@ export const clearChart = (chart: Chart) => {
 /* istanbul ignore next */
 export const toggleTracker = (state: State) => {
     let tracker = null;
-    if (state.tracker.mode === 'simulated') {
-        if (state.tracker.object) {
-            stopSimulatedTracker(state.tracker.object as number, () => {});
+    if (state.stocks.tracker.mode === 'simulated') {
+        if (state.stocks.tracker.object) {
+            stopSimulatedTracker(state.stocks.tracker.object as number, () => {});
         } else {
-            let options = Object.assign({}, state.chart.options);
-            tracker = startSimulatedTracker(state.chart.stock!, options);
+            let options = Object.assign({}, state.stocks.chart.options);
+            tracker = startSimulatedTracker(state.stocks.chart.stock!, options);
         }
     } else {
-        if (state.tracker.object) {
-            stopLiveTracker(state.tracker.object as WebSocket, state.chart.stock!, () => {});
+        if (state.stocks.tracker.object) {
+            stopLiveTracker(state.stocks.tracker.object as WebSocket, state.stocks.chart.stock!, () => {});
         } else {
-            let options = Object.assign({}, state.chart.options);
-            tracker = startLiveTracker(state.chart.stock!, options, () => {});
+            let options = Object.assign({}, state.stocks.chart.options);
+            tracker = startLiveTracker(state.stocks.chart.stock!, options, () => {});
         }
     }
     return tracker;
@@ -136,20 +136,20 @@ export const toggleTracker = (state: State) => {
 /* istanbul ignore next */
 export const toggleTrackerMode = (state: State) => {
     let tracker = null, mode = '';
-    if (state.tracker.mode === 'simulated') {
-        if (state.tracker.object) {
-            stopSimulatedTracker(state.tracker.object as number, () => {});
-            let options = clearChart(state.chart);
-            tracker = startLiveTracker(state.chart.stock!, options, () => {});
+    if (state.stocks.tracker.mode === 'simulated') {
+        if (state.stocks.tracker.object) {
+            stopSimulatedTracker(state.stocks.tracker.object as number, () => {});
+            let options = clearChart(state.stocks.chart);
+            tracker = startLiveTracker(state.stocks.chart.stock!, options, () => {});
             mode = 'live';
         }
     } else {
-        if (state.tracker.object) {
-            let options = clearChart(state.chart);
-            FinnHub.stopTrack(state.tracker.object as WebSocket, 
-                state.chart.stock!.name, () => {
+        if (state.stocks.tracker.object) {
+            let options = clearChart(state.stocks.chart);
+            FinnHub.stopTrack(state.stocks.tracker.object as WebSocket, 
+                state.stocks.chart.stock!.name, () => {
                     store.dispatch(actions.setTracker(
-                        startSimulatedTracker(state.chart.stock!, 
+                        startSimulatedTracker(state.stocks.chart.stock!, 
                         options)));
                     });
                 mode = 'simulated';

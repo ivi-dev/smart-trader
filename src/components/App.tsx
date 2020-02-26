@@ -1,12 +1,11 @@
 import React from 'react';
 import './style/App.css';
 import StocksList  from './StocksList';
-import { Option, Chart as ChartType, HelpType, Tracker } from '../redux/store/types';
+import { Option, HelpType, Tracker, Stocks } from '../redux/store/types';
 import Chart from './Chart';
 import Reports from './Reports';
 import { State, ReportData } from '../redux/store/types';
 import { connect } from 'react-redux';
-import Stock from '../models/Stock';
 import { Action } from '../redux/actions';
 import * as actions from '../redux/actions';
 import ButtonGroup from './ButtonGroup';
@@ -17,19 +16,10 @@ import Column from './Column';
 import Input from './Input';
 import Help from './Help';
 import Selector from './Selector';
+import { CompanyInfo } from './CompanyInfo';
 
 type AppProp = {
-  stockIndex: string,
-  marketList: Stock[],
-  watchList: Stock[],
-  marketSearchResultsList: Stock[],
-  watchListSearchResultsList: Stock[],
-  exchanges: Option[],
-  stockIndexOptions: Option[],
-  selectedExchange: {name: string, code: string},
-
-  tracker: Tracker,
-  chart: ChartType,
+  stocks: Stocks,
 
   buyButtons: Option[],
   sellButtons: Option[],
@@ -69,16 +59,16 @@ const App = (prop: AppProp) => {
         <StocksList title='Market' 
                     status='Fetching stocks...' 
                     listType='symbolsList' 
-                    data={prop.marketSearchResultsList.length === 0 ? 
-                      prop.marketList : prop.marketSearchResultsList} 
+                    data={prop.stocks.marketSearchResultsList.length === 0 ? 
+                      prop.stocks.marketList : prop.stocks.marketSearchResultsList} 
                     dispatch={prop.dispatch} 
                     onSearch={value => prop.dispatch(actions.searchMarket(value))} />
         <StocksList title='Watchlist' 
                     status='Empty' 
                     listType='watchList' 
                     dispatch={prop.dispatch} 
-                    data={prop.watchListSearchResultsList.length === 0 ? 
-                      prop.watchList : prop.watchListSearchResultsList} 
+                    data={prop.stocks.watchListSearchResultsList.length === 0 ? 
+                      prop.stocks.watchList : prop.stocks.watchListSearchResultsList} 
                     onSearch={value => prop.dispatch(actions.searchWatchlist(value))} />
       </Column>
 
@@ -90,13 +80,13 @@ const App = (prop: AppProp) => {
                 classes={'ml-2 h6 position-relative small'} 
                 style={{'top': '3px'}} />
           <Selector title='Exchange:'
-                    options={prop.exchanges} 
-                    selected={prop.selectedExchange.name}
+                    options={prop.stocks.exchanges} 
+                    selected={prop.stocks.selectedExchange.name}
                     handleSelect={value => prop.dispatch(actions.selectExchange(value))} 
                     classes='ml-4' />
           <Selector title='Stock Index:'
-                    options={prop.stockIndexOptions} 
-                    selected={prop.stockIndex}
+                    options={prop.stocks.stockIndexOptions} 
+                    selected={prop.stocks.stockIndex}
                     handleSelect={value => prop.dispatch(actions.setStockIndex(value))} 
                     classes='ml-4' />
           <Text content={'Balance:'} 
@@ -129,10 +119,13 @@ const App = (prop: AppProp) => {
           <ButtonGroup options={prop.reportButtons} classes={'ml-4 my-3'} />
           <ButtonGroup options={prop.generalButtons} classes={'ml-2 my-3'} />
         </Row>
-        <Row>
-          <Chart data={prop.chart} 
-                 tracker={prop.tracker}
+        <Row style={{height: '52vh'}}>
+          <Chart data={prop.stocks.chart} 
+                 tracker={prop.stocks.tracker}
                  dispatch={prop.dispatch} />
+          <CompanyInfo company={prop.stocks.company} 
+                      status='' 
+                      dispatch={prop.dispatch} />
         </Row>
         <Reports boxes={prop.boxes} 
                  selectedBox={prop.selectedBox} 
@@ -145,17 +138,7 @@ const App = (prop: AppProp) => {
 
 function mapStateToProps(state: State) {
   return {
-    stockIndex: state.stockIndex,
-    marketList: state.marketList,
-    marketSearchResultsList: state.marketSearchResultsList,
-    watchListSearchResultsList: state.watchListSearchResultsList,
-    watchList: state.watchList,
-    exchanges: state.exchanges,
-    stockIndexOptions: state.stockIndexOptions,
-    selectedExchange: state.selectedExchange,
-
-    chart: state.chart,
-    tracker: state.tracker,
+    stocks: state.stocks,
 
     buyButtons: state.buyButtons,
     sellButtons: state.sellButtons,

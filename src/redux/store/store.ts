@@ -12,87 +12,66 @@ import { ORDER_HEADERS } from './data';
 import { fetchHeadlines } from './methods';
 
 export const state: State = {
-    stockIndex: 'a',
-    allStocksList: [],
-    marketList: [],
-    watchList: [],
-    marketSearchResultsList: [],
-    watchListSearchResultsList: [],
-
-    exchanges: [],
-    selectedExchange: {name: '', code: ''},
-    stockIndexOptions: alphabet.concat(digits).map(
-                                    character => ({name: character})),
-
-    tracker: {
-        object: null,
-        mode: 'simulated'
-    },
-
-    chart: {
-        stock: null,
-        status: 'No Data Yet.',
-        options: {
-            chart: {
-              type: 'line',
-              width: '100%',
-              height: '90%',
-              foreColor: 'rgba(255, 255, 255, 0.5)',
-              animations: {
-                  enabled: false
-              }
-            },
-            stroke: {
-                width: 2
-            },
-            grid: {
-                borderColor: 'rgba(255, 255, 255, 0.2)'
-            },
-            xaxis: {
-                axisBorder: {
-                    show: false
+    stocks: {
+        stockIndex: 'a',
+        allStocksList: [],
+        marketList: [],
+        watchList: [],
+        marketSearchResultsList: [],
+        watchListSearchResultsList: [],
+        exchanges: [],
+        selectedExchange: {name: '', code: ''},
+        stockIndexOptions: alphabet.concat(digits).map(
+                                        character => ({name: character})),
+        chart: {
+            stock: null,
+            status: 'No Data Yet.',
+            options: {
+                chart: {
+                    type: 'line',
+                    width: '100%',
+                    height: '90%',
+                    foreColor: 'rgba(255, 255, 255, 0.5)',
+                    animations: {
+                        enabled: false
+                    }
                 },
-                axisTicks: {
-                    show: false
-                }
-            },
-            noData: {
-                text: 'No data yet.',
-                style: {
-                    fontSize: '20px'
-                }
-            },
-            series: [{
-                name: '',
-                data: []
-            }]
+                stroke: {width: 2},
+                grid: {borderColor: 'rgba(255, 255, 255, 0.2)'},
+                xaxis: {
+                    axisBorder: {show: false},
+                    axisTicks: {show: false}
+                },
+                noData: {
+                    text: 'No data yet.',
+                    style: {fontSize: '20px'}
+                },
+                series: [{name: '', data: []}]
+            }
         },
         company: {
-            profile: {},
-            ceo: {},
-            executives: [],
-            price: {},
-            valuarion: {},
-            growth: {},
-            margin: {},
-            management: {},
-            financialStrength: {},
-            perShare: {},
-            investors: [],
-            funds: [],
-            valuation: {},
-            sections: [{name: 'Profile', onClick: data => store.dispatch(actions.updateCompanyProfile(data)),data: 'profile', selected: true}, 
-                       {name: 'CEO (US Companies Only)', onClick: data => store.dispatch(actions.updateCEOInfo(data)), data: 'ceo'}, 
-                       {name: 'Executives', onClick: data => store.dispatch(actions.updateExecutivesList(data)), data: 'executives'}, 
-                       {name: 'Price', onClick: data => store.dispatch(actions.updateCompanyPriceMetric(data)), data: 'price'},
-                       {name: 'Valuation', onClick: data => store.dispatch(actions.updateCompanyValuationMetric(data)), data: 'valuation'},
-                       {name: 'Growth', onClick: data => store.dispatch(actions.updateCompanyGrowthMetric(data)), data: 'growth'},
-                       {name: 'Margin', onClick: data => store.dispatch(actions.updateCompanyMarginMetric(data)), data: 'margin'},
-                       {name: 'Management', onClick: data => store.dispatch(actions.updateCompanyManagementMetric(data)), data: 'management'},
-                       {name: 'Financial Strength', onClick: data => store.dispatch(actions.updateCompanyFinancialStrengthMetric(data)), data: 'financialStrength'},
-                       {name: 'Per Share', onClick: data => store.dispatch(actions.updateCompanyPerShareMetric(data)), data: 'perShare'},
-                       {name: 'Investors Ownership', onClick: data => store.dispatch(actions.updateCompanyInvestorsOwnership(data)),data: 'investors'},
-                       {name: 'Fund Ownership', onClick: data => store.dispatch(actions.updateCompanyFundOwnership(data)),data: 'funds'}]
+            profile: {}, ceo: {},
+            executives: [], price: {},
+            growth: {}, margin: {},
+            management: {}, financialStrength: {},
+            perShare: {}, investors: [],
+            funds: [], valuation: {},
+            sections: [{name: 'Profile', onClick: data => store.dispatch(actions.updateCompanyProfile(data)), data: 'profile', selected: true}, 
+                        {name: 'CEO (US Companies Only)', onClick: data => store.dispatch(actions.updateCEOInfo(data)), data: 'ceo'}, 
+                        {name: 'Executives', onClick: data => store.dispatch(actions.updateExecutivesList(data)), data: 'executives'}, 
+                        {name: 'Price', onClick: data => store.dispatch(actions.updateCompanyPriceMetric(data)), data: 'price'},
+                        {name: 'Valuation', onClick: data => store.dispatch(actions.updateCompanyValuationMetric(data)), data: 'valuation'},
+                        {name: 'Growth', onClick: data => store.dispatch(actions.updateCompanyGrowthMetric(data)), data: 'growth'},
+                        {name: 'Margin', onClick: data => store.dispatch(actions.updateCompanyMarginMetric(data)), data: 'margin'},
+                        {name: 'Management', onClick: data => store.dispatch(actions.updateCompanyManagementMetric(data)), data: 'management'},
+                        {name: 'Financial Strength', onClick: data => store.dispatch(actions.updateCompanyFinancialStrengthMetric(data)), data: 'financialStrength'},
+                        {name: 'Per Share', onClick: data => store.dispatch(actions.updateCompanyPerShareMetric(data)), data: 'perShare'},
+                        {name: 'Investors Ownership', onClick: data => store.dispatch(actions.updateCompanyInvestorsOwnership(data)),data: 'investors'},
+                        {name: 'Fund Ownership', onClick: data => store.dispatch(actions.updateCompanyFundOwnership(data)),data: 'funds'}]
+        },
+        tracker: {
+            object: null,
+            mode: 'simulated'
         }
     },
 

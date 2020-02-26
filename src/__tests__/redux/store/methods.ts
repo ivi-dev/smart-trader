@@ -28,7 +28,7 @@ test('get the latest alert\'s id', () => {
 test('start a simulated tracker', () => {
     const stock = new Stock(1, 'ABC', 0, 0, 0, 0, 0, 0);
     expect(methods.startSimulatedTracker(stock, Object.assign({}, 
-        store.getState().chart.options))).toBeTruthy();
+        store.getState().stocks.chart.options))).toBeTruthy();
 });
 
 test('stop a simulated tracker', done => {
@@ -72,7 +72,7 @@ test('find an exchange from a list', () => {
 });
 
 test('clear a chart\'s series data', () => {
-    const chart = store.getState().chart;
+    const chart = store.getState().stocks.chart;
     chart.options.series[0].data = [{x: '1', y: 2}];
     expect(chart.options.series[0].data).toHaveLength(1);
     methods.clearChart(chart);

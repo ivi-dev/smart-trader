@@ -15,7 +15,6 @@ export type Option = {
                ...other: any) => void,
     selected?: boolean
 }
-
 export type ReportData = {
     orderHistory: Table,
     activities: List,
@@ -31,73 +30,70 @@ export type ReportData = {
     alerts: Alert[],
     menuVisible: boolean
 }
-
-export type ChartOptions = {
-    chart: {},
-    grid: {},
-    xaxis: {},
-    stroke: {},
-    noData: {},
-    series: {name: string,
-             data: {x: string, 
-                    y: number}[]}[]
+export type Company = {
+    [index: string]: CompanyInfo,
+    profile: {},
+    ceo: {},
+    executives: {}[],
+    price: {},
+    valuation: {},
+    growth: {},
+    margin: {},
+    management: {},
+    financialStrength: {},
+    perShare: {},
+    investors: {}[],
+    funds: {}[],
+    sections: Option[]
 }
-
 export interface CompanyInfo {}
-
 export type CompanyInfoType = 'general' | 'metric';
-
+export type ChartOptions = {
+        chart: {},
+        grid: {},
+        xaxis: {},
+        stroke: {},
+        noData: {},
+        series: {name: string,
+                 data: {x: string, 
+                        y: number}[]}[]
+}
 export type Chart = {
     stock: Stock | null,
     options: ChartOptions,
     status: string,
-    company: {
-        [index: string]: CompanyInfo,
-        profile: {},
-        ceo: {},
-        executives: {}[],
-        price: {},
-        valuarion: {},
-        growth: {},
-        margin: {},
-        management: {},
-        financialStrength: {},
-        perShare: {},
-        investors: {}[],
-        funds: {}[],
-        sections: Option[]
-    }
 }
-
 export type HelpType = {
     visible: boolean,
     sections: Option[]
 }
-
 export type Tracker = {
     object: WebSocket | number | null,
         mode: TrackerMode
 }
-
 export type TrackerMode = 'simulated' | 'live';
-
-export interface State {
+export type Exchange = {name: string, 
+                        code: string};
+export type Stocks = {
+    stockIndexOptions: Option[],
     stockIndex: string,
-    allStocksList: Stock[],
     marketList: Stock[],
+    watchList: Stock[],
+    allStocksList: Stock[],
     marketSearchResultsList: Stock[],
     watchListSearchResultsList: Stock[],
-    watchList: Stock[],
     exchanges: Option[],
-    stockIndexOptions: Option[],
-    selectedExchange: {name: string, code: string},
-
+    selectedExchange: Exchange,
+    chart: Chart,
+    company: Company,
     tracker: {
         object: WebSocket | number | null,
         mode: TrackerMode
-    },
+    }
+}
 
-    chart: Chart,
+export interface State {
+    stocks: Stocks,
 
     buyButtons: Option[],
     sellButtons: Option[],

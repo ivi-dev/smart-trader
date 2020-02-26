@@ -1,33 +1,5 @@
 .chart {
-    height: 52vh;
-}
-
-.chart .graph {
-    height: 75%;
-    border-color: transparent !important;
-    border-width: 3px !important;
-    transition: 500ms;
-}
-
-.chart .graph.selected {
-    border-color: rgb(70, 159, 233) !important;
-}
-
-.chart .company-info.border-left {
-    border-left: 1px solid rgba(255, 255, 2555, 0.2) !important;
-}
-
-.chart .company-info {
-    height: 95%;
-    margin-top: -52px;
-}
-
-.chart .company-info .content {
-    max-height: 92%;
-    font-size: 90%;
-    line-height: 1.8;
-    overflow: auto;
-    text-shadow: 1px 1px 0 rgba(0, 0, 0, 1);
+    height: 98%
 }
 
 .chart .tab {
